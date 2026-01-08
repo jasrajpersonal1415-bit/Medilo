@@ -82,9 +82,13 @@ class MediloAPITester:
 
     def test_customer_auth(self):
         """Test customer registration and login"""
+        # Use timestamp to ensure unique phone number
+        timestamp = str(int(datetime.now().timestamp()))[-6:]
+        phone = f"98765{timestamp}"
+        
         # Test customer registration
         customer_data = {
-            "phone": "9876543210",
+            "phone": phone,
             "name": "Test Customer"
         }
         
@@ -99,7 +103,7 @@ class MediloAPITester:
             return
 
         # Test customer login
-        login_data = {"phone": "9876543210"}
+        login_data = {"phone": phone}
         success, response = self.make_request('POST', 'auth/customer/login', login_data)
         if success:
             data = response.json()
