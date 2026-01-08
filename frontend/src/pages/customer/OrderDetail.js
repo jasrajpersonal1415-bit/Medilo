@@ -24,6 +24,7 @@ export default function OrderDetail() {
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [downloadingInvoice, setDownloadingInvoice] = useState(false);
 
   useEffect(() => {
     fetchOrder();
