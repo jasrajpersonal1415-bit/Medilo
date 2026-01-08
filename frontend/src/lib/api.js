@@ -85,6 +85,16 @@ export const pharmacyStaffAPI = {
   confirmInventory: (orderId, data) => api.post(`/pharmacy/orders/${orderId}/confirm-inventory`, data),
 };
 
+// Delivery Partner API
+export const deliveryAPI = {
+  login: (phone) => api.post('/auth/delivery/login', { phone }),
+  getOrders: () => api.get('/delivery/orders'),
+  getOrder: (id) => api.get(`/delivery/orders/${id}`),
+  acceptDelivery: (orderId) => api.post(`/delivery/orders/${orderId}/accept`),
+  performAction: (orderId, action) => api.post(`/delivery/orders/${orderId}/action`, { action }),
+  reportIssue: (orderId, data) => api.post(`/delivery/orders/${orderId}/report-issue`, data),
+};
+
 // Ops API
 export const opsAPI = {
   getOrders: (status) => api.get('/ops/orders', { params: { status } }),
