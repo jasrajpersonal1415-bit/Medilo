@@ -686,6 +686,9 @@ async def assign_pharmacy(order_id: str, pharmacy_id: str, user: dict = Depends(
     update_data = {
         "pharmacy_id": pharmacy_id,
         "pharmacy_name": pharmacy["name"],
+        "pharmacy_address": pharmacy.get("address"),
+        "pharmacy_latitude": pharmacy.get("latitude"),
+        "pharmacy_longitude": pharmacy.get("longitude"),
         "status": OrderStatus.ASSIGNED_TO_PHARMACY.value,
         "updated_at": get_utc_now()
     }
