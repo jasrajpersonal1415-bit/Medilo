@@ -18,6 +18,10 @@ import PharmacistDashboard from './pages/pharmacist/Dashboard';
 import PharmacyDashboard from './pages/pharmacy/Dashboard';
 import OpsDashboard from './pages/ops/Dashboard';
 
+// Delivery Partner Pages
+import DeliveryLogin from './pages/delivery/Login';
+import DeliveryDashboard from './pages/delivery/Dashboard';
+
 // Protected Route Components
 const CustomerRoute = ({ children }) => {
   const { isAuthenticated, isCustomer, loading } = useAuth();
@@ -95,6 +99,24 @@ const OpsRoute = ({ children }) => {
   return children;
 };
 
+const DeliveryRoute = ({ children }) => {
+  const { isAuthenticated, isDeliveryPartner, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="spinner" />
+      </div>
+    );
+  }
+  
+  if (!isAuthenticated || !isDeliveryPartner) {
+    return <Navigate to="/delivery/login" replace />;
+  }
+  
+  return children;
+};
+
 const PublicRoute = ({ children }) => {
   const { isAuthenticated, user, loading } = useAuth();
   
@@ -117,6 +139,8 @@ const PublicRoute = ({ children }) => {
         return <Navigate to="/pharmacy/dashboard" replace />;
       case 'ops':
         return <Navigate to="/ops/dashboard" replace />;
+      case 'delivery_partner':
+        return <Navigate to="/delivery/dashboard" replace />;
       default:
         return children;
     }
@@ -142,6 +166,14 @@ function AppRoutes() {
         element={
           <PublicRoute>
             <StaffLogin />
+          </PublicRoute>
+        } 
+      />
+      <Route 
+        path="/delivery/login" 
+        element={
+          <PublicRoute>
+            <DeliveryLogin />
           </PublicRoute>
         } 
       />
@@ -207,6 +239,16 @@ function AppRoutes() {
           <OpsRoute>
             <OpsDashboard />
           </OpsRoute>
+        } 
+      />
+
+      {/* Delivery Partner Routes (Mobile) */}
+      <Route 
+        path="/delivery/dashboard" 
+        element={
+          <DeliveryRoute>
+            <DeliveryDashboard />
+          </DeliveryRoute>
         } 
       />
 
