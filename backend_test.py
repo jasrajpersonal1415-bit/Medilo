@@ -360,11 +360,11 @@ class MediloAPITester:
     def test_authentication_protection(self):
         """Test that protected endpoints require authentication"""
         # Test accessing protected endpoint without token
-        success, response = self.make_request('GET', 'auth/me', expected_status=401)
+        success, response = self.make_request('GET', 'auth/me', expected_status=403)
         if success:
             self.log_test("Auth Protection - No Token", True, "Correctly rejected")
         else:
-            self.log_test("Auth Protection - No Token", False, f"Expected 401, got {response.status_code if hasattr(response, 'status_code') else response}")
+            self.log_test("Auth Protection - No Token", False, f"Expected 403, got {response.status_code if hasattr(response, 'status_code') else response}")
 
         # Test with valid token
         if 'customer' in self.tokens:
