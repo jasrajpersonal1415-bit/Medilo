@@ -1,0 +1,164 @@
+{
+  "identity": {
+    "name": "MEDILO",
+    "persona": "Clinical, Disciplined, Trustworthy, Strict",
+    "aesthetic": "Sterile Utility",
+    "core_values": ["Compliance", "Auditability", "Correctness", "Speed"],
+    "design_principles": [
+      "Function over Form: No decoration without purpose.",
+      "High Contrast: Legibility is patient safety.",
+      "Density: Information density for pros, clarity for patients.",
+      "State Awareness: Every status (Pending, Approved, Rejected) must be visually distinct."
+    ]
+  },
+  "typography": {
+    "font_family": {
+      "headings": "IBM Plex Sans, sans-serif",
+      "body": "Inter, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "weights": {
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "scale": {
+      "h1": "text-3xl md:text-4xl font-semibold tracking-tight",
+      "h2": "text-2xl md:text-3xl font-medium tracking-tight",
+      "h3": "text-xl md:text-2xl font-medium",
+      "body_lg": "text-lg leading-relaxed",
+      "body_base": "text-base leading-relaxed",
+      "body_sm": "text-sm leading-normal",
+      "caption": "text-xs text-muted-foreground uppercase tracking-wider"
+    }
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "DEFAULT": "#0F62FE",
+        "foreground": "#FFFFFF",
+        "description": "IBM Blue - Clinical Trust"
+      },
+      "secondary": {
+        "DEFAULT": "#E0E0E0",
+        "foreground": "#161616",
+        "description": "Neutral Grey - Structure"
+      },
+      "background": {
+        "DEFAULT": "#F4F7F6",
+        "paper": "#FFFFFF",
+        "dark": "#161616"
+      },
+      "status": {
+        "success": "#198038",
+        "warning": "#F1C21B",
+        "error": "#DA1E28",
+        "info": "#0043CE"
+      },
+      "medicine_buckets": {
+        "otc": "#198038",
+        "schedule_h": "#F1C21B",
+        "schedule_h1": "#DA1E28"
+      }
+    },
+    "usage_rules": [
+      "Never use gradients.",
+      "Backgrounds must be solid #F4F7F6 or #FFFFFF.",
+      "Text must be #161616 (Black) or #525252 (Dark Grey). Never pure black on white.",
+      "Primary color is ONLY for primary actions (Submit, Approve).",
+      "Destructive color is for Reject/Delete/Schedule H1 warnings."
+    ]
+  },
+  "layout": {
+    "spacing_system": "Generous but structured. Use p-4, p-6, p-8.",
+    "grid_system": {
+      "mobile": "grid-cols-1 gap-4",
+      "dashboard": "grid-cols-12 gap-4 md:gap-6",
+      "mode_b_control_room": {
+        "summary": "col-span-12 md:col-span-3",
+        "main_chart": "col-span-12 md:col-span-9",
+        "feed": "col-span-12 md:col-span-4"
+      }
+    },
+    "containers": {
+      "card": "bg-white border border-gray-200 shadow-sm rounded-md",
+      "dashboard_shell": "h-screen flex overflow-hidden bg-background",
+      "mobile_shell": "min-h-screen bg-background pb-20"
+    }
+  },
+  "components": {
+    "buttons": {
+      "radius": "rounded-md",
+      "styles": {
+        "primary": "bg-primary text-white hover:bg-primary/90 shadow-sm",
+        "secondary": "bg-white border border-gray-300 text-gray-900 hover:bg-gray-50",
+        "destructive": "bg-destructive text-white hover:bg-destructive/90",
+        "ghost": "hover:bg-gray-100 text-gray-700"
+      }
+    },
+    "inputs": {
+      "radius": "rounded-md",
+      "style": "border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
+    },
+    "cards": {
+      "radius": "rounded-md",
+      "style": "bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200"
+    },
+    "badges": {
+      "radius": "rounded-sm",
+      "style": "font-mono text-xs font-medium px-2 py-0.5 uppercase"
+    }
+  },
+  "visual_enhancers": {
+    "shadows": "shadow-sm for cards, shadow-md for dropdowns. No large diffuse shadows.",
+    "borders": "1px solid #E0E0E0. Sharp definition.",
+    "glassmorphism": "Minimal. Only for sticky headers: bg-white/80 backdrop-blur-md border-b.",
+    "textures": "None. Keep it sterile."
+  },
+  "assets": {
+    "icons": "Lucide React (Stroke width 1.5px for elegance)",
+    "images": {
+      "pharmacist_review": "https://images.unsplash.com/photo-1576091358783-a212ec293ff3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwxfHxwaGFybWFjaXN0JTIwcmV2aWV3aW5nJTIwcHJlc2NyaXB0aW9ufGVufDB8fHx8MTc2Nzg5NjI5Mnww&ixlib=rb-4.1.0&q=85",
+      "pharmacy_interior": "https://images.unsplash.com/photo-1582146804102-b4a01b0a51ae?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjBwaGFybWFjeSUyMHN0b3JlJTIwaW50ZXJpb3IlMjBjbGVhbnxlbnwwfHx8fDE3Njc4OTYyOTN8MA&ixlib=rb-4.1.0&q=85",
+      "medicines_generic": "https://images.unsplash.com/photo-1638929935038-94137b62f315?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHw0fHxtZWRpY2luZSUyMGJsaXN0ZXIlMjBwYWNrcyUyMGFuZCUyMGJvdHRsZXN8ZW58MHx8fHwxNzY3ODk2Mjk0fDA&ixlib=rb-4.1.0&q=85",
+      "logo_placeholder": "https://placehold.co/200x50/0F62FE/FFFFFF?text=MEDILO"
+    }
+  },
+  "accessibility": {
+    "contrast": "WCAG AA Required. Text on colored badges must be legible.",
+    "focus_states": "Visible ring-2 ring-offset-2 ring-primary.",
+    "touch_targets": "Minimum 44px for mobile interactions."
+  },
+  "instructions_to_main_agent": [
+    "STRICTLY follow the color coding for medicines: Green (OTC), Yellow (Sch H), Red (Sch H1).",
+    "Customer App is MOBILE VIEW ONLY. Use max-w-md mx-auto for desktop preview of customer app.",
+    "Pharmacist/Ops Dashboards are DESKTOP VIEW ONLY. Use full width.",
+    "Use 'sonner' for all toast notifications.",
+    "Use 'lucide-react' for icons.",
+    "Do not use 'framer-motion' for complex animations. Simple transitions only.",
+    "Ensure all inputs have labels and validation states.",
+    "For tables, use Shadcn Table component with dense padding."
+  ],
+  "universal_guidelines": [
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "You MUST NOT apply universal transition. Eg: transition: all. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; } in the css file. This disrupts the human natural reading flow of text",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯📚🎭🎬🎪🎉🎊🎁🎀🎂🍰🎈🎨🎰💰💵💳🏦💎🪙💸🤑📊📈📉💹🔢🏆🥇 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories (especially sponsor logos) = main agent will use placeholder text which is FORBIDDEN",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Create new components that match the style and conventions of existing components when needed",
+    "Examine existing components to understand the project's component patterns before creating new ones",
+    "Components MUST use named exports (export const ComponentName = ...)",
+    "Pages MUST use default exports (export default function PageName() {...})",
+    "Use sonner for toasts",
+    "Sonner component are located in /app/src/components/ui/sonner.tsx"
+  ]
+}
