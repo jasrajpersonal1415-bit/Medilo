@@ -1,53 +1,233 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
+import { Toaster } from './components/ui/sonner';
+import './App.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+// Customer Pages
+import CustomerLogin from './pages/customer/Login';
+import CustomerHome from './pages/customer/Home';
+import Cart from './pages/customer/Cart';
+import Orders from './pages/customer/Orders';
+import OrderDetail from './pages/customer/OrderDetail';
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+// Staff Pages
+import StaffLogin from './pages/staff/Login';
+import PharmacistDashboard from './pages/pharmacist/Dashboard';
+import PharmacyDashboard from './pages/pharmacy/Dashboard';
+import OpsDashboard from './pages/ops/Dashboard';
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
+// Protected Route Components
+const CustomerRoute = ({ children }) => {
+  const { isAuthenticated, isCustomer, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="spinner" />
+      </div>
+    );
+  }
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (!isCustomer) {
+    return <Navigate to="/staff/login" replace />;
+  }
+  
+  return children;
 };
+
+const PharmacistRoute = ({ children }) => {
+  const { isAuthenticated, isPharmacist, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="spinner" />
+      </div>
+    );
+  }
+  
+  if (!isAuthenticated || !isPharmacist) {
+    return <Navigate to="/staff/login" replace />;
+  }
+  
+  return children;
+};
+
+const PharmacyStaffRoute = ({ children }) => {
+  const { isAuthenticated, isPharmacyStaff, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="spinner" />
+      </div>
+    );
+  }
+  
+  if (!isAuthenticated || !isPharmacyStaff) {
+    return <Navigate to="/staff/login" replace />;
+  }
+  
+  return children;
+};
+
+const OpsRoute = ({ children }) => {
+  const { isAuthenticated, isOps, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="spinner" />
+      </div>
+    );
+  }
+  
+  if (!isAuthenticated || !isOps) {
+    return <Navigate to="/staff/login" replace />;
+  }
+  
+  return children;
+};
+
+const PublicRoute = ({ children }) => {
+  const { isAuthenticated, user, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="spinner" />
+      </div>
+    );
+  }
+  
+  if (isAuthenticated) {
+    // Redirect based on role
+    switch (user?.role) {
+      case 'customer':
+        return <Navigate to="/" replace />;
+      case 'pharmacist':
+        return <Navigate to="/pharmacist/dashboard" replace />;
+      case 'pharmacy_staff':
+        return <Navigate to="/pharmacy/dashboard" replace />;
+      case 'ops':
+        return <Navigate to="/ops/dashboard" replace />;
+      default:
+        return children;
+    }
+  }
+  
+  return children;
+};
+
+function AppRoutes() {
+  return (
+    <Routes>
+      {/* Public Routes */}
+      <Route 
+        path="/login" 
+        element={
+          <PublicRoute>
+            <CustomerLogin />
+          </PublicRoute>
+        } 
+      />
+      <Route 
+        path="/staff/login" 
+        element={
+          <PublicRoute>
+            <StaffLogin />
+          </PublicRoute>
+        } 
+      />
+
+      {/* Customer Routes (Mobile) */}
+      <Route 
+        path="/" 
+        element={
+          <CustomerRoute>
+            <CustomerHome />
+          </CustomerRoute>
+        } 
+      />
+      <Route 
+        path="/cart" 
+        element={
+          <CustomerRoute>
+            <Cart />
+          </CustomerRoute>
+        } 
+      />
+      <Route 
+        path="/orders" 
+        element={
+          <CustomerRoute>
+            <Orders />
+          </CustomerRoute>
+        } 
+      />
+      <Route 
+        path="/order/:orderId" 
+        element={
+          <CustomerRoute>
+            <OrderDetail />
+          </CustomerRoute>
+        } 
+      />
+
+      {/* Pharmacist Routes (Desktop) */}
+      <Route 
+        path="/pharmacist/dashboard" 
+        element={
+          <PharmacistRoute>
+            <PharmacistDashboard />
+          </PharmacistRoute>
+        } 
+      />
+
+      {/* Pharmacy Staff Routes (Desktop) */}
+      <Route 
+        path="/pharmacy/dashboard" 
+        element={
+          <PharmacyStaffRoute>
+            <PharmacyDashboard />
+          </PharmacyStaffRoute>
+        } 
+      />
+
+      {/* Ops Routes (Desktop) */}
+      <Route 
+        path="/ops/dashboard" 
+        element={
+          <OpsRoute>
+            <OpsDashboard />
+          </OpsRoute>
+        } 
+      />
+
+      {/* Catch all - redirect to login */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <AuthProvider>
+        <CartProvider>
+          <div className="App">
+            <AppRoutes />
+            <Toaster position="top-center" richColors />
+          </div>
+        </CartProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
