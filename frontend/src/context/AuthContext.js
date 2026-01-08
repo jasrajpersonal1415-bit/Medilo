@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authAPI } from '../lib/api';
+import { authAPI, deliveryAPI } from '../lib/api';
 
 const AuthContext = createContext(null);
 
@@ -95,6 +95,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginDeliveryPartner = async (phone) => {
+    setError(null);
+    try {
+      const response = await deliveryAPI.login(phone);
+      const { access_token, user } = response.data;
+      localStorage.setItem('medilo_token', access_token);
+      localStorage.setItem('medilo_user', JSON.stringify(user));
+      setUser(user);
+      return user;
+    } catch (err) {
+      const message = err.response?.data?.detail || 'Login failed';
+      setError(message);
+      throw new Error(message);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('medilo_token');
     localStorage.removeItem('medilo_user');
@@ -105,6 +121,7 @@ export const AuthProvider = ({ children }) => {
   const isPharmacist = user?.role === 'pharmacist';
   const isPharmacyStaff = user?.role === 'pharmacy_staff';
   const isOps = user?.role === 'ops';
+  const isDeliveryPartner = user?.role === 'delivery_partner';
 
   return (
     <AuthContext.Provider
@@ -116,11 +133,13 @@ export const AuthProvider = ({ children }) => {
         registerCustomer,
         loginStaff,
         registerStaff,
+        loginDeliveryPartner,
         logout,
         isCustomer,
         isPharmacist,
         isPharmacyStaff,
         isOps,
+        isDeliveryPartner,
         isAuthenticated: !!user,
       }}
     >
