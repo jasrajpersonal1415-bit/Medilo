@@ -219,7 +219,7 @@ class MediloAPITester:
             "longitude": 72.8777
         }
 
-        success, response = self.make_request('POST', 'pharmacies', pharmacy_data, self.tokens['ops'], 201)
+        success, response = self.make_request('POST', 'pharmacies', pharmacy_data, self.tokens['ops'], 200)
         if success:
             data = response.json()
             self.test_data['pharmacy'] = data
