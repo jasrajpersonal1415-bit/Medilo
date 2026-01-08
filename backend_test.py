@@ -9,8 +9,6 @@ import sys
 import json
 from datetime import datetime
 import base64
-import io
-from PIL import Image
 
 class MediloAPITester:
     def __init__(self, base_url="https://meditrack-28.preview.emergentagent.com"):
