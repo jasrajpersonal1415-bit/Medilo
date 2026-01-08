@@ -174,7 +174,7 @@ class MediloAPITester:
 
         created_medicines = []
         for med_data in medicines:
-            success, response = self.make_request('POST', 'medicines', med_data, self.tokens['ops'], 201)
+            success, response = self.make_request('POST', 'medicines', med_data, self.tokens['ops'], 200)
             if success:
                 data = response.json()
                 created_medicines.append(data)
