@@ -193,13 +193,47 @@ class OrderResponse(BaseModel):
     longitude: float
     pharmacy_id: Optional[str] = None
     pharmacy_name: Optional[str] = None
+    pharmacy_address: Optional[str] = None
+    pharmacy_latitude: Optional[float] = None
+    pharmacy_longitude: Optional[float] = None
     pharmacist_id: Optional[str] = None
     pharmacist_notes: Optional[str] = None
+    delivery_partner_id: Optional[str] = None
+    delivery_partner_name: Optional[str] = None
     rejection_reason: Optional[str] = None
     total_amount: Optional[float] = None
     invoice_generated: bool = False
     created_at: str
     updated_at: str
+
+# Delivery Partner specific models
+class DeliveryOrderResponse(BaseModel):
+    """Limited order view for delivery partners - no medicine details or prices"""
+    id: str
+    customer_phone: str
+    customer_name: str
+    status: OrderStatus
+    delivery_address: str
+    latitude: float
+    longitude: float
+    pharmacy_name: Optional[str] = None
+    pharmacy_address: Optional[str] = None
+    pharmacy_phone: Optional[str] = None
+    pharmacy_latitude: Optional[float] = None
+    pharmacy_longitude: Optional[float] = None
+    item_count: int
+    created_at: str
+    updated_at: str
+
+class DeliveryPartnerLogin(BaseModel):
+    phone: str
+
+class DeliveryAction(BaseModel):
+    action: str  # pickup, out_for_delivery, delivered
+
+class DeliveryIssueReport(BaseModel):
+    issue_type: str  # customer_unavailable, wrong_address, pharmacy_issue, other
+    description: str
 
 class PharmacistAction(BaseModel):
     action: str  # approve, reject, request_prescription
