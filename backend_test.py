@@ -114,11 +114,12 @@ class MediloAPITester:
     def test_staff_auth(self):
         """Test staff registration and login for all roles"""
         roles = ['ops', 'pharmacist', 'pharmacy_staff']
+        timestamp = str(int(datetime.now().timestamp()))[-6:]
         
         for role in roles:
             # Register staff
             staff_data = {
-                "email": f"test_{role}@medilo.com",
+                "email": f"test_{role}_{timestamp}@medilo.com",
                 "password": "TestPass123!",
                 "name": f"Test {role.title()}",
                 "role": role
@@ -136,7 +137,7 @@ class MediloAPITester:
 
             # Test login
             login_data = {
-                "email": f"test_{role}@medilo.com",
+                "email": f"test_{role}_{timestamp}@medilo.com",
                 "password": "TestPass123!"
             }
             success, response = self.make_request('POST', 'auth/staff/login', login_data)
