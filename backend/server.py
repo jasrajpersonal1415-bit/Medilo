@@ -52,6 +52,7 @@ class UserRole(str, Enum):
     PHARMACY_STAFF = "pharmacy_staff"
     PHARMACIST = "pharmacist"
     OPS = "ops"
+    DELIVERY_PARTNER = "delivery_partner"
 
 class MedicineBucket(str, Enum):
     OTC = "OTC"  # Bucket A - Green
@@ -68,6 +69,8 @@ class OrderStatus(str, Enum):
     PHARMACY_REJECTED = "pharmacy_rejected"
     INVENTORY_CONFIRMED = "inventory_confirmed"
     PREPARING = "preparing"
+    READY_FOR_PICKUP = "ready_for_pickup"
+    PICKED_UP = "picked_up"
     OUT_FOR_DELIVERY = "out_for_delivery"
     DELIVERED = "delivered"
     CANCELLED = "cancelled"
