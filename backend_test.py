@@ -53,6 +53,12 @@ class MediloAPITester:
                 response = requests.delete(url, headers=headers, timeout=30)
             
             success = response.status_code == expected_status
+            if not success and hasattr(response, 'json'):
+                try:
+                    error_detail = response.json().get('detail', 'No detail')
+                    print(f"    API Error: {error_detail}")
+                except:
+                    pass
             return success, response
             
         except requests.exceptions.RequestException as e:
