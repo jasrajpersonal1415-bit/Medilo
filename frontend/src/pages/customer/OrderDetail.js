@@ -224,17 +224,37 @@ export default function OrderDetail() {
         {/* Actions */}
         <div className="space-y-2">
           {order.invoice_generated && (
-            <a
-              href={orderAPI.getInvoice(order.id)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block"
+            <Button
+              variant="outline"
+              className="w-full"
+              disabled={downloadingInvoice}
+              onClick={async () => {
+                setDownloadingInvoice(true);
+                try {
+                  const response = await orderAPI.getInvoice(order.id);
+                  // Open HTML invoice in new window
+                  const newWindow = window.open('', '_blank');
+                  if (newWindow) {
+                    newWindow.document.write(response.data);
+                    newWindow.document.close();
+                  } else {
+                    toast.error('Please allow popups to view invoice');
+                  }
+                } catch (err) {
+                  toast.error('Failed to download invoice');
+                } finally {
+                  setDownloadingInvoice(false);
+                }
+              }}
+              data-testid="download-invoice-btn"
             >
-              <Button variant="outline" className="w-full">
+              {downloadingInvoice ? (
+                <div className="spinner h-4 w-4 mr-2" />
+              ) : (
                 <Download className="h-4 w-4 mr-2" />
-                Download Invoice
-              </Button>
-            </a>
+              )}
+              Download Invoice
+            </Button>
           )}
           
           {canCancel && (
