@@ -744,11 +744,7 @@ async def pharmacy_action(order_id: str, data: PharmacyAction, user: dict = Depe
     elif data.action == "mark_ready":
         if order["status"] != OrderStatus.PREPARING.value:
             raise HTTPException(status_code=400, detail="Order must be preparing first")
-        update_data["status"] = OrderStatus.OUT_FOR_DELIVERY.value
-    elif data.action == "mark_delivered":
-        if order["status"] != OrderStatus.OUT_FOR_DELIVERY.value:
-            raise HTTPException(status_code=400, detail="Order must be out for delivery first")
-        update_data["status"] = OrderStatus.DELIVERED.value
+        update_data["status"] = OrderStatus.READY_FOR_PICKUP.value
     else:
         raise HTTPException(status_code=400, detail="Invalid action")
     
