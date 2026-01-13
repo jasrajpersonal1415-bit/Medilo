@@ -108,10 +108,14 @@ export default function OpsDashboard() {
   const handleCreateMedicine = async () => {
     setDialogLoading(true);
     try {
-      await medicineAPI.create(medicineForm);
+      const formData = {
+        ...medicineForm,
+        price: parseFloat(medicineForm.price) || 0
+      };
+      await medicineAPI.create(formData);
       toast.success('Medicine created');
       setMedicineDialog({ open: false, data: null });
-      setMedicineForm({ name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', description: '' });
+      setMedicineForm({ name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '' });
       loadData();
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Failed to create medicine');
