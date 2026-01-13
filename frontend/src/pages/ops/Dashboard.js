@@ -404,14 +404,24 @@ export default function OpsDashboard() {
                 <h1 className="text-2xl font-semibold">Users</h1>
                 <p className="text-gray-500">Manage all user accounts</p>
               </div>
-              <Button 
-                onClick={() => setStaffDialog({ open: true })}
-                className="bg-[#0F62FE] hover:bg-[#0353E9]"
-                data-testid="add-staff-btn"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Staff
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={() => setDeliveryDialog({ open: true })}
+                  className="bg-green-600 hover:bg-green-700"
+                  data-testid="add-delivery-btn"
+                >
+                  <Truck className="h-4 w-4 mr-2" />
+                  Add Delivery Partner
+                </Button>
+                <Button 
+                  onClick={() => setStaffDialog({ open: true })}
+                  className="bg-[#0F62FE] hover:bg-[#0353E9]"
+                  data-testid="add-staff-btn"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Staff
+                </Button>
+              </div>
             </div>
 
             {loading ? (
