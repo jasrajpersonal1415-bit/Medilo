@@ -600,12 +600,33 @@ export default function OpsDashboard() {
                 />
               </div>
             </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Pack Size</Label>
+                <Input
+                  value={medicineForm.pack_size}
+                  onChange={(e) => setMedicineForm({ ...medicineForm, pack_size: e.target.value })}
+                  placeholder="e.g., 10 tablets"
+                  data-testid="medicine-pack-size"
+                />
+              </div>
+              <div>
+                <Label>Price (₹) <span className="text-red-500">*</span></Label>
+                <Input
+                  type="number"
+                  value={medicineForm.price}
+                  onChange={(e) => setMedicineForm({ ...medicineForm, price: e.target.value })}
+                  placeholder="e.g., 50.00"
+                  data-testid="medicine-price"
+                />
+              </div>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setMedicineDialog({ open: false, data: null })}>Cancel</Button>
             <Button 
               onClick={handleCreateMedicine} 
-              disabled={dialogLoading}
+              disabled={dialogLoading || !medicineForm.price}
               className="bg-[#0F62FE] hover:bg-[#0353E9]"
               data-testid="save-medicine"
             >
