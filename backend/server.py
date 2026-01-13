@@ -135,8 +135,8 @@ class MedicineResponse(BaseModel):
     bucket: MedicineBucket
     strength: str
     form: str
-    pack_size: str
-    price: float
+    pack_size: Optional[str] = ""  # Optional for backward compatibility
+    price: Optional[float] = 0.0  # Optional for backward compatibility - MEDILO controlled
     description: Optional[str] = None
     is_active: bool = True
     created_at: str
