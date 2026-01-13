@@ -232,6 +232,7 @@ class DeliveryOrderResponse(BaseModel):
     pharmacy_latitude: Optional[float] = None
     pharmacy_longitude: Optional[float] = None
     item_count: int
+    delivery_partner_id: Optional[str] = None  # Added for frontend to identify assigned orders
     created_at: str
     updated_at: str
 
