@@ -788,34 +788,32 @@ async def confirm_inventory(order_id: str, data: InventoryConfirmation, user: di
     if order["status"] != OrderStatus.PHARMACY_ACCEPTED.value:
         raise HTTPException(status_code=400, detail="Order must be accepted before inventory confirmation")
     
-    # Update items with inventory details
+    # Update items with inventory details (batch & expiry only - NO price input)
+    # Price is already set from MEDILO master during order creation
     updated_items = []
-    total_amount = 0
     
     for order_item in order["items"]:
         inv_item = next((i for i in data.items if i.get("medicine_id") == order_item["medicine_id"]), None)
         if not inv_item:
             raise HTTPException(status_code=400, detail=f"Missing inventory for {order_item['medicine_name']}")
         
+        # Only update batch and expiry - price comes from MEDILO master (already in order_item)
         updated_item = {
             **order_item,
             "batch_number": inv_item.get("batch_number"),
-            "expiry_date": inv_item.get("expiry_date"),
-            "unit_price": inv_item.get("unit_price", 0)
+            "expiry_date": inv_item.get("expiry_date")
         }
         updated_items.append(updated_item)
-        total_amount += updated_item["unit_price"] * updated_item["quantity"]
     
     update_data = {
         "items": updated_items,
-        "total_amount": total_amount,
         "status": OrderStatus.INVENTORY_CONFIRMED.value,
         "invoice_generated": True,
         "updated_at": get_utc_now()
     }
     
     await db.orders.update_one({"id": order_id}, {"$set": update_data})
-    await log_audit("inventory_confirmed", "order", order_id, user["id"], user["role"], {"total_amount": total_amount})
+    await log_audit("inventory_confirmed", "order", order_id, user["id"], user["role"], {"total_amount": order["total_amount"]})
     
     order = await db.orders.find_one({"id": order_id}, {"_id": 0, "highest_bucket": 0})
     return OrderResponse(**order)
