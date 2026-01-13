@@ -311,7 +311,6 @@ export default function PharmacyDashboard() {
                           <th>Medicine</th>
                           <th>Qty</th>
                           {order.items[0]?.batch_number && <th>Batch</th>}
-                          {order.items[0]?.unit_price && <th>Price</th>}
                         </tr>
                       </thead>
                       <tbody>
@@ -325,16 +324,16 @@ export default function PharmacyDashboard() {
                             </td>
                             <td>{item.quantity}</td>
                             {item.batch_number && <td>{item.batch_number}</td>}
-                            {item.unit_price && <td>{formatCurrency(item.unit_price)}</td>}
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
 
-                  {order.total_amount && (
-                    <div className="mb-4 text-right">
-                      <span className="font-semibold">Total: {formatCurrency(order.total_amount)}</span>
+                  {order.total_amount > 0 && (
+                    <div className="mb-4 p-2 bg-gray-50 rounded text-right">
+                      <span className="text-xs text-gray-500">Order Total (MEDILO Price): </span>
+                      <span className="font-semibold">{formatCurrency(order.total_amount)}</span>
                     </div>
                   )}
 
