@@ -123,6 +123,8 @@ class MedicineCreate(BaseModel):
     bucket: MedicineBucket
     strength: str
     form: str  # tablet, capsule, syrup, etc.
+    pack_size: str  # e.g., "10 tablets", "100ml"
+    price: float  # MEDILO-controlled price
     description: Optional[str] = None
 
 class MedicineResponse(BaseModel):
@@ -133,6 +135,8 @@ class MedicineResponse(BaseModel):
     bucket: MedicineBucket
     strength: str
     form: str
+    pack_size: str
+    price: float
     description: Optional[str] = None
     is_active: bool = True
     created_at: str
