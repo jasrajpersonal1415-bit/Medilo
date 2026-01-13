@@ -145,6 +145,8 @@ export const ORDER_STEPS = [
   { status: 'pharmacy_accepted', label: 'Accepted' },
   { status: 'inventory_confirmed', label: 'Confirmed' },
   { status: 'preparing', label: 'Preparing' },
+  { status: 'ready_for_pickup', label: 'Ready' },
+  { status: 'picked_up', label: 'Picked Up' },
   { status: 'out_for_delivery', label: 'Out for Delivery' },
   { status: 'delivered', label: 'Delivered' },
 ];
