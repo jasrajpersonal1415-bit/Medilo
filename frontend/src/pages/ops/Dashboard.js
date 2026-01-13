@@ -814,6 +814,48 @@ export default function OpsDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Delivery Partner Dialog */}
+      <Dialog open={deliveryDialog.open} onOpenChange={(open) => !open && setDeliveryDialog({ open: false })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Delivery Partner</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div>
+              <Label>Full Name</Label>
+              <Input
+                value={deliveryForm.name}
+                onChange={(e) => setDeliveryForm({ ...deliveryForm, name: e.target.value })}
+                placeholder="Enter name"
+                data-testid="delivery-name"
+              />
+            </div>
+            <div>
+              <Label>Phone Number</Label>
+              <Input
+                type="tel"
+                value={deliveryForm.phone}
+                onChange={(e) => setDeliveryForm({ ...deliveryForm, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+                placeholder="10-digit mobile number"
+                maxLength={10}
+                data-testid="delivery-phone"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeliveryDialog({ open: false })}>Cancel</Button>
+            <Button 
+              onClick={handleCreateDeliveryPartner} 
+              disabled={dialogLoading || !deliveryForm.name || !deliveryForm.phone}
+              className="bg-green-600 hover:bg-green-700"
+              data-testid="save-delivery"
+            >
+              {dialogLoading ? <div className="spinner h-4 w-4" /> : 'Create Account'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
