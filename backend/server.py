@@ -1192,6 +1192,7 @@ async def accept_delivery(order_id: str, user: dict = Depends(get_current_user))
     update_data = {
         "delivery_partner_id": user["id"],
         "delivery_partner_name": user["name"],
+        "status": OrderStatus.PICKED_UP.value,  # Change status to picked_up when delivery is accepted
         "updated_at": get_utc_now()
     }
     
