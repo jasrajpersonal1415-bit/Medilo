@@ -250,11 +250,12 @@ class PharmacistAction(BaseModel):
     notes: Optional[str] = None
 
 class PharmacyAction(BaseModel):
-    action: str  # accept, reject, confirm_inventory, mark_preparing, mark_ready
+    action: str  # accept, reject, mark_preparing, mark_ready
     rejection_reason: Optional[str] = None
 
 class InventoryConfirmation(BaseModel):
-    items: List[dict]  # Each item has medicine_id, batch_number, expiry_date, unit_price
+    """Pharmacy confirms batch & expiry only - NO price input"""
+    items: List[dict]  # Each item has medicine_id, batch_number, expiry_date
 
 class AuditLogResponse(BaseModel):
     id: str
