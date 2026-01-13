@@ -40,6 +40,7 @@ export default function OpsDashboard() {
   const [medicineDialog, setMedicineDialog] = useState({ open: false, data: null });
   const [pharmacyDialog, setPharmacyDialog] = useState({ open: false, data: null });
   const [staffDialog, setStaffDialog] = useState({ open: false });
+  const [deliveryDialog, setDeliveryDialog] = useState({ open: false });
   const [timelineDialog, setTimelineDialog] = useState({ open: false });
   const [dialogLoading, setDialogLoading] = useState(false);
 
@@ -52,6 +53,9 @@ export default function OpsDashboard() {
   });
   const [staffForm, setStaffForm] = useState({
     name: '', email: '', password: '', role: 'pharmacy_staff', pharmacy_id: ''
+  });
+  const [deliveryForm, setDeliveryForm] = useState({
+    name: '', phone: ''
   });
 
   useEffect(() => {
