@@ -179,6 +179,20 @@ export default function OpsDashboard() {
     }
   };
 
+  const handleDeleteMedicine = async (medicineId, medicineName) => {
+    if (!window.confirm(`Are you sure you want to delete "${medicineName}"? This action cannot be undone.`)) {
+      return;
+    }
+    
+    try {
+      await medicineAPI.delete(medicineId);
+      toast.success('Medicine deleted successfully');
+      loadData();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Failed to delete medicine');
+    }
+  };
+
   return (
     <div className="dashboard-shell">
       {/* Sidebar */}
