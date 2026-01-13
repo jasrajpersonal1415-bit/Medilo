@@ -351,6 +351,7 @@ export default function OpsDashboard() {
                       <th>Pack Size</th>
                       <th>Price (₹)</th>
                       <th>Manufacturer</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -367,6 +368,17 @@ export default function OpsDashboard() {
                         <td>{med.pack_size}</td>
                         <td className="font-medium">₹{med.price?.toFixed(2) || '0.00'}</td>
                         <td>{med.manufacturer}</td>
+                        <td>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            onClick={() => handleDeleteMedicine(med.id, med.name)}
+                            data-testid={`delete-medicine-${med.id}`}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
