@@ -42,6 +42,7 @@ export default function OpsDashboard() {
   const [staffDialog, setStaffDialog] = useState({ open: false });
   const [deliveryDialog, setDeliveryDialog] = useState({ open: false });
   const [timelineDialog, setTimelineDialog] = useState({ open: false });
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, medicine: null });
   const [dialogLoading, setDialogLoading] = useState(false);
 
   // Form states
