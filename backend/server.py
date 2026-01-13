@@ -1034,6 +1034,30 @@ async def toggle_user_active(user_id: str, user: dict = Depends(get_current_user
     return {"message": f"User {'activated' if new_status else 'deactivated'}"}
 
 # Delivery Partner Routes
+@api_router.post("/auth/delivery/register", response_model=UserResponse)
+async def register_delivery_partner(data: DeliveryPartnerCreate, user: dict = Depends(get_current_user)):
+    """Register a new delivery partner (Ops only)"""
+    if user["role"] != UserRole.OPS.value:
+        raise HTTPException(status_code=403, detail="Only ops can register delivery partners")
+    
+    # Check if phone already exists
+    existing = await db.users.find_one({"phone": data.phone})
+    if existing:
+        raise HTTPException(status_code=400, detail="Phone number already registered")
+    
+    new_user = {
+        "id": generate_id(),
+        "phone": data.phone,
+        "name": data.name,
+        "role": UserRole.DELIVERY_PARTNER.value,
+        "is_active": True,
+        "created_at": get_utc_now()
+    }
+    await db.users.insert_one(new_user)
+    await log_audit("delivery_partner_registered", "user", new_user["id"], user["id"], user["role"])
+    
+    return UserResponse(**{k: v for k, v in new_user.items() if k != "_id"})
+
 @api_router.post("/auth/delivery/login", response_model=TokenResponse)
 async def login_delivery_partner(data: DeliveryPartnerLogin):
     user = await db.users.find_one({"phone": data.phone, "role": UserRole.DELIVERY_PARTNER.value}, {"_id": 0})
