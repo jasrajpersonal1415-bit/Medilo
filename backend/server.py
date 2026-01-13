@@ -1220,6 +1220,7 @@ async def accept_delivery(order_id: str, user: dict = Depends(get_current_user))
         pharmacy_latitude=order.get("pharmacy_latitude"),
         pharmacy_longitude=order.get("pharmacy_longitude"),
         item_count=len(order.get("items", [])),
+        delivery_partner_id=order.get("delivery_partner_id"),
         created_at=order["created_at"],
         updated_at=order["updated_at"]
     )
