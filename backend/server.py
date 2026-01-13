@@ -177,7 +177,7 @@ class OrderItem(BaseModel):
     medicine_strength: str
     medicine_pack_size: str
     quantity: int
-    unit_price: float  # MEDILO-controlled price from medicine master
+    unit_price: Optional[float] = 0.0  # MEDILO-controlled price from medicine master
     batch_number: Optional[str] = None
     expiry_date: Optional[str] = None
 
