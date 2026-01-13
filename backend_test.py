@@ -338,6 +338,205 @@ class MediloAPITester:
         else:
             self.log_test("Create Order with Prescription", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
 
+    def test_delivery_partner_management(self):
+        """Test delivery partner registration and login"""
+        if 'ops' not in self.tokens:
+            self.log_test("Delivery Partner Management", False, "No ops token available")
+            return
+
+        # Create delivery partner via ops
+        timestamp = str(int(datetime.now().timestamp()))[-6:]
+        delivery_data = {
+            "phone": f"99887{timestamp}",
+            "name": "Raj Kumar"
+        }
+
+        success, response = self.make_request('POST', 'auth/delivery/register', delivery_data, self.tokens['ops'])
+        if success:
+            data = response.json()
+            self.test_data['delivery_partner'] = data
+            self.log_test("Ops - Create Delivery Partner", True, f"ID: {data['id']}, Phone: {data['phone']}")
+        else:
+            self.log_test("Ops - Create Delivery Partner", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+            return
+
+        # Test delivery partner login
+        login_data = {"phone": delivery_data["phone"]}
+        success, response = self.make_request('POST', 'auth/delivery/login', login_data)
+        if success:
+            data = response.json()
+            self.tokens['delivery_partner'] = data['access_token']
+            self.users['delivery_partner'] = data['user']
+            self.log_test("Delivery Partner Login", True, f"Login successful")
+        else:
+            self.log_test("Delivery Partner Login", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+
+    def test_delivery_workflow(self):
+        """Test complete delivery workflow"""
+        if 'delivery_partner' not in self.tokens:
+            self.log_test("Delivery Workflow", False, "No delivery partner token available")
+            return
+
+        # First, we need an order that's ready for pickup
+        # Let's create a complete order workflow to get to ready_for_pickup status
+        if not self.test_data.get('order') or not self.test_data.get('pharmacy'):
+            self.log_test("Delivery Workflow", False, "Missing order or pharmacy data")
+            return
+
+        order_id = self.test_data['order']['id']
+        
+        # Simulate pharmacy workflow to get order to ready_for_pickup
+        # First, create a pharmacy staff for the test pharmacy
+        if 'pharmacy_staff' not in self.tokens:
+            timestamp = str(int(datetime.now().timestamp()))[-6:]
+            staff_data = {
+                "email": f"pharmacy_staff_{timestamp}@medilo.com",
+                "password": "TestPass123!",
+                "name": "Test Pharmacy Staff",
+                "role": "pharmacy_staff",
+                "pharmacy_id": self.test_data['pharmacy']['id']
+            }
+            
+            success, response = self.make_request('POST', 'auth/staff/register', staff_data)
+            if success:
+                data = response.json()
+                self.tokens['pharmacy_staff'] = data['access_token']
+                self.users['pharmacy_staff'] = data['user']
+                self.log_test("Create Pharmacy Staff for Delivery Test", True, f"Staff ID: {data['user']['id']}")
+            else:
+                self.log_test("Create Pharmacy Staff for Delivery Test", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+                return
+
+        # Pharmacy accepts the order
+        action_data = {"action": "accept"}
+        success, response = self.make_request('POST', f"pharmacy/orders/{order_id}/action", action_data, self.tokens['pharmacy_staff'])
+        if success:
+            self.log_test("Pharmacy Accept Order", True, "Order accepted by pharmacy")
+        else:
+            self.log_test("Pharmacy Accept Order", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+
+        # Confirm inventory
+        inventory_data = {
+            "items": [
+                {
+                    "medicine_id": self.test_data['medicines'][0]['id'],
+                    "batch_number": "BATCH001",
+                    "expiry_date": "2025-12-31",
+                    "unit_price": 10.0
+                },
+                {
+                    "medicine_id": self.test_data['medicines'][1]['id'],
+                    "batch_number": "BATCH002", 
+                    "expiry_date": "2025-12-31",
+                    "unit_price": 25.0
+                }
+            ]
+        }
+        success, response = self.make_request('POST', f"pharmacy/orders/{order_id}/confirm-inventory", inventory_data, self.tokens['pharmacy_staff'])
+        if success:
+            self.log_test("Pharmacy Confirm Inventory", True, "Inventory confirmed")
+        else:
+            self.log_test("Pharmacy Confirm Inventory", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+
+        # Mark as preparing
+        action_data = {"action": "mark_preparing"}
+        success, response = self.make_request('POST', f"pharmacy/orders/{order_id}/action", action_data, self.tokens['pharmacy_staff'])
+        if success:
+            self.log_test("Pharmacy Mark Preparing", True, "Order marked as preparing")
+        else:
+            self.log_test("Pharmacy Mark Preparing", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+
+        # Mark as ready for pickup
+        action_data = {"action": "mark_ready"}
+        success, response = self.make_request('POST', f"pharmacy/orders/{order_id}/action", action_data, self.tokens['pharmacy_staff'])
+        if success:
+            self.log_test("Pharmacy Mark Ready for Pickup", True, "Order ready for pickup")
+        else:
+            self.log_test("Pharmacy Mark Ready for Pickup", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+
+        # Now test delivery partner workflow
+        # Get available orders
+        success, response = self.make_request('GET', 'delivery/orders', token=self.tokens['delivery_partner'])
+        if success:
+            data = response.json()
+            available_orders = [o for o in data if o['status'] == 'ready_for_pickup' and not o.get('delivery_partner_id')]
+            self.log_test("Delivery - Get Available Orders", True, f"Found {len(available_orders)} available orders")
+            
+            if available_orders:
+                test_order = available_orders[0]
+                
+                # Accept delivery
+                success, response = self.make_request('POST', f"delivery/orders/{test_order['id']}/accept", {}, self.tokens['delivery_partner'])
+                if success:
+                    self.log_test("Delivery - Accept Order", True, "Order accepted for delivery")
+                else:
+                    self.log_test("Delivery - Accept Order", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+
+                # Mark as picked up
+                action_data = {"action": "pickup"}
+                success, response = self.make_request('POST', f"delivery/orders/{test_order['id']}/action", action_data, self.tokens['delivery_partner'])
+                if success:
+                    self.log_test("Delivery - Mark Picked Up", True, "Order marked as picked up")
+                else:
+                    self.log_test("Delivery - Mark Picked Up", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+
+                # Mark as out for delivery
+                action_data = {"action": "out_for_delivery"}
+                success, response = self.make_request('POST', f"delivery/orders/{test_order['id']}/action", action_data, self.tokens['delivery_partner'])
+                if success:
+                    self.log_test("Delivery - Mark Out for Delivery", True, "Order out for delivery")
+                else:
+                    self.log_test("Delivery - Mark Out for Delivery", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+
+                # Mark as delivered
+                action_data = {"action": "delivered"}
+                success, response = self.make_request('POST', f"delivery/orders/{test_order['id']}/action", action_data, self.tokens['delivery_partner'])
+                if success:
+                    self.log_test("Delivery - Mark Delivered", True, "Order delivered successfully")
+                else:
+                    self.log_test("Delivery - Mark Delivered", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+
+                # Test issue reporting
+                issue_data = {
+                    "issue_type": "customer_unavailable",
+                    "description": "Customer was not available at delivery address"
+                }
+                success, response = self.make_request('POST', f"delivery/orders/{test_order['id']}/report-issue", issue_data, self.tokens['delivery_partner'])
+                if success:
+                    data = response.json()
+                    self.log_test("Delivery - Report Issue", True, f"Issue reported: {data.get('issue_id', 'N/A')}")
+                else:
+                    self.log_test("Delivery - Report Issue", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+            else:
+                self.log_test("Delivery Workflow", False, "No available orders for delivery testing")
+        else:
+            self.log_test("Delivery - Get Available Orders", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+
+    def test_delivery_partner_data_privacy(self):
+        """Test that delivery partners cannot see medicine names/prices"""
+        if 'delivery_partner' not in self.tokens:
+            self.log_test("Delivery Data Privacy", False, "No delivery partner token available")
+            return
+
+        # Get orders as delivery partner
+        success, response = self.make_request('GET', 'delivery/orders', token=self.tokens['delivery_partner'])
+        if success:
+            data = response.json()
+            if data:
+                order = data[0]
+                # Check that sensitive data is not exposed
+                has_medicine_names = 'items' in order and any('medicine_name' in item for item in order.get('items', []))
+                has_prices = 'total_amount' in order or any('unit_price' in item for item in order.get('items', []))
+                
+                if not has_medicine_names and not has_prices:
+                    self.log_test("Delivery Data Privacy", True, "Medicine names and prices properly hidden")
+                else:
+                    self.log_test("Delivery Data Privacy", False, "Sensitive data exposed to delivery partner")
+            else:
+                self.log_test("Delivery Data Privacy", True, "No orders to test privacy (acceptable)")
+        else:
+            self.log_test("Delivery Data Privacy", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+
     def test_ops_functionality(self):
         """Test ops dashboard functionality"""
         if 'ops' not in self.tokens:
