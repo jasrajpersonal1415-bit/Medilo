@@ -150,6 +150,21 @@ export default function OpsDashboard() {
     }
   };
 
+  const handleCreateDeliveryPartner = async () => {
+    setDialogLoading(true);
+    try {
+      await deliveryAPI.register(deliveryForm);
+      toast.success('Delivery partner created');
+      setDeliveryDialog({ open: false });
+      setDeliveryForm({ name: '', phone: '' });
+      loadData();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Failed to create delivery partner');
+    } finally {
+      setDialogLoading(false);
+    }
+  };
+
   const toggleUserStatus = async (userId) => {
     try {
       await opsAPI.toggleUserActive(userId);
