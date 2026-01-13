@@ -540,13 +540,20 @@ async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)
         if not medicine:
             raise HTTPException(status_code=400, detail=f"Medicine {item.medicine_id} not found")
         
+        # Get MEDILO-controlled price from medicine master
+        unit_price = medicine.get("price", 0)
+        
         order_item = OrderItem(
             medicine_id=item.medicine_id,
             medicine_name=medicine["name"],
             medicine_bucket=medicine["bucket"],
-            quantity=item.quantity
+            medicine_strength=medicine.get("strength", ""),
+            medicine_pack_size=medicine.get("pack_size", ""),
+            quantity=item.quantity,
+            unit_price=unit_price
         )
         items.append(order_item.model_dump())
+        total_amount += unit_price * item.quantity
         
         med_bucket = MedicineBucket(medicine["bucket"])
         if bucket_priority[med_bucket] > bucket_priority[highest_bucket]:
@@ -588,14 +595,14 @@ async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)
         "delivery_partner_id": None,
         "delivery_partner_name": None,
         "rejection_reason": None,
-        "total_amount": None,
+        "total_amount": total_amount,  # Price calculated from MEDILO master
         "invoice_generated": False,
         "created_at": get_utc_now(),
         "updated_at": get_utc_now()
     }
     
     await db.orders.insert_one(order)
-    await log_audit("order_created", "order", order["id"], user["id"], user["role"], {"status": initial_status.value})
+    await log_audit("order_created", "order", order["id"], user["id"], user["role"], {"status": initial_status.value, "total_amount": total_amount})
     
     return OrderResponse(**{k: v for k, v in order.items() if k not in ["_id", "highest_bucket"]})
 
