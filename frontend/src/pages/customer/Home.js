@@ -8,7 +8,7 @@ import { Input } from '../../components/ui/input';
 import { Card } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { Search, ShoppingCart, Home, ClipboardList, User, Plus, Package } from 'lucide-react';
-import { getBucketClass, getBucketName } from '../../lib/utils';
+import { getBucketClass, getBucketName, formatCurrency } from '../../lib/utils';
 
 export default function CustomerHome() {
   const navigate = useNavigate();
