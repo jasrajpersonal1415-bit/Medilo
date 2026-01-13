@@ -174,10 +174,12 @@ class OrderItem(BaseModel):
     medicine_id: str
     medicine_name: str
     medicine_bucket: MedicineBucket
+    medicine_strength: str
+    medicine_pack_size: str
     quantity: int
+    unit_price: float  # MEDILO-controlled price from medicine master
     batch_number: Optional[str] = None
     expiry_date: Optional[str] = None
-    unit_price: Optional[float] = None
 
 class OrderCreate(BaseModel):
     items: List[OrderItemCreate]
