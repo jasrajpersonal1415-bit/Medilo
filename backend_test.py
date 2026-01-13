@@ -600,6 +600,9 @@ class MediloAPITester:
         self.test_pharmacy_management()
         self.test_order_workflow()
         self.test_order_with_prescription()
+        self.test_delivery_partner_management()
+        self.test_delivery_workflow()
+        self.test_delivery_partner_data_privacy()
         self.test_ops_functionality()
 
         # Print summary
