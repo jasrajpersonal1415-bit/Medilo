@@ -174,8 +174,8 @@ class OrderItem(BaseModel):
     medicine_id: str
     medicine_name: str
     medicine_bucket: MedicineBucket
-    medicine_strength: str
-    medicine_pack_size: str
+    medicine_strength: Optional[str] = ""  # Optional for backward compatibility
+    medicine_pack_size: Optional[str] = ""  # Optional for backward compatibility
     quantity: int
     unit_price: Optional[float] = 0.0  # MEDILO-controlled price from medicine master
     batch_number: Optional[str] = None
