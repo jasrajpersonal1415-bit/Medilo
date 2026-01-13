@@ -334,7 +334,8 @@ export default function OpsDashboard() {
                       <th>Generic Name</th>
                       <th>Category</th>
                       <th>Strength</th>
-                      <th>Form</th>
+                      <th>Pack Size</th>
+                      <th>Price (₹)</th>
                       <th>Manufacturer</th>
                     </tr>
                   </thead>
@@ -349,7 +350,8 @@ export default function OpsDashboard() {
                           </Badge>
                         </td>
                         <td>{med.strength}</td>
-                        <td>{med.form}</td>
+                        <td>{med.pack_size}</td>
+                        <td className="font-medium">₹{med.price?.toFixed(2) || '0.00'}</td>
                         <td>{med.manufacturer}</td>
                       </tr>
                     ))}
