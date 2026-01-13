@@ -88,6 +88,7 @@ export const pharmacyStaffAPI = {
 // Delivery Partner API
 export const deliveryAPI = {
   login: (phone) => api.post('/auth/delivery/login', { phone }),
+  register: (data) => api.post('/auth/delivery/register', data),
   getOrders: () => api.get('/delivery/orders'),
   getOrder: (id) => api.get(`/delivery/orders/${id}`),
   acceptDelivery: (orderId) => api.post(`/delivery/orders/${orderId}/accept`),
