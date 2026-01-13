@@ -199,7 +199,8 @@ export default function Cart() {
                     {getBucketName(item.bucket)}
                   </Badge>
                   <h4 className="font-medium text-sm truncate">{item.name}</h4>
-                  <p className="text-xs text-gray-500">{item.strength} • {item.form}</p>
+                  <p className="text-xs text-gray-500">{item.strength} • {item.pack_size || item.form}</p>
+                  <p className="text-sm font-medium text-[#0F62FE]">{formatCurrency(item.price)} × {item.quantity}</p>
                 </div>
                 <div className="qty-control">
                   <button 
