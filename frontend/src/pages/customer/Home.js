@@ -123,7 +123,10 @@ export default function CustomerHome() {
                     <h3 className="font-medium text-gray-900 truncate">{medicine.name}</h3>
                     <p className="text-sm text-gray-500 truncate">{medicine.generic_name}</p>
                     <p className="text-xs text-gray-400 mt-1">
-                      {medicine.strength} • {medicine.form} • {medicine.manufacturer}
+                      {medicine.strength} • {medicine.pack_size || medicine.form} • {medicine.manufacturer}
+                    </p>
+                    <p className="text-base font-semibold text-[#0F62FE] mt-1">
+                      {formatCurrency(medicine.price)}
                     </p>
                   </div>
                   <Button
