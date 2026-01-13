@@ -88,6 +88,8 @@ export function getStatusName(status) {
     'pharmacy_rejected': 'Pharmacy Rejected',
     'inventory_confirmed': 'Inventory Confirmed',
     'preparing': 'Preparing',
+    'ready_for_pickup': 'Ready for Pickup',
+    'picked_up': 'Picked Up',
     'out_for_delivery': 'Out for Delivery',
     'delivered': 'Delivered',
     'cancelled': 'Cancelled',
