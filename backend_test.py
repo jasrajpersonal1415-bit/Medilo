@@ -384,36 +384,47 @@ class MediloAPITester:
             return
 
         order_id = self.test_data['order']['id']
+        pharmacy_id = self.test_data['pharmacy']['id']
         
-        # Simulate pharmacy workflow to get order to ready_for_pickup
-        # First, create a pharmacy staff for the test pharmacy
-        if 'pharmacy_staff' not in self.tokens:
-            timestamp = str(int(datetime.now().timestamp()))[-6:]
-            staff_data = {
-                "email": f"pharmacy_staff_{timestamp}@medilo.com",
-                "password": "TestPass123!",
-                "name": "Test Pharmacy Staff",
-                "role": "pharmacy_staff",
-                "pharmacy_id": self.test_data['pharmacy']['id']
-            }
-            
-            success, response = self.make_request('POST', 'auth/staff/register', staff_data)
-            if success:
-                data = response.json()
-                self.tokens['pharmacy_staff'] = data['access_token']
-                self.users['pharmacy_staff'] = data['user']
-                self.log_test("Create Pharmacy Staff for Delivery Test", True, f"Staff ID: {data['user']['id']}")
-            else:
-                self.log_test("Create Pharmacy Staff for Delivery Test", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+        # Get the current order to check its pharmacy assignment
+        success, response = self.make_request('GET', f'orders/{order_id}', token=self.tokens['customer'])
+        if success:
+            current_order = response.json()
+            assigned_pharmacy_id = current_order.get('pharmacy_id')
+            if not assigned_pharmacy_id:
+                self.log_test("Delivery Workflow", False, "Order not assigned to any pharmacy")
                 return
+        else:
+            self.log_test("Delivery Workflow", False, "Could not fetch order details")
+            return
+        
+        # Create a pharmacy staff for the assigned pharmacy
+        timestamp = str(int(datetime.now().timestamp()))[-6:]
+        staff_data = {
+            "email": f"pharmacy_staff_{timestamp}@medilo.com",
+            "password": "TestPass123!",
+            "name": "Test Pharmacy Staff",
+            "role": "pharmacy_staff",
+            "pharmacy_id": assigned_pharmacy_id  # Use the actual assigned pharmacy ID
+        }
+        
+        success, response = self.make_request('POST', 'auth/staff/register', staff_data)
+        if success:
+            data = response.json()
+            pharmacy_staff_token = data['access_token']
+            self.log_test("Create Pharmacy Staff for Delivery Test", True, f"Staff ID: {data['user']['id']}")
+        else:
+            self.log_test("Create Pharmacy Staff for Delivery Test", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+            return
 
         # Pharmacy accepts the order
         action_data = {"action": "accept"}
-        success, response = self.make_request('POST', f"pharmacy/orders/{order_id}/action", action_data, self.tokens['pharmacy_staff'])
+        success, response = self.make_request('POST', f"pharmacy/orders/{order_id}/action", action_data, pharmacy_staff_token)
         if success:
             self.log_test("Pharmacy Accept Order", True, "Order accepted by pharmacy")
         else:
             self.log_test("Pharmacy Accept Order", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+            return
 
         # Confirm inventory
         inventory_data = {
@@ -432,27 +443,30 @@ class MediloAPITester:
                 }
             ]
         }
-        success, response = self.make_request('POST', f"pharmacy/orders/{order_id}/confirm-inventory", inventory_data, self.tokens['pharmacy_staff'])
+        success, response = self.make_request('POST', f"pharmacy/orders/{order_id}/confirm-inventory", inventory_data, pharmacy_staff_token)
         if success:
             self.log_test("Pharmacy Confirm Inventory", True, "Inventory confirmed")
         else:
             self.log_test("Pharmacy Confirm Inventory", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+            return
 
         # Mark as preparing
         action_data = {"action": "mark_preparing"}
-        success, response = self.make_request('POST', f"pharmacy/orders/{order_id}/action", action_data, self.tokens['pharmacy_staff'])
+        success, response = self.make_request('POST', f"pharmacy/orders/{order_id}/action", action_data, pharmacy_staff_token)
         if success:
             self.log_test("Pharmacy Mark Preparing", True, "Order marked as preparing")
         else:
             self.log_test("Pharmacy Mark Preparing", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+            return
 
         # Mark as ready for pickup
         action_data = {"action": "mark_ready"}
-        success, response = self.make_request('POST', f"pharmacy/orders/{order_id}/action", action_data, self.tokens['pharmacy_staff'])
+        success, response = self.make_request('POST', f"pharmacy/orders/{order_id}/action", action_data, pharmacy_staff_token)
         if success:
             self.log_test("Pharmacy Mark Ready for Pickup", True, "Order ready for pickup")
         else:
             self.log_test("Pharmacy Mark Ready for Pickup", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+            return
 
         # Now test delivery partner workflow
         # Get available orders
@@ -471,6 +485,7 @@ class MediloAPITester:
                     self.log_test("Delivery - Accept Order", True, "Order accepted for delivery")
                 else:
                     self.log_test("Delivery - Accept Order", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+                    return
 
                 # Mark as picked up
                 action_data = {"action": "pickup"}
@@ -479,6 +494,7 @@ class MediloAPITester:
                     self.log_test("Delivery - Mark Picked Up", True, "Order marked as picked up")
                 else:
                     self.log_test("Delivery - Mark Picked Up", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+                    return
 
                 # Mark as out for delivery
                 action_data = {"action": "out_for_delivery"}
@@ -487,6 +503,7 @@ class MediloAPITester:
                     self.log_test("Delivery - Mark Out for Delivery", True, "Order out for delivery")
                 else:
                     self.log_test("Delivery - Mark Out for Delivery", False, f"Status: {response.status_code if hasattr(response, 'status_code') else response}")
+                    return
 
                 # Mark as delivered
                 action_data = {"action": "delivered"}
