@@ -97,6 +97,10 @@ class StaffLogin(BaseModel):
     email: EmailStr
     password: str
 
+class DeliveryPartnerCreate(BaseModel):
+    phone: str
+    name: str
+
 class UserResponse(BaseModel):
     id: str
     name: str
