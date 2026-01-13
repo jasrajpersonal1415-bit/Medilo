@@ -14,7 +14,7 @@ import {
   ArrowLeft, Trash2, Plus, Minus, Upload, MapPin, 
   AlertTriangle, ShoppingCart, Home, ClipboardList, User 
 } from 'lucide-react';
-import { getBucketClass, getBucketName, fileToBase64 } from '../../lib/utils';
+import { getBucketClass, getBucketName, fileToBase64, formatCurrency } from '../../lib/utils';
 import { toast } from 'sonner';
 
 export default function Cart() {
