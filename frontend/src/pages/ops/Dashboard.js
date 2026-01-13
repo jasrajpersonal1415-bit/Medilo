@@ -916,6 +916,36 @@ export default function OpsDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Medicine Confirmation Dialog */}
+      <Dialog open={deleteDialog.open} onOpenChange={(open) => !open && setDeleteDialog({ open: false, medicine: null })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Medicine</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-gray-700">
+              Are you sure you want to delete <strong>"{deleteDialog.medicine?.name}"</strong>?
+            </p>
+            <p className="text-sm text-gray-500 mt-2">
+              This action will remove the medicine from the catalog. It cannot be undone.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialog({ open: false, medicine: null })}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={confirmDeleteMedicine} 
+              disabled={dialogLoading}
+              className="bg-red-600 hover:bg-red-700"
+              data-testid="confirm-delete-medicine"
+            >
+              {dialogLoading ? <div className="spinner h-4 w-4" /> : 'Delete Medicine'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
