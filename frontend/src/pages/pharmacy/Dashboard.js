@@ -179,7 +179,7 @@ export default function PharmacyDashboard() {
         return (
           <Button
             size="sm"
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-green-600 hover:bg-green-700"
             onClick={() => {
               setSelectedOrder(order);
               handleAction('mark_ready');
@@ -187,7 +187,7 @@ export default function PharmacyDashboard() {
             data-testid={`ready-${order.id}`}
           >
             <Truck className="h-4 w-4 mr-1" />
-            Out for Delivery
+            Ready for Pickup
           </Button>
         );
       case 'out_for_delivery':
