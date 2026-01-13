@@ -52,9 +52,9 @@ export default function PharmacyDashboard() {
       medicine_id: item.medicine_id,
       medicine_name: item.medicine_name,
       quantity: item.quantity,
+      unit_price: item.unit_price, // Price from MEDILO master (read-only)
       batch_number: '',
-      expiry_date: '',
-      unit_price: ''
+      expiry_date: ''
     })));
     setActionDialog({ open: true, type: 'inventory' });
   };
