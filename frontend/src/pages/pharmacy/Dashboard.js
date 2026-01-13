@@ -425,19 +425,20 @@ export default function PharmacyDashboard() {
                       data-testid={`expiry-${idx}`}
                     />
                   </div>
-                  <div>
-                    <Label>Unit Price (₹)</Label>
-                    <Input
-                      type="number"
-                      value={item.unit_price}
-                      onChange={(e) => updateInventoryItem(idx, 'unit_price', e.target.value)}
-                      placeholder="e.g., 50"
-                      data-testid={`price-${idx}`}
-                    />
-                  </div>
+                </div>
+                {/* Price is set by MEDILO - read only display */}
+                <div className="mt-2 text-right">
+                  <span className="text-xs text-gray-500">MEDILO Price: </span>
+                  <span className="font-medium text-[#0F62FE]">₹{item.unit_price?.toFixed(2) || '0.00'}</span>
                 </div>
               </div>
             ))}
+          </div>
+          <div className="p-3 bg-blue-50 rounded-lg mb-4">
+            <p className="text-xs text-blue-800">
+              <strong>Note:</strong> Prices are controlled by MEDILO and cannot be modified. 
+              Only confirm batch number and expiry date.
+            </p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setActionDialog({ open: false, type: null })}>
@@ -449,7 +450,7 @@ export default function PharmacyDashboard() {
               className="bg-[#0F62FE] hover:bg-[#0353E9]"
               data-testid="confirm-inventory-btn"
             >
-              {actionLoading ? <div className="spinner h-4 w-4" /> : 'Confirm & Generate Invoice'}
+              {actionLoading ? <div className="spinner h-4 w-4" /> : 'Confirm Inventory'}
             </Button>
           </DialogFooter>
         </DialogContent>
