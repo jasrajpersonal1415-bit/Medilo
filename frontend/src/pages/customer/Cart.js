@@ -229,6 +229,16 @@ export default function Cart() {
               </div>
             ))}
           </div>
+          
+          {/* Order Total */}
+          <div className="mt-4 pt-4 border-t">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold">Total</span>
+              <span className="text-lg font-bold text-[#0F62FE]">
+                {formatCurrency(items.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0))}
+              </span>
+            </div>
+          </div>
         </Card>
 
         {/* Prescription Requirements */}
