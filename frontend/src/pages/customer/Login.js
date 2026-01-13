@@ -146,12 +146,18 @@ export default function CustomerLogin() {
               </button>
             </div>
 
-            <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="mt-6 pt-6 border-t border-gray-200 space-y-2">
               <Link
                 to="/staff/login"
                 className="block text-center text-sm text-gray-500 hover:text-gray-700"
               >
                 Staff / Pharmacist Login →
+              </Link>
+              <Link
+                to="/delivery/login"
+                className="block text-center text-sm text-gray-500 hover:text-gray-700"
+              >
+                Delivery Partner Login →
               </Link>
             </div>
           </CardContent>
