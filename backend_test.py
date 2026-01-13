@@ -11,7 +11,7 @@ from datetime import datetime
 import base64
 
 class MediloAPITester:
-    def __init__(self, base_url="https://meditrack-28.preview.emergentagent.com"):
+    def __init__(self, base_url="https://health-delivery-2.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.tokens = {}  # Store tokens for different user types
