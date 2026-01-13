@@ -532,6 +532,7 @@ async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)
     
     # Validate items and determine highest bucket
     items = []
+    total_amount = 0.0  # Calculate from MEDILO price master
     highest_bucket = MedicineBucket.OTC
     bucket_priority = {MedicineBucket.OTC: 0, MedicineBucket.SCHEDULE_H: 1, MedicineBucket.SCHEDULE_H1: 2}
     
