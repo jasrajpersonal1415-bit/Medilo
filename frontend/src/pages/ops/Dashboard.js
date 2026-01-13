@@ -181,16 +181,22 @@ export default function OpsDashboard() {
   };
 
   const handleDeleteMedicine = async (medicineId, medicineName) => {
-    if (!window.confirm(`Are you sure you want to delete "${medicineName}"? This action cannot be undone.`)) {
-      return;
-    }
+    setDeleteDialog({ open: true, medicine: { id: medicineId, name: medicineName } });
+  };
+
+  const confirmDeleteMedicine = async () => {
+    if (!deleteDialog.medicine) return;
     
+    setDialogLoading(true);
     try {
-      await medicineAPI.delete(medicineId);
+      await medicineAPI.delete(deleteDialog.medicine.id);
       toast.success('Medicine deleted successfully');
+      setDeleteDialog({ open: false, medicine: null });
       loadData();
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Failed to delete medicine');
+    } finally {
+      setDialogLoading(false);
     }
   };
 
