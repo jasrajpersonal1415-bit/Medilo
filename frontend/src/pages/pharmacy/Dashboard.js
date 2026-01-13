@@ -65,10 +65,10 @@ export default function PharmacyDashboard() {
     setActionLoading(true);
     try {
       if (type === 'confirm_inventory') {
-        // Validate inventory data
-        const invalid = inventoryData.some(i => !i.batch_number || !i.expiry_date || !i.unit_price);
+        // Validate inventory data (batch & expiry only - NO price)
+        const invalid = inventoryData.some(i => !i.batch_number || !i.expiry_date);
         if (invalid) {
-          toast.error('Please fill all inventory details');
+          toast.error('Please fill batch number and expiry date for all items');
           setActionLoading(false);
           return;
         }
@@ -77,8 +77,7 @@ export default function PharmacyDashboard() {
           items: inventoryData.map(i => ({
             medicine_id: i.medicine_id,
             batch_number: i.batch_number,
-            expiry_date: i.expiry_date,
-            unit_price: parseFloat(i.unit_price)
+            expiry_date: i.expiry_date
           }))
         });
         toast.success('Inventory confirmed');
