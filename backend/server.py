@@ -126,11 +126,12 @@ class MedicineCreate(BaseModel):
     name: str
     generic_name: str
     manufacturer: str
-    bucket: MedicineBucket
-    strength: str
-    form: str  # tablet, capsule, syrup, etc.
+    bucket: Optional[MedicineBucket] = None  # Only required for Medicine type
+    strength: Optional[str] = ""
+    form: str  # tablet, capsule, syrup, cream, device, etc.
     pack_size: str  # e.g., "10 tablets", "100ml"
     price: float  # MEDILO-controlled price
+    product_type: ProductType = ProductType.MEDICINE  # Medicine, Wellness, Beauty, Device
     description: Optional[str] = None
 
 class MedicineResponse(BaseModel):
@@ -138,11 +139,12 @@ class MedicineResponse(BaseModel):
     name: str
     generic_name: str
     manufacturer: str
-    bucket: MedicineBucket
-    strength: str
+    bucket: Optional[MedicineBucket] = None  # Only for Medicine type
+    strength: Optional[str] = ""
     form: str
     pack_size: Optional[str] = ""  # Optional for backward compatibility
     price: Optional[float] = 0.0  # Optional for backward compatibility - MEDILO controlled
+    product_type: Optional[ProductType] = ProductType.MEDICINE  # Default for backward compatibility
     description: Optional[str] = None
     is_active: bool = True
     created_at: str
