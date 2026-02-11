@@ -121,7 +121,6 @@ export default function CustomerHome() {
             <div className="flex flex-col items-center text-center">
               <IconComponent className="h-8 w-8 mb-2" />
               <h3 className="font-medium text-sm">{category.name}</h3>
-              <p className="text-xs opacity-70 mt-1">{category.count} items</p>
             </div>
           </Card>
         );
