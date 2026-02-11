@@ -113,29 +113,30 @@ export default function OpsDashboard() {
         name: medicineForm.name,
         generic_name: medicineForm.generic_name,
         manufacturer: medicineForm.manufacturer,
-        bucket: medicineForm.bucket,
+        bucket: medicineForm.product_type === 'Medicine' ? medicineForm.bucket : null,
         strength: medicineForm.strength,
         form: medicineForm.form,
         pack_size: medicineForm.pack_size,
         price: parseFloat(medicineForm.price) || 0,
+        product_type: medicineForm.product_type,
         description: medicineForm.description
       };
       
       if (medicineForm.id) {
-        // Update existing medicine
+        // Update existing product
         await medicineAPI.update(medicineForm.id, formData);
-        toast.success('Medicine updated');
+        toast.success('Product updated');
       } else {
-        // Create new medicine
+        // Create new product
         await medicineAPI.create(formData);
-        toast.success('Medicine created');
+        toast.success('Product created');
       }
       
       setMedicineDialog({ open: false, data: null });
-      setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '' });
+      setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine' });
       loadData();
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Failed to save medicine');
+      toast.error(err.response?.data?.detail || 'Failed to save product');
     } finally {
       setDialogLoading(false);
     }
@@ -152,7 +153,8 @@ export default function OpsDashboard() {
       form: medicine.form || '',
       pack_size: medicine.pack_size || '',
       price: medicine.price?.toString() || '',
-      description: medicine.description || ''
+      description: medicine.description || '',
+      product_type: medicine.product_type || 'Medicine'
     });
     setMedicineDialog({ open: true, data: medicine });
   };
