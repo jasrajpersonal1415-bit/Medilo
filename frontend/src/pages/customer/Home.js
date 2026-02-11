@@ -32,6 +32,7 @@ export default function CustomerHome() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [activeOrders, setActiveOrders] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
@@ -39,7 +40,7 @@ export default function CustomerHome() {
 
   useEffect(() => {
     fetchCategories();
-    fetchRecentOrders();
+    fetchOrders();
   }, []);
 
   useEffect(() => {
@@ -48,16 +49,23 @@ export default function CustomerHome() {
     }
   }, [selectedCategory, search]);
 
-  const fetchRecentOrders = async () => {
+  const fetchOrders = async () => {
     try {
       const response = await orderAPI.getAll();
+      
+      // Get active orders (not delivered or cancelled)
+      const active = response.data.filter(order => 
+        !['delivered', 'cancelled'].includes(order.status)
+      );
+      setActiveOrders(active);
+      
       // Get last 3 delivered orders for quick reorder
       const delivered = response.data
         .filter(order => order.status === 'delivered')
         .slice(0, 3);
       setRecentOrders(delivered);
     } catch (err) {
-      console.error('Failed to fetch recent orders:', err);
+      console.error('Failed to fetch orders:', err);
     }
   };
 
