@@ -540,24 +540,27 @@ async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)
     if user["role"] != UserRole.CUSTOMER.value:
         raise HTTPException(status_code=403, detail="Only customers can create orders")
     
-    # Validate items and determine highest bucket
+    # Validate items and determine highest bucket (only for medicines)
     items = []
     total_amount = 0.0  # Calculate from MEDILO price master
-    highest_bucket = MedicineBucket.OTC
+    highest_bucket = None  # None means no medicines requiring review
     bucket_priority = {MedicineBucket.OTC: 0, MedicineBucket.SCHEDULE_H: 1, MedicineBucket.SCHEDULE_H1: 2}
+    has_medicines_requiring_review = False
     
     for item in data.items:
         medicine = await db.medicines.find_one({"id": item.medicine_id, "is_active": True}, {"_id": 0})
         if not medicine:
-            raise HTTPException(status_code=400, detail=f"Medicine {item.medicine_id} not found")
+            raise HTTPException(status_code=400, detail=f"Product {item.medicine_id} not found")
         
         # Get MEDILO-controlled price from medicine master
         unit_price = medicine.get("price", 0)
+        product_type = medicine.get("product_type", ProductType.MEDICINE.value)
         
         order_item = OrderItem(
             medicine_id=item.medicine_id,
             medicine_name=medicine["name"],
-            medicine_bucket=medicine["bucket"],
+            medicine_bucket=medicine.get("bucket"),  # May be None for non-medicines
+            product_type=product_type,
             medicine_strength=medicine.get("strength", ""),
             medicine_pack_size=medicine.get("pack_size", ""),
             quantity=item.quantity,
@@ -566,22 +569,26 @@ async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)
         items.append(order_item.model_dump())
         total_amount += unit_price * item.quantity
         
-        med_bucket = MedicineBucket(medicine["bucket"])
-        if bucket_priority[med_bucket] > bucket_priority[highest_bucket]:
-            highest_bucket = med_bucket
+        # Only check bucket for Medicine type products
+        if product_type == ProductType.MEDICINE.value and medicine.get("bucket"):
+            med_bucket = MedicineBucket(medicine["bucket"])
+            if highest_bucket is None or bucket_priority[med_bucket] > bucket_priority[highest_bucket]:
+                highest_bucket = med_bucket
+            if med_bucket in [MedicineBucket.SCHEDULE_H, MedicineBucket.SCHEDULE_H1]:
+                has_medicines_requiring_review = True
     
-    # Validate prescription requirements
+    # Validate prescription requirements (only for medicines)
     if highest_bucket == MedicineBucket.SCHEDULE_H1 and not data.prescription_image:
         raise HTTPException(status_code=400, detail="Prescription upload is mandatory for Schedule H1 medicines")
     
     if highest_bucket == MedicineBucket.SCHEDULE_H and not data.prescription_image and not data.schedule_h_declaration:
         raise HTTPException(status_code=400, detail="Either prescription upload or declaration is required for Schedule H medicines")
     
-    # Determine initial status
-    if highest_bucket == MedicineBucket.OTC:
-        initial_status = OrderStatus.PHARMACIST_APPROVED  # OTC doesn't need pharmacist review
-    else:
+    # Determine initial status based on whether order has medicines requiring pharmacist review
+    if has_medicines_requiring_review:
         initial_status = OrderStatus.PENDING_PHARMACIST_REVIEW
+    else:
+        initial_status = OrderStatus.PHARMACIST_APPROVED  # No pharmacist review needed
     
     order = {
         "id": generate_id(),
@@ -595,7 +602,7 @@ async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)
         "delivery_address": data.delivery_address,
         "latitude": data.latitude,
         "longitude": data.longitude,
-        "highest_bucket": highest_bucket.value,
+        "highest_bucket": highest_bucket.value if highest_bucket else None,
         "pharmacy_id": None,
         "pharmacy_name": None,
         "pharmacy_address": None,
