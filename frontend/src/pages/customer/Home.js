@@ -42,6 +42,14 @@ export default function CustomerHome() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  // Prescription upload state
+  const [prescriptionDialog, setPrescriptionDialog] = useState(false);
+  const [prescriptionImage, setPrescriptionImage] = useState(null);
+  const [prescriptionPreview, setPrescriptionPreview] = useState(null);
+  const [prescriptionNote, setPrescriptionNote] = useState('');
+  const [uploadingPrescription, setUploadingPrescription] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchCategories();
