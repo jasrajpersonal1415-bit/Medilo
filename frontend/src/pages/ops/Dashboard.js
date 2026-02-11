@@ -47,7 +47,7 @@ export default function OpsDashboard() {
 
   // Form states
   const [medicineForm, setMedicineForm] = useState({
-    name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: ''
+    id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: ''
   });
   const [pharmacyForm, setPharmacyForm] = useState({
     name: '', license_number: '', address: '', city: '', pincode: '', phone: '', email: ''
