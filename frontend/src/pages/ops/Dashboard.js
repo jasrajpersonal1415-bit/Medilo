@@ -632,9 +632,32 @@ export default function OpsDashboard() {
       <Dialog open={medicineDialog.open} onOpenChange={(open) => !open && setMedicineDialog({ open: false, data: null })}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{medicineForm.id ? 'Edit Medicine' : 'Add Medicine'}</DialogTitle>
+            <DialogTitle>
+              {medicineForm.id 
+                ? `Edit ${medicineForm.product_type === 'Medicine' ? 'Medicine' : 'Product'}` 
+                : `Add ${medicineForm.product_type === 'Medicine' ? 'Medicine' : 'Product'}`}
+            </DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
+            {/* Product Type Selection */}
+            <div>
+              <Label>Product Type</Label>
+              <Select
+                value={medicineForm.product_type}
+                onValueChange={(v) => setMedicineForm({ ...medicineForm, product_type: v, bucket: v === 'Medicine' ? 'OTC' : null })}
+              >
+                <SelectTrigger data-testid="product-type">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Medicine">Medicine</SelectItem>
+                  <SelectItem value="Wellness">OTC & Wellness</SelectItem>
+                  <SelectItem value="Beauty">Beauty & Personal Care</SelectItem>
+                  <SelectItem value="Device">Medical Device</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Name</Label>
@@ -646,7 +669,7 @@ export default function OpsDashboard() {
                 />
               </div>
               <div>
-                <Label>Generic Name</Label>
+                <Label>Generic Name / Description</Label>
                 <Input
                   value={medicineForm.generic_name}
                   onChange={(e) => setMedicineForm({ ...medicineForm, generic_name: e.target.value })}
@@ -656,24 +679,27 @@ export default function OpsDashboard() {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
+              {/* Show bucket only for Medicine type */}
+              {medicineForm.product_type === 'Medicine' && (
+                <div>
+                  <Label>Category (Bucket)</Label>
+                  <Select
+                    value={medicineForm.bucket || 'OTC'}
+                    onValueChange={(v) => setMedicineForm({ ...medicineForm, bucket: v })}
+                  >
+                    <SelectTrigger data-testid="medicine-bucket">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="OTC">OTC (Green)</SelectItem>
+                      <SelectItem value="SCHEDULE_H">Schedule H (Yellow)</SelectItem>
+                      <SelectItem value="SCHEDULE_H1">Schedule H1 (Red)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               <div>
-                <Label>Category</Label>
-                <Select
-                  value={medicineForm.bucket}
-                  onValueChange={(v) => setMedicineForm({ ...medicineForm, bucket: v })}
-                >
-                  <SelectTrigger data-testid="medicine-bucket">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="OTC">OTC (Green)</SelectItem>
-                    <SelectItem value="SCHEDULE_H">Schedule H (Yellow)</SelectItem>
-                    <SelectItem value="SCHEDULE_H1">Schedule H1 (Red)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Manufacturer</Label>
+                <Label>Manufacturer / Brand</Label>
                 <Input
                   value={medicineForm.manufacturer}
                   onChange={(e) => setMedicineForm({ ...medicineForm, manufacturer: e.target.value })}
@@ -684,7 +710,7 @@ export default function OpsDashboard() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Strength</Label>
+                <Label>Strength {medicineForm.product_type !== 'Medicine' && '(Optional)'}</Label>
                 <Input
                   value={medicineForm.strength}
                   onChange={(e) => setMedicineForm({ ...medicineForm, strength: e.target.value })}
@@ -693,11 +719,11 @@ export default function OpsDashboard() {
                 />
               </div>
               <div>
-                <Label>Form</Label>
+                <Label>Form / Type</Label>
                 <Input
                   value={medicineForm.form}
                   onChange={(e) => setMedicineForm({ ...medicineForm, form: e.target.value })}
-                  placeholder="e.g., Tablet"
+                  placeholder="e.g., Tablet, Cream, Device"
                   data-testid="medicine-form"
                 />
               </div>
