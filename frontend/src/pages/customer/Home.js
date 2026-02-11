@@ -541,6 +541,107 @@ export default function CustomerHome() {
           </button>
         </div>
       </nav>
+
+      {/* Prescription Upload Dialog */}
+      <Dialog open={prescriptionDialog} onOpenChange={setPrescriptionDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileUp className="h-5 w-5 text-teal-600" />
+              Upload Prescription
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            {/* Upload Area */}
+            <div 
+              className={`relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+                prescriptionPreview 
+                  ? 'border-teal-300 bg-teal-50' 
+                  : 'border-gray-300 hover:border-teal-400 hover:bg-gray-50'
+              }`}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handlePrescriptionFileChange}
+                className="hidden"
+                data-testid="prescription-file-input"
+              />
+              
+              {prescriptionPreview ? (
+                <div className="relative">
+                  <img 
+                    src={prescriptionPreview} 
+                    alt="Prescription preview" 
+                    className="max-h-48 mx-auto rounded-lg"
+                  />
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      clearPrescriptionUpload();
+                    }}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <Upload className="h-10 w-10 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm text-gray-600 font-medium">Tap to upload prescription</p>
+                  <p className="text-xs text-gray-400 mt-1">JPG, PNG up to 5MB</p>
+                </>
+              )}
+            </div>
+
+            {/* Notes */}
+            <div>
+              <Label className="text-sm text-gray-600">Additional Notes (Optional)</Label>
+              <Textarea
+                value={prescriptionNote}
+                onChange={(e) => setPrescriptionNote(e.target.value)}
+                placeholder="e.g., Need 2 strips of each medicine"
+                className="mt-1 h-20"
+                data-testid="prescription-notes"
+              />
+            </div>
+
+            {/* Info */}
+            <div className="bg-blue-50 rounded-lg p-3">
+              <p className="text-xs text-blue-700">
+                <strong>How it works:</strong> Upload your prescription, then browse and add the prescribed medicines to your cart. Our pharmacist will verify before dispatch.
+              </p>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setPrescriptionDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handlePrescriptionSubmit}
+              disabled={!prescriptionImage || uploadingPrescription}
+              className="bg-teal-600 hover:bg-teal-700"
+              data-testid="submit-prescription"
+            >
+              {uploadingPrescription ? (
+                <div className="spinner h-4 w-4" />
+              ) : (
+                <>
+                  <Upload className="h-4 w-4 mr-2" />
+                  Continue to Medicines
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
