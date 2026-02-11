@@ -59,6 +59,12 @@ class MedicineBucket(str, Enum):
     SCHEDULE_H = "SCHEDULE_H"  # Bucket B - Yellow
     SCHEDULE_H1 = "SCHEDULE_H1"  # Bucket C - Red
 
+class ProductType(str, Enum):
+    MEDICINE = "Medicine"
+    WELLNESS = "Wellness"
+    BEAUTY = "Beauty"
+    DEVICE = "Device"
+
 class OrderStatus(str, Enum):
     PENDING_PHARMACIST_REVIEW = "pending_pharmacist_review"
     PHARMACIST_APPROVED = "pharmacist_approved"
