@@ -16,7 +16,7 @@ import {
 } from '../../components/ui/dialog';
 import { 
   LogOut, Package, Users, Building2, Pill, Activity, 
-  Plus, Eye, Clock, ChevronDown, Truck, Trash2
+  Plus, Eye, Clock, ChevronDown, Truck, Trash2, Pencil
 } from 'lucide-react';
 import { 
   formatDateTime, getStatusClass, getStatusName, 
