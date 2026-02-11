@@ -436,7 +436,7 @@ async def create_medicine(data: MedicineCreate, user: dict = Depends(get_current
     return MedicineResponse(**{k: v for k, v in medicine.items() if k != "_id"})
 
 @api_router.get("/medicines", response_model=List[MedicineResponse])
-async def get_medicines(search: str = None, bucket: MedicineBucket = None):
+async def get_medicines(search: str = None, bucket: MedicineBucket = None, product_type: ProductType = None):
     query = {"is_active": True}
     if search:
         query["$or"] = [
@@ -445,9 +445,28 @@ async def get_medicines(search: str = None, bucket: MedicineBucket = None):
         ]
     if bucket:
         query["bucket"] = bucket.value
+    if product_type:
+        query["product_type"] = product_type.value
     
     medicines = await db.medicines.find(query, {"_id": 0}).to_list(1000)
     return [MedicineResponse(**m) for m in medicines]
+
+@api_router.get("/categories", response_model=List[dict])
+async def get_categories():
+    """Get product counts by category for homepage display"""
+    categories = [
+        {"id": "Medicine", "name": "Medicines", "icon": "pill", "description": "Prescription & OTC medicines"},
+        {"id": "Wellness", "name": "OTC & Wellness", "icon": "heart", "description": "Health supplements & wellness"},
+        {"id": "Beauty", "name": "Beauty & Personal Care", "icon": "sparkles", "description": "Skincare & personal care"},
+        {"id": "Device", "name": "Medical Devices", "icon": "activity", "description": "Health monitoring devices"},
+    ]
+    
+    # Get counts for each category
+    for cat in categories:
+        count = await db.medicines.count_documents({"product_type": cat["id"], "is_active": True})
+        cat["count"] = count
+    
+    return categories
 
 @api_router.get("/medicines/{medicine_id}", response_model=MedicineResponse)
 async def get_medicine(medicine_id: str):
