@@ -507,6 +507,9 @@ export default function CustomerHome() {
           renderProducts()
         ) : (
           <>
+            {/* Prescription Upload Shortcut */}
+            {renderPrescriptionShortcut()}
+            
             {/* Quick Reorder Section */}
             {renderQuickReorder()}
             
