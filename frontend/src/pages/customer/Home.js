@@ -274,6 +274,28 @@ export default function CustomerHome() {
     );
   };
 
+  // Render Prescription Upload Shortcut
+  const renderPrescriptionShortcut = () => (
+    <Card 
+      className="mb-6 p-4 bg-gradient-to-r from-teal-50 to-cyan-50 border-2 border-teal-200 cursor-pointer hover:shadow-md transition-all"
+      onClick={() => setPrescriptionDialog(true)}
+      data-testid="prescription-upload-shortcut"
+    >
+      <div className="flex items-center gap-4">
+        <div className="shrink-0 w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
+          <FileUp className="h-6 w-6 text-teal-600" />
+        </div>
+        <div className="flex-1">
+          <h3 className="font-semibold text-teal-800">Upload Prescription</h3>
+          <p className="text-xs text-teal-600">Have a prescription? Upload and order medicines directly</p>
+        </div>
+        <div className="shrink-0">
+          <Camera className="h-5 w-5 text-teal-500" />
+        </div>
+      </div>
+    </Card>
+  );
+
   // Render Quick Reorder section
   const renderQuickReorder = () => {
     if (recentOrders.length === 0) return null;
