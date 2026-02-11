@@ -148,6 +148,62 @@ export default function CustomerHome() {
     }
   };
 
+  // Get status icon and color for active order banner
+  const getStatusConfig = (status) => {
+    const configs = {
+      pending_pharmacist_review: { icon: Clock, color: 'bg-yellow-50 border-yellow-200 text-yellow-800', label: 'Under Review' },
+      pharmacist_approved: { icon: CheckCircle, color: 'bg-blue-50 border-blue-200 text-blue-800', label: 'Approved' },
+      pharmacist_rejected: { icon: AlertCircle, color: 'bg-red-50 border-red-200 text-red-800', label: 'Rejected' },
+      prescription_requested: { icon: AlertCircle, color: 'bg-orange-50 border-orange-200 text-orange-800', label: 'Prescription Needed' },
+      assigned_to_pharmacy: { icon: Package, color: 'bg-blue-50 border-blue-200 text-blue-800', label: 'Assigned to Pharmacy' },
+      pharmacy_accepted: { icon: Package, color: 'bg-blue-50 border-blue-200 text-blue-800', label: 'Pharmacy Processing' },
+      pharmacy_rejected: { icon: AlertCircle, color: 'bg-red-50 border-red-200 text-red-800', label: 'Pharmacy Rejected' },
+      inventory_confirmed: { icon: Package, color: 'bg-blue-50 border-blue-200 text-blue-800', label: 'Inventory Confirmed' },
+      preparing: { icon: Package, color: 'bg-indigo-50 border-indigo-200 text-indigo-800', label: 'Being Prepared' },
+      ready_for_pickup: { icon: Package, color: 'bg-purple-50 border-purple-200 text-purple-800', label: 'Ready for Pickup' },
+      picked_up: { icon: Truck, color: 'bg-cyan-50 border-cyan-200 text-cyan-800', label: 'Picked Up' },
+      out_for_delivery: { icon: Truck, color: 'bg-green-50 border-green-200 text-green-800', label: 'Out for Delivery' },
+    };
+    return configs[status] || { icon: Clock, color: 'bg-gray-50 border-gray-200 text-gray-800', label: getStatusName(status) };
+  };
+
+  // Render Active Order Status Banner
+  const renderActiveOrderBanner = () => {
+    if (activeOrders.length === 0) return null;
+    
+    // Show the most recent active order
+    const order = activeOrders[0];
+    const { icon: StatusIcon, color, label } = getStatusConfig(order.status);
+    
+    return (
+      <div 
+        className={`mb-4 p-3 rounded-lg border-2 cursor-pointer ${color}`}
+        onClick={() => navigate(`/orders/${order.id}`)}
+        data-testid="active-order-banner"
+      >
+        <div className="flex items-center gap-3">
+          <div className="shrink-0">
+            <StatusIcon className="h-6 w-6" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold">{label}</p>
+            <p className="text-xs opacity-80 truncate">
+              {order.items.map(i => i.medicine_name).join(', ')}
+            </p>
+          </div>
+          <div className="shrink-0 text-xs font-medium">
+            View →
+          </div>
+        </div>
+        {activeOrders.length > 1 && (
+          <p className="text-xs mt-2 opacity-70">
+            +{activeOrders.length - 1} more active order(s)
+          </p>
+        )}
+      </div>
+    );
+  };
+
   // Render Quick Reorder section
   const renderQuickReorder = () => {
     if (recentOrders.length === 0) return null;
