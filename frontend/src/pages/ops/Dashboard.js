@@ -367,7 +367,10 @@ export default function OpsDashboard() {
                 <p className="text-gray-500">Manage medicine catalog</p>
               </div>
               <Button 
-                onClick={() => setMedicineDialog({ open: true, data: null })}
+                onClick={() => {
+                  setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '' });
+                  setMedicineDialog({ open: true, data: null });
+                }}
                 className="bg-[#0F62FE] hover:bg-[#0353E9]"
                 data-testid="add-medicine-btn"
               >
@@ -407,7 +410,16 @@ export default function OpsDashboard() {
                         <td>{med.pack_size}</td>
                         <td className="font-medium">₹{med.price?.toFixed(2) || '0.00'}</td>
                         <td>{med.manufacturer}</td>
-                        <td>
+                        <td className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                            onClick={() => handleEditMedicine(med)}
+                            data-testid={`edit-medicine-${med.id}`}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
                           <Button
                             size="sm"
                             variant="ghost"
