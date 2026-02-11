@@ -607,7 +607,7 @@ export default function OpsDashboard() {
       <Dialog open={medicineDialog.open} onOpenChange={(open) => !open && setMedicineDialog({ open: false, data: null })}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Medicine</DialogTitle>
+            <DialogTitle>{medicineForm.id ? 'Edit Medicine' : 'Add Medicine'}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
