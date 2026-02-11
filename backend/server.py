@@ -427,12 +427,13 @@ async def create_medicine(data: MedicineCreate, user: dict = Depends(get_current
     medicine = {
         "id": generate_id(),
         **data.model_dump(),
-        "bucket": data.bucket.value,
+        "bucket": data.bucket.value if data.bucket else None,
+        "product_type": data.product_type.value,
         "is_active": True,
         "created_at": get_utc_now()
     }
     await db.medicines.insert_one(medicine)
-    await log_audit("medicine_created", "medicine", medicine["id"], user["id"], user["role"], {"name": data.name})
+    await log_audit("medicine_created", "medicine", medicine["id"], user["id"], user["role"], {"name": data.name, "product_type": data.product_type.value})
     return MedicineResponse(**{k: v for k, v in medicine.items() if k != "_id"})
 
 @api_router.get("/medicines", response_model=List[MedicineResponse])
