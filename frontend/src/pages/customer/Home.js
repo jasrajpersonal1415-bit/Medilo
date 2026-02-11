@@ -248,7 +248,7 @@ export default function CustomerHome() {
     return (
       <div 
         className={`mb-4 p-3 rounded-lg border-2 cursor-pointer ${color}`}
-        onClick={() => navigate(`/orders/${order.id}`)}
+        onClick={() => navigate(`/order/${order.id}`)}
         data-testid="active-order-banner"
       >
         <div className="flex items-center gap-3">
