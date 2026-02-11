@@ -28,9 +28,10 @@ const CATEGORY_COLORS = {
 export default function CustomerHome() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { items, addItem, itemCount } = useCart();
+  const { items, addItem, itemCount, clearCart } = useCart();
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
+  const [recentOrders, setRecentOrders] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,6 +39,7 @@ export default function CustomerHome() {
 
   useEffect(() => {
     fetchCategories();
+    fetchRecentOrders();
   }, []);
 
   useEffect(() => {
@@ -45,6 +47,19 @@ export default function CustomerHome() {
       fetchProducts();
     }
   }, [selectedCategory, search]);
+
+  const fetchRecentOrders = async () => {
+    try {
+      const response = await orderAPI.getAll();
+      // Get last 3 delivered orders for quick reorder
+      const delivered = response.data
+        .filter(order => order.status === 'delivered')
+        .slice(0, 3);
+      setRecentOrders(delivered);
+    } catch (err) {
+      console.error('Failed to fetch recent orders:', err);
+    }
+  };
 
   const fetchCategories = async () => {
     setLoading(true);
