@@ -482,7 +482,8 @@ async def update_medicine(medicine_id: str, data: MedicineCreate, user: dict = D
         raise HTTPException(status_code=403, detail="Only ops or pharmacist can update medicines")
     
     update_data = data.model_dump()
-    update_data["bucket"] = data.bucket.value
+    update_data["bucket"] = data.bucket.value if data.bucket else None
+    update_data["product_type"] = data.product_type.value
     
     result = await db.medicines.update_one(
         {"id": medicine_id},
