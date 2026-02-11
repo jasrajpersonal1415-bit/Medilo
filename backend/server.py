@@ -181,7 +181,8 @@ class OrderItemCreate(BaseModel):
 class OrderItem(BaseModel):
     medicine_id: str
     medicine_name: str
-    medicine_bucket: MedicineBucket
+    medicine_bucket: Optional[MedicineBucket] = None  # Only for Medicine type
+    product_type: Optional[ProductType] = ProductType.MEDICINE  # Product category
     medicine_strength: Optional[str] = ""  # Optional for backward compatibility
     medicine_pack_size: Optional[str] = ""  # Optional for backward compatibility
     quantity: int
