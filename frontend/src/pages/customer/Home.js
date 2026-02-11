@@ -348,6 +348,10 @@ export default function CustomerHome() {
           renderProducts()
         ) : (
           <>
+            {/* Quick Reorder Section */}
+            {renderQuickReorder()}
+            
+            {/* Categories */}
             <h2 className="text-lg font-semibold mb-4">Shop by Category</h2>
             {renderCategories()}
           </>
