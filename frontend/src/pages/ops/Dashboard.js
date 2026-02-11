@@ -702,12 +702,12 @@ export default function OpsDashboard() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setMedicineDialog({ open: false, data: null })}>Cancel</Button>
             <Button 
-              onClick={handleCreateMedicine} 
+              onClick={handleSaveMedicine} 
               disabled={dialogLoading || !medicineForm.price}
               className="bg-[#0F62FE] hover:bg-[#0353E9]"
               data-testid="save-medicine"
             >
-              {dialogLoading ? <div className="spinner h-4 w-4" /> : 'Save Medicine'}
+              {dialogLoading ? <div className="spinner h-4 w-4" /> : (medicineForm.id ? 'Update Medicine' : 'Save Medicine')}
             </Button>
           </DialogFooter>
         </DialogContent>
