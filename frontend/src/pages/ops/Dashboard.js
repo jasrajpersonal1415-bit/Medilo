@@ -106,23 +106,55 @@ export default function OpsDashboard() {
     }
   };
 
-  const handleCreateMedicine = async () => {
+  const handleSaveMedicine = async () => {
     setDialogLoading(true);
     try {
       const formData = {
-        ...medicineForm,
-        price: parseFloat(medicineForm.price) || 0
+        name: medicineForm.name,
+        generic_name: medicineForm.generic_name,
+        manufacturer: medicineForm.manufacturer,
+        bucket: medicineForm.bucket,
+        strength: medicineForm.strength,
+        form: medicineForm.form,
+        pack_size: medicineForm.pack_size,
+        price: parseFloat(medicineForm.price) || 0,
+        description: medicineForm.description
       };
-      await medicineAPI.create(formData);
-      toast.success('Medicine created');
+      
+      if (medicineForm.id) {
+        // Update existing medicine
+        await medicineAPI.update(medicineForm.id, formData);
+        toast.success('Medicine updated');
+      } else {
+        // Create new medicine
+        await medicineAPI.create(formData);
+        toast.success('Medicine created');
+      }
+      
       setMedicineDialog({ open: false, data: null });
-      setMedicineForm({ name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '' });
+      setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '' });
       loadData();
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Failed to create medicine');
+      toast.error(err.response?.data?.detail || 'Failed to save medicine');
     } finally {
       setDialogLoading(false);
     }
+  };
+
+  const handleEditMedicine = (medicine) => {
+    setMedicineForm({
+      id: medicine.id,
+      name: medicine.name || '',
+      generic_name: medicine.generic_name || '',
+      manufacturer: medicine.manufacturer || '',
+      bucket: medicine.bucket || 'OTC',
+      strength: medicine.strength || '',
+      form: medicine.form || '',
+      pack_size: medicine.pack_size || '',
+      price: medicine.price?.toString() || '',
+      description: medicine.description || ''
+    });
+    setMedicineDialog({ open: true, data: medicine });
   };
 
   const handleCreatePharmacy = async () => {
