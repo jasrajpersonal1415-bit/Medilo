@@ -368,17 +368,30 @@ export default function OpsDashboard() {
                 <h1 className="text-2xl font-semibold">Medicines</h1>
                 <p className="text-gray-500">Manage medicine catalog</p>
               </div>
-              <Button 
-                onClick={() => {
-                  setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '' });
-                  setMedicineDialog({ open: true, data: null });
-                }}
-                className="bg-[#0F62FE] hover:bg-[#0353E9]"
-                data-testid="add-medicine-btn"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Medicine
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={() => {
+                    setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine' });
+                    setMedicineDialog({ open: true, data: null });
+                  }}
+                  className="bg-[#0F62FE] hover:bg-[#0353E9]"
+                  data-testid="add-medicine-btn"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Medicine
+                </Button>
+                <Button 
+                  onClick={() => {
+                    setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: null, strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Wellness' });
+                    setMedicineDialog({ open: true, data: null });
+                  }}
+                  variant="outline"
+                  data-testid="add-product-btn"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Product
+                </Button>
+              </div>
             </div>
 
             {loading ? (
@@ -390,6 +403,7 @@ export default function OpsDashboard() {
                     <tr>
                       <th>Name</th>
                       <th>Generic Name</th>
+                      <th>Type</th>
                       <th>Category</th>
                       <th>Strength</th>
                       <th>Pack Size</th>
@@ -404,11 +418,20 @@ export default function OpsDashboard() {
                         <td className="font-medium">{med.name}</td>
                         <td>{med.generic_name}</td>
                         <td>
-                          <Badge className={getBucketClass(med.bucket)}>
-                            {getBucketName(med.bucket)}
+                          <Badge variant="outline" className="text-xs">
+                            {med.product_type || 'Medicine'}
                           </Badge>
                         </td>
-                        <td>{med.strength}</td>
+                        <td>
+                          {med.product_type === 'Medicine' && med.bucket ? (
+                            <Badge className={getBucketClass(med.bucket)}>
+                              {getBucketName(med.bucket)}
+                            </Badge>
+                          ) : (
+                            <span className="text-gray-400">-</span>
+                          )}
+                        </td>
+                        <td>{med.strength || '-'}</td>
                         <td>{med.pack_size}</td>
                         <td className="font-medium">₹{med.price?.toFixed(2) || '0.00'}</td>
                         <td>{med.manufacturer}</td>
