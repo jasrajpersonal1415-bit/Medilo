@@ -101,6 +101,26 @@ export default function CustomerHome() {
     return items.some((item) => item.id === productId);
   };
 
+  const handleReorder = async (order) => {
+    try {
+      // Fetch current product details for each item in the order
+      for (const item of order.items) {
+        const response = await medicineAPI.getOne(item.medicine_id);
+        if (response.data) {
+          // Add each item to cart with the quantity from the original order
+          for (let i = 0; i < item.quantity; i++) {
+            addItem(response.data);
+          }
+        }
+      }
+      toast.success(`Added ${order.items.length} item(s) to cart`);
+      navigate('/cart');
+    } catch (err) {
+      toast.error('Some items may no longer be available');
+      console.error(err);
+    }
+  };
+
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);
     setSearch('');
