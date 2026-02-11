@@ -402,6 +402,9 @@ export default function CustomerHome() {
 
       {/* Content */}
       <div className="px-4 py-4">
+        {/* Active Order Status Banner - always show at top */}
+        {renderActiveOrderBanner()}
+        
         {error ? (
           <div className="text-center py-12 text-red-600">{error}</div>
         ) : loading && !selectedCategory && !search && categories.length === 0 ? (
