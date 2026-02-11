@@ -142,6 +142,63 @@ export default function CustomerHome() {
     }
   };
 
+  // Prescription upload handlers
+  const handlePrescriptionFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('File size must be less than 5MB');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPrescriptionImage(reader.result);
+        setPrescriptionPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePrescriptionSubmit = async () => {
+    if (!prescriptionImage) {
+      toast.error('Please upload a prescription image');
+      return;
+    }
+
+    setUploadingPrescription(true);
+    try {
+      // Navigate to cart with prescription data
+      // Store prescription in sessionStorage to pass to cart/checkout
+      sessionStorage.setItem('pendingPrescription', JSON.stringify({
+        image: prescriptionImage,
+        note: prescriptionNote
+      }));
+      
+      toast.success('Prescription uploaded! Browse medicines to add to your order.');
+      setPrescriptionDialog(false);
+      setPrescriptionImage(null);
+      setPrescriptionPreview(null);
+      setPrescriptionNote('');
+      
+      // Navigate to medicines category
+      setSelectedCategory('Medicine');
+    } catch (err) {
+      toast.error('Failed to process prescription');
+      console.error(err);
+    } finally {
+      setUploadingPrescription(false);
+    }
+  };
+
+  const clearPrescriptionUpload = () => {
+    setPrescriptionImage(null);
+    setPrescriptionPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);
     setSearch('');
