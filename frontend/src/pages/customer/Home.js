@@ -140,6 +140,50 @@ export default function CustomerHome() {
     }
   };
 
+  // Render Quick Reorder section
+  const renderQuickReorder = () => {
+    if (recentOrders.length === 0) return null;
+    
+    return (
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+          <RotateCcw className="h-5 w-5 text-gray-600" />
+          Quick Reorder
+        </h2>
+        <div className="space-y-2">
+          {recentOrders.map((order) => (
+            <Card 
+              key={order.id} 
+              className="p-3 border border-gray-200"
+              data-testid={`reorder-card-${order.id}`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {order.items.map(i => i.medicine_name).join(', ')}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {order.items.length} item(s) • {formatCurrency(order.total_amount)}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleReorder(order)}
+                  className="ml-2 shrink-0"
+                  data-testid={`reorder-btn-${order.id}`}
+                >
+                  <RotateCcw className="h-3 w-3 mr-1" />
+                  Reorder
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   // Render category tiles
   const renderCategories = () => (
     <div className="grid grid-cols-2 gap-3">
