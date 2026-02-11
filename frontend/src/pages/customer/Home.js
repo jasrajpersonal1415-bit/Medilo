@@ -7,43 +7,218 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Card } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
-import { Search, ShoppingCart, Home, ClipboardList, User, Plus, Package } from 'lucide-react';
+import { Search, ShoppingCart, Home, ClipboardList, User, Plus, Package, Pill, Heart, Sparkles, Activity, ArrowLeft } from 'lucide-react';
 import { getBucketClass, getBucketName, formatCurrency } from '../../lib/utils';
+
+const CATEGORY_ICONS = {
+  Medicine: Pill,
+  Wellness: Heart,
+  Beauty: Sparkles,
+  Device: Activity,
+};
+
+const CATEGORY_COLORS = {
+  Medicine: 'bg-blue-50 border-blue-200 text-blue-700',
+  Wellness: 'bg-green-50 border-green-200 text-green-700',
+  Beauty: 'bg-pink-50 border-pink-200 text-pink-700',
+  Device: 'bg-purple-50 border-purple-200 text-purple-700',
+};
 
 export default function CustomerHome() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { items, addItem, itemCount } = useCart();
-  const [medicines, setMedicines] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchMedicines();
-  }, [search]);
+    fetchCategories();
+  }, []);
 
-  const fetchMedicines = async () => {
+  useEffect(() => {
+    if (selectedCategory || search) {
+      fetchProducts();
+    }
+  }, [selectedCategory, search]);
+
+  const fetchCategories = async () => {
     setLoading(true);
     try {
-      const response = await medicineAPI.getAll({ search: search || undefined });
-      setMedicines(response.data);
+      const response = await medicineAPI.getCategories();
+      setCategories(response.data);
       setError(null);
     } catch (err) {
-      setError('Failed to load medicines');
+      setError('Failed to load categories');
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddToCart = (medicine) => {
-    addItem(medicine);
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const params = {};
+      if (selectedCategory) params.product_type = selectedCategory;
+      if (search) params.search = search;
+      
+      const response = await medicineAPI.getAll(params);
+      setProducts(response.data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load products');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const isInCart = (medicineId) => {
-    return items.some((item) => item.id === medicineId);
+  const handleAddToCart = (product) => {
+    addItem(product);
   };
+
+  const isInCart = (productId) => {
+    return items.some((item) => item.id === productId);
+  };
+
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategory(categoryId);
+    setSearch('');
+  };
+
+  const handleBackToCategories = () => {
+    setSelectedCategory(null);
+    setProducts([]);
+    setSearch('');
+  };
+
+  const handleSearch = (value) => {
+    setSearch(value);
+    if (value && !selectedCategory) {
+      // Search across all categories
+      setSelectedCategory(null);
+    }
+  };
+
+  // Render category tiles
+  const renderCategories = () => (
+    <div className="grid grid-cols-2 gap-3">
+      {categories.map((category) => {
+        const IconComponent = CATEGORY_ICONS[category.id] || Package;
+        const colorClass = CATEGORY_COLORS[category.id] || 'bg-gray-50 border-gray-200 text-gray-700';
+        
+        return (
+          <Card
+            key={category.id}
+            className={`p-4 cursor-pointer border-2 transition-all hover:shadow-md ${colorClass}`}
+            onClick={() => handleCategoryClick(category.id)}
+            data-testid={`category-${category.id.toLowerCase()}`}
+          >
+            <div className="flex flex-col items-center text-center">
+              <IconComponent className="h-8 w-8 mb-2" />
+              <h3 className="font-medium text-sm">{category.name}</h3>
+              <p className="text-xs opacity-70 mt-1">{category.count} items</p>
+            </div>
+          </Card>
+        );
+      })}
+    </div>
+  );
+
+  // Render product list
+  const renderProducts = () => (
+    <div className="space-y-3">
+      {/* Back button when viewing category */}
+      {selectedCategory && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleBackToCategories}
+          className="mb-2"
+          data-testid="back-to-categories"
+        >
+          <ArrowLeft className="h-4 w-4 mr-1" />
+          All Categories
+        </Button>
+      )}
+
+      {/* Category legend for medicines only */}
+      {selectedCategory === 'Medicine' && (
+        <div className="flex gap-2 mb-3 flex-wrap">
+          <Badge className="bucket-otc text-xs">OTC - No Rx</Badge>
+          <Badge className="bucket-schedule-h text-xs">Schedule H</Badge>
+          <Badge className="bucket-schedule-h1 text-xs">Schedule H1</Badge>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="flex justify-center py-12">
+          <div className="spinner" />
+        </div>
+      ) : products.length === 0 ? (
+        <div className="empty-state">
+          <Package className="empty-state-icon mx-auto" />
+          <h3 className="empty-state-title">No Products Found</h3>
+          <p className="empty-state-text">
+            {search ? 'Try a different search term' : 'Products will appear here once added'}
+          </p>
+        </div>
+      ) : (
+        products.map((product) => (
+          <Card 
+            key={product.id} 
+            className="p-4 card-hover"
+            data-testid={`product-card-${product.id}`}
+          >
+            <div className="flex justify-between items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  {/* Show bucket badge only for medicines */}
+                  {product.product_type === 'Medicine' && product.bucket ? (
+                    <Badge className={`${getBucketClass(product.bucket)} text-xs`}>
+                      {getBucketName(product.bucket)}
+                    </Badge>
+                  ) : (
+                    <Badge className={`${CATEGORY_COLORS[product.product_type]?.split(' ')[0] || 'bg-gray-100'} text-xs border`}>
+                      {product.product_type}
+                    </Badge>
+                  )}
+                </div>
+                <h3 className="font-medium text-gray-900 truncate">{product.name}</h3>
+                <p className="text-sm text-gray-500 truncate">{product.generic_name}</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {product.strength && `${product.strength} • `}{product.pack_size || product.form} • {product.manufacturer}
+                </p>
+                <p className="text-base font-semibold text-[#0F62FE] mt-1">
+                  {formatCurrency(product.price)}
+                </p>
+              </div>
+              <Button
+                data-testid={`add-to-cart-${product.id}`}
+                onClick={() => handleAddToCart(product)}
+                size="sm"
+                variant={isInCart(product.id) ? 'secondary' : 'default'}
+                className={isInCart(product.id) ? '' : 'bg-[#0F62FE] hover:bg-[#0353E9]'}
+              >
+                {isInCart(product.id) ? (
+                  'Added'
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add
+                  </>
+                )}
+              </Button>
+            </div>
+          </Card>
+        ))
+      )}
+    </div>
+  );
 
   return (
     <div className="mobile-container bg-white min-h-screen pb-20">
@@ -72,11 +247,11 @@ export default function CustomerHome() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
-            data-testid="medicine-search-input"
+            data-testid="product-search-input"
             type="text"
-            placeholder="Search medicines..."
+            placeholder="Search products..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
             className="pl-10 bg-gray-50"
           />
         </div>
@@ -84,71 +259,19 @@ export default function CustomerHome() {
 
       {/* Content */}
       <div className="px-4 py-4">
-        {/* Category Legend */}
-        <div className="flex gap-2 mb-4 flex-wrap">
-          <Badge className="bucket-otc text-xs">OTC - No Rx</Badge>
-          <Badge className="bucket-schedule-h text-xs">Schedule H</Badge>
-          <Badge className="bucket-schedule-h1 text-xs">Schedule H1</Badge>
-        </div>
-
-        {loading && medicines.length === 0 ? (
+        {error ? (
+          <div className="text-center py-12 text-red-600">{error}</div>
+        ) : loading && !selectedCategory && !search && categories.length === 0 ? (
           <div className="flex justify-center py-12">
             <div className="spinner" />
           </div>
-        ) : error ? (
-          <div className="text-center py-12 text-red-600">{error}</div>
-        ) : medicines.length === 0 ? (
-          <div className="empty-state">
-            <Package className="empty-state-icon mx-auto" />
-            <h3 className="empty-state-title">No Medicines Found</h3>
-            <p className="empty-state-text">
-              {search ? 'Try a different search term' : 'Medicines will appear here once added'}
-            </p>
-          </div>
+        ) : selectedCategory || search ? (
+          renderProducts()
         ) : (
-          <div className="space-y-3">
-            {medicines.map((medicine) => (
-              <Card 
-                key={medicine.id} 
-                className="p-4 card-hover"
-                data-testid={`medicine-card-${medicine.id}`}
-              >
-                <div className="flex justify-between items-start gap-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Badge className={`${getBucketClass(medicine.bucket)} text-xs`}>
-                        {getBucketName(medicine.bucket)}
-                      </Badge>
-                    </div>
-                    <h3 className="font-medium text-gray-900 truncate">{medicine.name}</h3>
-                    <p className="text-sm text-gray-500 truncate">{medicine.generic_name}</p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {medicine.strength} • {medicine.pack_size || medicine.form} • {medicine.manufacturer}
-                    </p>
-                    <p className="text-base font-semibold text-[#0F62FE] mt-1">
-                      {formatCurrency(medicine.price)}
-                    </p>
-                  </div>
-                  <Button
-                    data-testid={`add-to-cart-${medicine.id}`}
-                    onClick={() => handleAddToCart(medicine)}
-                    size="sm"
-                    variant={isInCart(medicine.id) ? 'secondary' : 'default'}
-                    className={isInCart(medicine.id) ? '' : 'bg-[#0F62FE] hover:bg-[#0353E9]'}
-                  >
-                    {isInCart(medicine.id) ? (
-                      'Added'
-                    ) : (
-                      <>
-                        <Plus className="h-4 w-4 mr-1" />
-                        Add
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
+          <>
+            <h2 className="text-lg font-semibold mb-4">Shop by Category</h2>
+            {renderCategories()}
+          </>
         )}
       </div>
 
