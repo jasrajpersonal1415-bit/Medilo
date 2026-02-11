@@ -7,7 +7,7 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Card } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
-import { Search, ShoppingCart, Home, ClipboardList, User, Plus, Package, Pill, Heart, Sparkles, Activity, ArrowLeft, RotateCcw } from 'lucide-react';
+import { Search, ShoppingCart, Home, ClipboardList, User, Plus, Package, Pill, Heart, Sparkles, Activity, ArrowLeft, RotateCcw, Truck, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { getBucketClass, getBucketName, formatCurrency, getStatusName } from '../../lib/utils';
 import { toast } from 'sonner';
 
