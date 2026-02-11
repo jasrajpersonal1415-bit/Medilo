@@ -49,6 +49,7 @@ export const medicineAPI = {
   create: (data) => api.post('/medicines', data),
   update: (id, data) => api.put(`/medicines/${id}`, data),
   delete: (id) => api.delete(`/medicines/${id}`),
+  getCategories: () => api.get('/categories'),
 };
 
 // Pharmacy API
