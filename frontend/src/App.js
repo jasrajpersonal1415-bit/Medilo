@@ -267,6 +267,7 @@ function App() {
           <div className="App">
             <AppRoutes />
             <Toaster position="top-center" richColors />
+            <PWAInstallPrompt />
           </div>
         </CartProvider>
       </AuthProvider>
