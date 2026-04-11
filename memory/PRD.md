@@ -158,7 +158,7 @@ Build a CLOSED, THROW-AWAY PILOT APPLICATION for a healthcare startup called MED
 
 ### P1 - High Priority
 - [ ] PDF invoice generation (currently HTML)
-- [ ] Audit log export (CSV)
+- [x] Audit log export (CSV)
 - [ ] Push notifications for order status
 
 ### P2 - Medium Priority
@@ -244,6 +244,10 @@ Build a CLOSED, THROW-AWAY PILOT APPLICATION for a healthcare startup called MED
 ---
 
 ## Changelog
+
+### April 11, 2026
+- ✅ **PWA Implementation Validated** - Service Worker, Manifest, Icons all working
+- ✅ **Audit Log Export** - CSV export with date range filters on Ops Dashboard
 
 ### February 11, 2026
 - ✅ **Product Categories Feature Complete**
