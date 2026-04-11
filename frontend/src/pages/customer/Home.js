@@ -367,8 +367,18 @@ export default function CustomerHome() {
         data-testid={`product-card-${product.id}`}
       >
         {/* Product icon area */}
-        <div className="w-full h-20 rounded-lg flex items-center justify-center mb-3" style={{ backgroundColor: config.bg }}>
-          <IconComp className="h-8 w-8" style={{ color: config.color }} />
+        <div className="w-full h-20 rounded-lg flex items-center justify-center mb-3 overflow-hidden" style={{ backgroundColor: config.bg }}>
+          {product.image_path ? (
+            <img 
+              src={`${process.env.REACT_APP_BACKEND_URL}/api/files/${product.image_path}`}
+              alt={product.name}
+              className="w-full h-full object-cover rounded-lg"
+              onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+            />
+          ) : null}
+          <div className={`w-full h-full items-center justify-center ${product.image_path ? 'hidden' : 'flex'}`} style={{ backgroundColor: config.bg }}>
+            <IconComp className="h-8 w-8" style={{ color: config.color }} />
+          </div>
         </div>
 
         {/* Info */}

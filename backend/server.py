@@ -1,6 +1,6 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File, status
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File, status, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -17,6 +17,7 @@ from enum import Enum
 import io
 import csv
 import base64
+import requests as http_requests
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -25,6 +26,40 @@ load_dotenv(ROOT_DIR / '.env')
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
+
+# Object Storage Configuration
+STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
+EMERGENT_KEY = os.environ.get("EMERGENT_LLM_KEY")
+APP_NAME = "medilo"
+storage_key = None
+
+def init_storage():
+    global storage_key
+    if storage_key:
+        return storage_key
+    resp = http_requests.post(f"{STORAGE_URL}/init", json={"emergent_key": EMERGENT_KEY}, timeout=30)
+    resp.raise_for_status()
+    storage_key = resp.json()["storage_key"]
+    return storage_key
+
+def put_object(path: str, data: bytes, content_type: str) -> dict:
+    key = init_storage()
+    resp = http_requests.put(
+        f"{STORAGE_URL}/objects/{path}",
+        headers={"X-Storage-Key": key, "Content-Type": content_type},
+        data=data, timeout=120
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+def get_object(path: str):
+    key = init_storage()
+    resp = http_requests.get(
+        f"{STORAGE_URL}/objects/{path}",
+        headers={"X-Storage-Key": key}, timeout=60
+    )
+    resp.raise_for_status()
+    return resp.content, resp.headers.get("Content-Type", "application/octet-stream")
 
 # JWT Configuration
 JWT_SECRET = os.environ.get('JWT_SECRET', 'medilo-pilot-secret-key-2024')
@@ -139,6 +174,7 @@ class MedicineCreate(BaseModel):
     expiry_date: Optional[str] = None
     quantity: Optional[int] = None
     purchase_price: Optional[float] = None
+    image_path: Optional[str] = None
 
 class MedicineResponse(BaseModel):
     id: str
@@ -158,6 +194,7 @@ class MedicineResponse(BaseModel):
     expiry_date: Optional[str] = None
     quantity: Optional[int] = None
     purchase_price: Optional[float] = None
+    image_path: Optional[str] = None
 
 class PharmacyCreate(BaseModel):
     name: str
@@ -521,6 +558,52 @@ async def delete_medicine(medicine_id: str, user: dict = Depends(get_current_use
     
     await log_audit("medicine_deleted", "medicine", medicine_id, user["id"], user["role"])
     return {"message": "Medicine deactivated"}
+
+# Product Image Upload
+ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
+
+@api_router.post("/products/{product_id}/image")
+async def upload_product_image(
+    product_id: str,
+    file: UploadFile = File(...),
+    user: dict = Depends(get_current_user)
+):
+    if user["role"] != UserRole.OPS.value:
+        raise HTTPException(status_code=403, detail="Only ops can upload product images")
+    
+    product = await db.medicines.find_one({"id": product_id, "is_active": True}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    if file.content_type not in ALLOWED_IMAGE_TYPES:
+        raise HTTPException(status_code=400, detail="Only JPEG, PNG, WebP, and GIF images are allowed")
+    
+    data = await file.read()
+    if len(data) > MAX_IMAGE_SIZE:
+        raise HTTPException(status_code=400, detail="Image must be less than 5MB")
+    
+    ext = file.filename.split(".")[-1] if "." in file.filename else "png"
+    path = f"{APP_NAME}/products/{product_id}/{uuid.uuid4()}.{ext}"
+    
+    result = put_object(path, data, file.content_type)
+    
+    await db.medicines.update_one(
+        {"id": product_id},
+        {"$set": {"image_path": result["path"]}}
+    )
+    
+    await log_audit("product_image_uploaded", "medicine", product_id, user["id"], user["role"])
+    
+    return {"image_path": result["path"]}
+
+@api_router.get("/files/{path:path}")
+async def serve_file(path: str):
+    try:
+        data, content_type = get_object(path)
+        return Response(content=data, media_type=content_type)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail="File not found")
 
 # CSV Import Routes
 VALID_CATEGORIES = {"Medicine": "Medicine", "Wellness": "Wellness", "Beauty": "Beauty & Personal Care", "Device": "Device",
@@ -1691,10 +1774,16 @@ async def shutdown_db_client():
 
 @app.on_event("startup")
 async def migrate_categories():
-    """Migrate old category values to new ones"""
+    """Migrate old category values and init storage"""
     result = await db.medicines.update_many(
         {"product_type": "Beauty"},
         {"$set": {"product_type": "Beauty & Personal Care"}}
     )
     if result.modified_count > 0:
         logger.info(f"Migrated {result.modified_count} products from 'Beauty' to 'Beauty & Personal Care'")
+    
+    try:
+        init_storage()
+        logger.info("Object storage initialized successfully")
+    except Exception as e:
+        logger.error(f"Object storage init failed: {e}")

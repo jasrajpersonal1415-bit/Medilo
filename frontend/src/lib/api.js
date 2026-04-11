@@ -50,6 +50,13 @@ export const medicineAPI = {
   update: (id, data) => api.put(`/medicines/${id}`, data),
   delete: (id) => api.delete(`/medicines/${id}`),
   getCategories: () => api.get('/categories'),
+  uploadImage: (productId, file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.post(`/products/${productId}/image`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
 };
 
 // Pharmacy API

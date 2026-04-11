@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { opsAPI, medicineAPI, pharmacyAPI, authAPI, deliveryAPI } from '../../lib/api';
 import { Button } from '../../components/ui/button';
@@ -16,7 +16,7 @@ import {
 } from '../../components/ui/dialog';
 import { 
   LogOut, Package, Users, Building2, Pill, Activity, 
-  Plus, Eye, Clock, ChevronDown, Truck, Trash2, Pencil, Download, Upload
+  Plus, Eye, Clock, ChevronDown, Truck, Trash2, Pencil, Download, Upload, ImageIcon, X
 } from 'lucide-react';
 import { 
   formatDateTime, getStatusClass, getStatusName, 
@@ -51,6 +51,10 @@ export default function OpsDashboard() {
   const [exportEndDate, setExportEndDate] = useState('');
   const [exporting, setExporting] = useState(false);
   const [csvImportOpen, setCSVImportOpen] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const imageInputRef = useRef(null);
 
   // Form states
   const [medicineForm, setMedicineForm] = useState({
@@ -158,18 +162,32 @@ export default function OpsDashboard() {
         batch: medicineForm.batch || null
       };
       
+      let productId = medicineForm.id;
       if (medicineForm.id) {
-        // Update existing product
         await medicineAPI.update(medicineForm.id, formData);
         toast.success('Product updated');
       } else {
-        // Create new product
-        await medicineAPI.create(formData);
+        const res = await medicineAPI.create(formData);
+        productId = res.data.id;
         toast.success('Product created');
+      }
+      
+      // Upload image if selected
+      if (imageFile && productId) {
+        setUploadingImage(true);
+        try {
+          await medicineAPI.uploadImage(productId, imageFile);
+          toast.success('Image uploaded');
+        } catch (imgErr) {
+          toast.error('Product saved but image upload failed');
+        }
+        setUploadingImage(false);
       }
       
       setMedicineDialog({ open: false, data: null });
       setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine', batch: '' });
+      setImageFile(null);
+      setImagePreview(null);
       loadData();
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Failed to save product');
@@ -193,6 +211,8 @@ export default function OpsDashboard() {
       product_type: medicine.product_type || 'Medicine',
       batch: medicine.batch || ''
     });
+    setImageFile(null);
+    setImagePreview(medicine.image_path ? `${process.env.REACT_APP_BACKEND_URL}/api/files/${medicine.image_path}` : null);
     setMedicineDialog({ open: true, data: medicine });
   };
 
@@ -417,6 +437,7 @@ export default function OpsDashboard() {
                 <Button 
                   onClick={() => {
                     setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine', batch: '' });
+                    setImageFile(null); setImagePreview(null);
                     setMedicineDialog({ open: true, data: null });
                   }}
                   className="bg-[#0F62FE] hover:bg-[#0353E9]"
@@ -428,6 +449,7 @@ export default function OpsDashboard() {
                 <Button 
                   onClick={() => {
                     setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: null, strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Wellness', batch: '' });
+                    setImageFile(null); setImagePreview(null);
                     setMedicineDialog({ open: true, data: null });
                   }}
                   variant="outline"
@@ -836,6 +858,51 @@ export default function OpsDashboard() {
                 placeholder="e.g., B001, BATCH-2026-01"
                 data-testid="medicine-batch"
               />
+            </div>
+            <div>
+              <Label>Product Image</Label>
+              <div className="mt-1">
+                {imagePreview ? (
+                  <div className="relative inline-block">
+                    <img 
+                      src={imagePreview} 
+                      alt="Product preview" 
+                      className="h-24 w-24 object-cover rounded-lg border"
+                    />
+                    <button
+                      onClick={() => { setImageFile(null); setImagePreview(null); if (imageInputRef.current) imageInputRef.current.value = ''; }}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <div 
+                    className="h-24 w-24 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#0F62FE] hover:bg-blue-50/30 transition-colors"
+                    onClick={() => imageInputRef.current?.click()}
+                    data-testid="image-upload-zone"
+                  >
+                    <ImageIcon className="h-6 w-6 text-gray-400" />
+                    <span className="text-[10px] text-gray-400 mt-1">Upload</span>
+                  </div>
+                )}
+                <input
+                  ref={imageInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      if (file.size > 5 * 1024 * 1024) { toast.error('Image must be less than 5MB'); return; }
+                      setImageFile(file);
+                      setImagePreview(URL.createObjectURL(file));
+                    }
+                  }}
+                  data-testid="image-file-input"
+                />
+                <p className="text-xs text-gray-400 mt-1">JPEG, PNG, WebP. Max 5MB.</p>
+              </div>
             </div>
           </div>
           <DialogFooter>
