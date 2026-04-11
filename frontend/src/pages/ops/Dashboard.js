@@ -16,13 +16,14 @@ import {
 } from '../../components/ui/dialog';
 import { 
   LogOut, Package, Users, Building2, Pill, Activity, 
-  Plus, Eye, Clock, ChevronDown, Truck, Trash2, Pencil, Download
+  Plus, Eye, Clock, ChevronDown, Truck, Trash2, Pencil, Download, Upload
 } from 'lucide-react';
 import { 
   formatDateTime, getStatusClass, getStatusName, 
   getBucketClass, getBucketName 
 } from '../../lib/utils';
 import { toast } from 'sonner';
+import CSVImportDialog from '../../components/CSVImportDialog';
 
 export default function OpsDashboard() {
   const { user, logout } = useAuth();
@@ -49,6 +50,7 @@ export default function OpsDashboard() {
   const [exportStartDate, setExportStartDate] = useState('');
   const [exportEndDate, setExportEndDate] = useState('');
   const [exporting, setExporting] = useState(false);
+  const [csvImportOpen, setCSVImportOpen] = useState(false);
 
   // Form states
   const [medicineForm, setMedicineForm] = useState({
@@ -402,6 +404,14 @@ export default function OpsDashboard() {
                 <p className="text-gray-500">Manage medicine catalog</p>
               </div>
               <div className="flex gap-2">
+                <Button 
+                  onClick={() => setCSVImportOpen(true)}
+                  variant="outline"
+                  data-testid="import-csv-btn"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Import CSV
+                </Button>
                 <Button 
                   onClick={() => {
                     setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine' });
@@ -1107,6 +1117,13 @@ export default function OpsDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* CSV Import Dialog */}
+      <CSVImportDialog
+        open={csvImportOpen}
+        onOpenChange={setCSVImportOpen}
+        onSuccess={() => loadData()}
+      />
     </div>
   );
 }

@@ -131,9 +131,13 @@ class MedicineCreate(BaseModel):
     strength: Optional[str] = ""
     form: str  # tablet, capsule, syrup, cream, device, etc.
     pack_size: str  # e.g., "10 tablets", "100ml"
-    price: float  # MEDILO-controlled price
+    price: float  # MEDILO-controlled price (MRP)
     product_type: ProductType = ProductType.MEDICINE  # Medicine, Wellness, Beauty, Device
     description: Optional[str] = None
+    batch: Optional[str] = None
+    expiry_date: Optional[str] = None
+    quantity: Optional[int] = None
+    purchase_price: Optional[float] = None
 
 class MedicineResponse(BaseModel):
     id: str
@@ -149,6 +153,10 @@ class MedicineResponse(BaseModel):
     description: Optional[str] = None
     is_active: bool = True
     created_at: str
+    batch: Optional[str] = None
+    expiry_date: Optional[str] = None
+    quantity: Optional[int] = None
+    purchase_price: Optional[float] = None
 
 class PharmacyCreate(BaseModel):
     name: str
@@ -511,6 +519,268 @@ async def delete_medicine(medicine_id: str, user: dict = Depends(get_current_use
     
     await log_audit("medicine_deleted", "medicine", medicine_id, user["id"], user["role"])
     return {"message": "Medicine deactivated"}
+
+# CSV Import Routes
+VALID_CATEGORIES = {"Medicine": "Medicine", "Wellness": "Wellness", "Beauty": "Beauty", "Device": "Device",
+                    "medicine": "Medicine", "wellness": "Wellness", "beauty": "Beauty", "device": "Device",
+                    "OTC & Wellness": "Wellness", "Beauty & Personal Care": "Beauty", "Medical Devices": "Device"}
+VALID_BUCKETS = {"OTC": "OTC", "SCHEDULE_H": "SCHEDULE_H", "SCHEDULE_H1": "SCHEDULE_H1",
+                 "otc": "OTC", "Schedule H": "SCHEDULE_H", "Schedule H1": "SCHEDULE_H1",
+                 "schedule_h": "SCHEDULE_H", "schedule_h1": "SCHEDULE_H1"}
+
+def parse_csv_row(row, row_num):
+    """Parse and validate a single CSV row. Returns (parsed_data, errors)."""
+    errors = []
+    
+    name = (row.get("Product Name") or row.get("product_name") or "").strip()
+    if not name:
+        errors.append(f"Row {row_num}: Product Name is required")
+    
+    category_raw = (row.get("Category") or row.get("category") or "").strip()
+    category = VALID_CATEGORIES.get(category_raw)
+    if not category:
+        errors.append(f"Row {row_num}: Invalid Category '{category_raw}'. Must be Medicine, Wellness, Beauty, or Device")
+    
+    type_raw = (row.get("Type") or row.get("type") or "").strip()
+    bucket = None
+    if category == "Medicine":
+        bucket = VALID_BUCKETS.get(type_raw)
+        if not bucket:
+            errors.append(f"Row {row_num}: Invalid Type '{type_raw}' for Medicine. Must be OTC, SCHEDULE_H, or SCHEDULE_H1")
+    
+    batch = (row.get("Batch") or row.get("batch") or "").strip()
+    if not batch:
+        errors.append(f"Row {row_num}: Batch is required")
+    
+    expiry_raw = (row.get("Expiry Date") or row.get("expiry_date") or "").strip()
+    expiry_date = None
+    if not expiry_raw:
+        errors.append(f"Row {row_num}: Expiry Date is required")
+    else:
+        for fmt in ("%Y-%m-%d", "%d-%m-%Y", "%d/%m/%Y", "%m/%d/%Y", "%Y/%m/%d"):
+            try:
+                parsed = datetime.strptime(expiry_raw, fmt)
+                expiry_date = parsed.strftime("%Y-%m-%d")
+                break
+            except ValueError:
+                continue
+        if not expiry_date:
+            errors.append(f"Row {row_num}: Invalid Expiry Date '{expiry_raw}'. Use YYYY-MM-DD or DD-MM-YYYY")
+    
+    quantity_raw = (row.get("Quantity") or row.get("quantity") or "").strip()
+    quantity = None
+    if not quantity_raw:
+        errors.append(f"Row {row_num}: Quantity is required")
+    else:
+        try:
+            quantity = int(quantity_raw)
+            if quantity < 0:
+                errors.append(f"Row {row_num}: Quantity must be non-negative")
+        except ValueError:
+            errors.append(f"Row {row_num}: Invalid Quantity '{quantity_raw}'")
+    
+    mrp_raw = (row.get("MRP") or row.get("mrp") or "").strip()
+    mrp = None
+    if not mrp_raw:
+        errors.append(f"Row {row_num}: MRP is required")
+    else:
+        try:
+            mrp = float(mrp_raw)
+            if mrp < 0:
+                errors.append(f"Row {row_num}: MRP must be non-negative")
+        except ValueError:
+            errors.append(f"Row {row_num}: Invalid MRP '{mrp_raw}'")
+    
+    pp_raw = (row.get("Purchase Price") or row.get("purchase_price") or "").strip()
+    purchase_price = None
+    if not pp_raw:
+        errors.append(f"Row {row_num}: Purchase Price is required")
+    else:
+        try:
+            purchase_price = float(pp_raw)
+            if purchase_price < 0:
+                errors.append(f"Row {row_num}: Purchase Price must be non-negative")
+        except ValueError:
+            errors.append(f"Row {row_num}: Invalid Purchase Price '{pp_raw}'")
+    
+    manufacturer = (row.get("Manufacturer") or row.get("manufacturer") or "").strip()
+    if not manufacturer:
+        errors.append(f"Row {row_num}: Manufacturer is required")
+    
+    parsed = {
+        "name": name,
+        "product_type": category,
+        "bucket": bucket,
+        "batch": batch,
+        "expiry_date": expiry_date,
+        "quantity": quantity,
+        "price": mrp,
+        "purchase_price": purchase_price,
+        "manufacturer": manufacturer,
+        "row_num": row_num,
+    }
+    return parsed, errors
+
+@api_router.post("/ops/products/import/validate")
+async def validate_csv_import(file: UploadFile = File(...), user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.OPS.value:
+        raise HTTPException(status_code=403, detail="Only ops can import products")
+    
+    if not file.filename.endswith('.csv'):
+        raise HTTPException(status_code=400, detail="Only CSV files are supported")
+    
+    content = await file.read()
+    try:
+        text = content.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        try:
+            text = content.decode("latin-1")
+        except UnicodeDecodeError:
+            raise HTTPException(status_code=400, detail="Unable to decode file. Use UTF-8 encoding.")
+    
+    reader = csv.DictReader(io.StringIO(text))
+    required_headers = {"Product Name", "Category", "Type", "Batch", "Expiry Date", "Quantity", "MRP", "Purchase Price", "Manufacturer"}
+    actual_headers = set(reader.fieldnames or [])
+    missing = required_headers - actual_headers
+    if missing:
+        raise HTTPException(status_code=400, detail=f"Missing required columns: {', '.join(sorted(missing))}")
+    
+    rows = []
+    all_errors = []
+    for i, row in enumerate(reader, start=2):
+        if i > 10002:
+            all_errors.append(f"File exceeds 10,000 row limit")
+            break
+        parsed, errs = parse_csv_row(row, i)
+        all_errors.extend(errs)
+        rows.append(parsed)
+    
+    if not rows:
+        raise HTTPException(status_code=400, detail="CSV file is empty (no data rows)")
+    
+    # Check for duplicates within CSV
+    seen = {}
+    duplicates_in_csv = []
+    for r in rows:
+        key = (r["name"].lower(), r["batch"].lower()) if r["name"] and r["batch"] else None
+        if key:
+            if key in seen:
+                duplicates_in_csv.append(f"Row {r['row_num']}: Duplicate of row {seen[key]} ({r['name']} + {r['batch']})")
+            else:
+                seen[key] = r["row_num"]
+    
+    # Check duplicates against DB
+    existing_matches = []
+    new_entries = []
+    update_entries = []
+    for r in rows:
+        if r["name"] and r["batch"]:
+            existing = await db.medicines.find_one(
+                {"name": {"$regex": f"^{r['name']}$", "$options": "i"}, "batch": r["batch"], "is_active": True},
+                {"_id": 0, "id": 1, "name": 1, "batch": 1, "quantity": 1}
+            )
+            if existing:
+                update_entries.append({**r, "existing_id": existing["id"], "existing_quantity": existing.get("quantity", 0)})
+            else:
+                new_entries.append(r)
+        else:
+            new_entries.append(r)
+    
+    # Sort by expiry date
+    def sort_key(x):
+        try:
+            return x.get("expiry_date") or "9999-99-99"
+        except:
+            return "9999-99-99"
+    
+    rows_sorted = sorted(rows, key=sort_key)
+    
+    return {
+        "total_rows": len(rows),
+        "valid_rows": len(rows) - len([e for e in all_errors if e]),
+        "errors": all_errors,
+        "duplicates_in_csv": duplicates_in_csv,
+        "new_entries": len(new_entries),
+        "update_entries": len(update_entries),
+        "preview": rows_sorted[:100],
+        "all_data": rows_sorted,
+        "has_errors": len(all_errors) > 0
+    }
+
+@api_router.post("/ops/products/import/confirm")
+async def confirm_csv_import(data: dict, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.OPS.value:
+        raise HTTPException(status_code=403, detail="Only ops can import products")
+    
+    rows = data.get("rows", [])
+    if not rows:
+        raise HTTPException(status_code=400, detail="No data to import")
+    
+    created = 0
+    updated = 0
+    errors = []
+    
+    for r in rows:
+        try:
+            name = r.get("name", "").strip()
+            batch = r.get("batch", "").strip()
+            if not name or not batch:
+                continue
+            
+            # Check if exists
+            existing = await db.medicines.find_one(
+                {"name": {"$regex": f"^{name}$", "$options": "i"}, "batch": batch, "is_active": True},
+                {"_id": 0}
+            )
+            
+            if existing:
+                # Update quantity (add to existing)
+                new_qty = (existing.get("quantity") or 0) + (r.get("quantity") or 0)
+                update_fields = {"quantity": new_qty}
+                if r.get("price") is not None:
+                    update_fields["price"] = r["price"]
+                if r.get("purchase_price") is not None:
+                    update_fields["purchase_price"] = r["purchase_price"]
+                if r.get("expiry_date"):
+                    update_fields["expiry_date"] = r["expiry_date"]
+                
+                await db.medicines.update_one({"id": existing["id"]}, {"$set": update_fields})
+                updated += 1
+            else:
+                # Create new entry
+                medicine = {
+                    "id": generate_id(),
+                    "name": name,
+                    "generic_name": name,
+                    "manufacturer": r.get("manufacturer", ""),
+                    "bucket": r.get("bucket"),
+                    "product_type": r.get("product_type", "Medicine"),
+                    "strength": "",
+                    "form": "tablet",
+                    "pack_size": "",
+                    "price": r.get("price", 0),
+                    "purchase_price": r.get("purchase_price"),
+                    "batch": batch,
+                    "expiry_date": r.get("expiry_date"),
+                    "quantity": r.get("quantity", 0),
+                    "description": None,
+                    "is_active": True,
+                    "created_at": get_utc_now()
+                }
+                await db.medicines.insert_one(medicine)
+                created += 1
+        except Exception as e:
+            errors.append(f"Error processing {r.get('name', 'unknown')}: {str(e)}")
+    
+    await log_audit("csv_import", "medicine", "bulk", user["id"], user["role"],
+                    {"created": created, "updated": updated, "total": len(rows)})
+    
+    return {
+        "created": created,
+        "updated": updated,
+        "errors": errors,
+        "total_processed": created + updated
+    }
 
 # Pharmacy Routes
 @api_router.post("/pharmacies", response_model=PharmacyResponse)
