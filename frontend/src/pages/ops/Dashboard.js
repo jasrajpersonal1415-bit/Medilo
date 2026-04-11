@@ -119,15 +119,18 @@ export default function OpsDashboard() {
       if (exportEndDate) params.end_date = exportEndDate;
       
       const res = await opsAPI.exportAuditLogs(params);
-      const blob = new Blob([res.data], { type: 'text/csv' });
+      const blob = new Blob([res.data], { type: 'text/csv;charset=utf-8;' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
+      a.style.display = 'none';
       a.href = url;
-      a.download = `medilo_audit_logs_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.setAttribute('download', `medilo_audit_logs_${new Date().toISOString().slice(0, 10)}.csv`);
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 200);
       toast.success('Audit logs exported successfully');
     } catch (err) {
       toast.error('Failed to export audit logs');

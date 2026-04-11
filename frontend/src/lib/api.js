@@ -104,7 +104,7 @@ export const opsAPI = {
   getOrderTimeline: (orderId) => api.get(`/ops/order/${orderId}/timeline`),
   getUsers: (role) => api.get('/ops/users', { params: { role } }),
   toggleUserActive: (userId) => api.post(`/ops/users/${userId}/toggle-active`),
-  exportAuditLogs: (params) => api.get('/ops/audit-logs/export', { params, responseType: 'blob' }),
+  exportAuditLogs: (params) => api.get('/ops/audit-logs/export', { params, responseType: 'text' }),
 };
 
 // Health check
