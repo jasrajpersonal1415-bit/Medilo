@@ -54,7 +54,7 @@ export default function OpsDashboard() {
 
   // Form states
   const [medicineForm, setMedicineForm] = useState({
-    id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine'
+    id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine', batch: ''
   });
   const [pharmacyForm, setPharmacyForm] = useState({
     name: '', license_number: '', address: '', city: '', pincode: '', phone: '', email: ''
@@ -154,7 +154,8 @@ export default function OpsDashboard() {
         pack_size: medicineForm.pack_size,
         price: parseFloat(medicineForm.price) || 0,
         product_type: medicineForm.product_type,
-        description: medicineForm.description
+        description: medicineForm.description,
+        batch: medicineForm.batch || null
       };
       
       if (medicineForm.id) {
@@ -168,7 +169,7 @@ export default function OpsDashboard() {
       }
       
       setMedicineDialog({ open: false, data: null });
-      setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine' });
+      setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine', batch: '' });
       loadData();
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Failed to save product');
@@ -189,7 +190,8 @@ export default function OpsDashboard() {
       pack_size: medicine.pack_size || '',
       price: medicine.price?.toString() || '',
       description: medicine.description || '',
-      product_type: medicine.product_type || 'Medicine'
+      product_type: medicine.product_type || 'Medicine',
+      batch: medicine.batch || ''
     });
     setMedicineDialog({ open: true, data: medicine });
   };
@@ -414,7 +416,7 @@ export default function OpsDashboard() {
                 </Button>
                 <Button 
                   onClick={() => {
-                    setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine' });
+                    setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine', batch: '' });
                     setMedicineDialog({ open: true, data: null });
                   }}
                   className="bg-[#0F62FE] hover:bg-[#0353E9]"
@@ -425,7 +427,7 @@ export default function OpsDashboard() {
                 </Button>
                 <Button 
                   onClick={() => {
-                    setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: null, strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Wellness' });
+                    setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: null, strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Wellness', batch: '' });
                     setMedicineDialog({ open: true, data: null });
                   }}
                   variant="outline"
@@ -825,6 +827,15 @@ export default function OpsDashboard() {
                   data-testid="medicine-price"
                 />
               </div>
+            </div>
+            <div>
+              <Label>Batch Number</Label>
+              <Input
+                value={medicineForm.batch}
+                onChange={(e) => setMedicineForm({ ...medicineForm, batch: e.target.value })}
+                placeholder="e.g., B001, BATCH-2026-01"
+                data-testid="medicine-batch"
+              />
             </div>
           </div>
           <DialogFooter>
