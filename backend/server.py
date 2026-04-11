@@ -15,6 +15,7 @@ import jwt
 import bcrypt
 from enum import Enum
 import io
+import csv
 import base64
 
 ROOT_DIR = Path(__file__).parent
@@ -1037,6 +1038,55 @@ async def get_audit_logs(
     
     logs = await db.audit_logs.find(query, {"_id": 0}).sort("timestamp", -1).to_list(limit)
     return [AuditLogResponse(**log) for log in logs]
+
+@api_router.get("/ops/audit-logs/export")
+async def export_audit_logs(
+    start_date: str = None,
+    end_date: str = None,
+    entity_type: str = None,
+    user: dict = Depends(get_current_user)
+):
+    if user["role"] != UserRole.OPS.value:
+        raise HTTPException(status_code=403, detail="Only ops can export audit logs")
+    
+    query = {}
+    if entity_type:
+        query["entity_type"] = entity_type
+    if start_date:
+        query["timestamp"] = {"$gte": start_date}
+    if end_date:
+        query.setdefault("timestamp", {})["$lte"] = end_date + "T23:59:59"
+    
+    logs = await db.audit_logs.find(query, {"_id": 0}).sort("timestamp", -1).to_list(10000)
+    
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["Timestamp", "Action", "Entity Type", "Entity ID", "User ID", "User Role", "Details"])
+    
+    for log in logs:
+        details_str = ""
+        if log.get("details"):
+            try:
+                import json
+                details_str = json.dumps(log["details"])
+            except Exception:
+                details_str = str(log.get("details", ""))
+        writer.writerow([
+            log.get("timestamp", ""),
+            log.get("action", ""),
+            log.get("entity_type", ""),
+            log.get("entity_id", ""),
+            log.get("user_id", ""),
+            log.get("user_role", ""),
+            details_str
+        ])
+    
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=medilo_audit_logs_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.csv"}
+    )
 
 @api_router.get("/ops/order/{order_id}/timeline", response_model=List[AuditLogResponse])
 async def get_order_timeline(order_id: str, user: dict = Depends(get_current_user)):

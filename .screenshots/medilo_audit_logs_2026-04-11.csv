@@ -1,0 +1,572 @@
+Timestamp,Action,Entity Type,Entity ID,User ID,User Role,Details
+2026-04-11T22:14:25.231581+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-04-11T22:14:01.167437+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-04-11T22:14:00.648728+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-04-11T22:14:00.388754+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-04-11T22:13:59.969509+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-04-11T22:13:59.635292+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-04-11T22:13:09.925532+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-04-11T22:12:51.508517+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-04-11T22:11:59.175439+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-04-11T22:11:53.357308+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-04-11T22:11:47.618043+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-04-11T22:10:01.080324+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-04-11T22:07:19.124367+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-04-11T21:54:56.675138+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-03-26T17:23:23.761594+00:00,customer_login,user,8970524e-bcb0-4dae-aac6-e0b600a30e78,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-03-26T17:20:42.885382+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-03-26T17:19:59.090938+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-03-26T17:18:20.070861+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-03-26T17:13:18.412294+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-02-25T04:20:09.422729+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-25T04:19:23.630021+00:00,delivery_delivered,order,7b6504bb-7d0e-4e85-a32c-ccf491cc4c75,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-25T04:19:19.881548+00:00,delivery_out_for_delivery,order,7b6504bb-7d0e-4e85-a32c-ccf491cc4c75,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-25T04:19:15.158494+00:00,delivery_accepted,order,7b6504bb-7d0e-4e85-a32c-ccf491cc4c75,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-25T04:19:08.442488+00:00,pharmacy_mark_ready,order,7b6504bb-7d0e-4e85-a32c-ccf491cc4c75,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-25T04:19:08.092786+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-25T04:18:32.048486+00:00,pharmacy_mark_preparing,order,7b6504bb-7d0e-4e85-a32c-ccf491cc4c75,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-25T04:17:59.368506+00:00,inventory_confirmed,order,7b6504bb-7d0e-4e85-a32c-ccf491cc4c75,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,"{""total_amount"": 303.09}"
+2026-02-25T04:17:23.652295+00:00,pharmacy_accept,order,7b6504bb-7d0e-4e85-a32c-ccf491cc4c75,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-25T04:16:44.663670+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-25T04:16:25.862513+00:00,pharmacy_assigned,order,7b6504bb-7d0e-4e85-a32c-ccf491cc4c75,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-02-25T04:16:13.235528+00:00,pharmacist_approve,order,7b6504bb-7d0e-4e85-a32c-ccf491cc4c75,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": """"}"
+2026-02-25T04:15:41.743515+00:00,order_created,order,7b6504bb-7d0e-4e85-a32c-ccf491cc4c75,00577e99-49cc-46ec-9720-db201224a7ae,customer,"{""status"": ""pending_pharmacist_review"", ""total_amount"": 303.09}"
+2026-02-25T04:15:13.631956+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-02-25T04:12:17.888735+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-25T04:10:20.542660+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-02-14T15:10:51.503914+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-14T15:05:12.590518+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-14T15:04:28.796265+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-02-14T14:57:34.234645+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-14T14:46:36.718658+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-02-11T19:57:06.739843+00:00,order_cancelled,order,fa1104c3-fd5b-43f0-8824-662a18720676,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-02-11T19:55:23.514741+00:00,pharmacist_reject,order,fa1104c3-fd5b-43f0-8824-662a18720676,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": ""Not Valid""}"
+2026-02-11T19:54:51.344596+00:00,order_created,order,fa1104c3-fd5b-43f0-8824-662a18720676,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,"{""status"": ""pending_pharmacist_review"", ""total_amount"": 566.5899999999999}"
+2026-02-11T19:52:48.998829+00:00,order_cancelled,order,3cf36ce7-5a67-43f4-a1e2-c9fbd2bd6451,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-02-11T19:52:06.064816+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-02-11T19:50:54.348457+00:00,order_created,order,3cf36ce7-5a67-43f4-a1e2-c9fbd2bd6451,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,"{""status"": ""pharmacist_approved"", ""total_amount"": 46.49}"
+2026-02-11T19:49:19.608674+00:00,customer_login,user,8970524e-bcb0-4dae-aac6-e0b600a30e78,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-02-11T19:43:00.396248+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T19:42:31.756654+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T19:28:28.554403+00:00,order_cancelled,order,460b00b1-07a3-4ad4-9810-155afdff426e,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-02-11T19:27:36.684387+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T19:23:25.539148+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-02-11T19:21:23.399433+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T19:21:06.641615+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T19:16:44.533829+00:00,pharmacist_reject,order,460b00b1-07a3-4ad4-9810-155afdff426e,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": ""No\n""}"
+2026-02-11T19:16:06.056927+00:00,order_created,order,460b00b1-07a3-4ad4-9810-155afdff426e,00577e99-49cc-46ec-9720-db201224a7ae,customer,"{""status"": ""pending_pharmacist_review"", ""total_amount"": 175.36}"
+2026-02-11T19:15:41.159956+00:00,pharmacist_reject,order,5197e23f-5fb6-4895-bfac-650e22d44a75,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": ""no\n""}"
+2026-02-11T19:15:29.505103+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-02-11T18:46:13.889674+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T18:45:59.754934+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T18:41:09.293269+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T18:40:47.585178+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T18:40:34.816402+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T18:32:55.962781+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T18:31:11.353232+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-02-11T18:30:27.226012+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T18:28:09.483421+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T18:27:53.235136+00:00,order_created,order,5197e23f-5fb6-4895-bfac-650e22d44a75,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,"{""status"": ""pending_pharmacist_review"", ""total_amount"": 551.19}"
+2026-02-11T18:27:53.099571+00:00,order_created,order,2f04e1a3-614f-402f-ace3-8596cbd84b7e,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,"{""status"": ""pharmacist_approved"", ""total_amount"": 32.0}"
+2026-02-11T18:27:52.958952+00:00,order_created,order,60ab1c7a-7759-40bb-b149-2d36a902a9da,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,"{""status"": ""pharmacist_approved"", ""total_amount"": 299.0}"
+2026-02-11T18:27:52.844749+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T18:27:35.078139+00:00,medicine_created,medicine,df2c1f3c-4fee-4bd5-80ed-ef91c5dcfb96,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Dr. Morepen Digital Thermometer"", ""product_type"": ""Device""}"
+2026-02-11T18:27:35.020517+00:00,medicine_created,medicine,6fe7ff53-5d56-473d-af18-0a0fd7994b67,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Cetaphil Gentle Cleanser"", ""product_type"": ""Beauty""}"
+2026-02-11T18:27:34.958648+00:00,medicine_created,medicine,7505f9d2-441f-4d05-9b57-f9abf0e06670,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Vitamin C 1000mg"", ""product_type"": ""Wellness""}"
+2026-02-11T18:27:34.898846+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T18:27:04.631544+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T18:26:38.799900+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T18:25:58.051751+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T18:25:39.598436+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-02-11T18:03:46.288753+00:00,medicine_updated,medicine,cf9d8da1-6567-40d5-af93-4878f9b02fe8,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T17:59:57.033211+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T17:59:35.909416+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T13:25:36.712049+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T13:24:49.435485+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T08:17:29.946941+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T08:12:56.186799+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-02-11T08:12:40.806888+00:00,delivery_delivered,order,e505f11e-a697-4027-a5a0-42bf68265e77,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-11T08:12:37.151420+00:00,delivery_out_for_delivery,order,e505f11e-a697-4027-a5a0-42bf68265e77,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-11T08:12:21.317822+00:00,delivery_accepted,order,e505f11e-a697-4027-a5a0-42bf68265e77,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-11T08:11:50.821328+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-11T08:10:48.625352+00:00,pharmacy_mark_ready,order,e505f11e-a697-4027-a5a0-42bf68265e77,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-11T08:10:35.607095+00:00,pharmacy_mark_preparing,order,e505f11e-a697-4027-a5a0-42bf68265e77,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-11T08:10:01.494071+00:00,inventory_confirmed,order,e505f11e-a697-4027-a5a0-42bf68265e77,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,"{""total_amount"": 303.09}"
+2026-02-11T08:09:01.798383+00:00,pharmacy_accept,order,e505f11e-a697-4027-a5a0-42bf68265e77,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-11T08:08:41.791987+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-11T08:07:31.582277+00:00,pharmacy_assigned,order,e505f11e-a697-4027-a5a0-42bf68265e77,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-02-11T08:06:42.702596+00:00,pharmacist_approve,order,e505f11e-a697-4027-a5a0-42bf68265e77,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": """"}"
+2026-02-11T08:06:18.241894+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-02-11T08:05:28.639170+00:00,order_created,order,e505f11e-a697-4027-a5a0-42bf68265e77,00577e99-49cc-46ec-9720-db201224a7ae,customer,"{""status"": ""pending_pharmacist_review"", ""total_amount"": 303.09}"
+2026-02-11T08:03:26.286356+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-02-11T08:01:49.644557+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-02-11T07:46:32.498141+00:00,customer_login,user,fb1fe1cc-45b6-4733-bc3a-9d682e71500a,fb1fe1cc-45b6-4733-bc3a-9d682e71500a,customer,
+2026-02-11T07:46:03.560750+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-02-11T07:45:44.167514+00:00,delivery_delivered,order,7171c566-8484-4153-b0e6-ab2be9a40ebe,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-11T07:45:36.932930+00:00,delivery_out_for_delivery,order,7171c566-8484-4153-b0e6-ab2be9a40ebe,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-11T07:45:27.773446+00:00,delivery_accepted,order,7171c566-8484-4153-b0e6-ab2be9a40ebe,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-11T07:45:15.405973+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-02-11T07:43:14.398227+00:00,pharmacy_mark_ready,order,7171c566-8484-4153-b0e6-ab2be9a40ebe,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-11T07:43:07.797427+00:00,pharmacy_mark_preparing,order,7171c566-8484-4153-b0e6-ab2be9a40ebe,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-11T07:42:55.990917+00:00,inventory_confirmed,order,7171c566-8484-4153-b0e6-ab2be9a40ebe,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,"{""total_amount"": 483.96000000000004}"
+2026-02-11T07:42:14.116370+00:00,pharmacy_accept,order,7171c566-8484-4153-b0e6-ab2be9a40ebe,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-11T07:41:51.364683+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-02-11T07:41:36.187761+00:00,pharmacy_assigned,order,7171c566-8484-4153-b0e6-ab2be9a40ebe,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-02-11T07:41:09.820844+00:00,pharmacist_approve,order,7171c566-8484-4153-b0e6-ab2be9a40ebe,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": """"}"
+2026-02-11T07:40:27.697621+00:00,order_created,order,7171c566-8484-4153-b0e6-ab2be9a40ebe,fb1fe1cc-45b6-4733-bc3a-9d682e71500a,customer,"{""status"": ""pending_pharmacist_review"", ""total_amount"": 483.96000000000004}"
+2026-02-11T07:39:36.082509+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-02-11T07:37:48.339985+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-02-11T07:37:20.402859+00:00,customer_registered,user,fb1fe1cc-45b6-4733-bc3a-9d682e71500a,fb1fe1cc-45b6-4733-bc3a-9d682e71500a,customer,
+2026-01-25T19:14:49.742258+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-15T18:56:57.801397+00:00,medicine_created,medicine,cbf313c0-e03e-4fd3-ab36-ececb08ea384,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Sitaday M 500 Tablet""}"
+2026-01-15T18:51:02.077850+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-15T18:50:27.538254+00:00,delivery_delivered,order,82ce0ec9-a9ac-444d-8012-8869b9abee34,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-15T18:49:35.453654+00:00,delivery_out_for_delivery,order,82ce0ec9-a9ac-444d-8012-8869b9abee34,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-15T18:49:22.009372+00:00,delivery_accepted,order,82ce0ec9-a9ac-444d-8012-8869b9abee34,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-15T18:48:57.481678+00:00,pharmacy_mark_ready,order,82ce0ec9-a9ac-444d-8012-8869b9abee34,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-15T18:48:46.759533+00:00,pharmacy_mark_preparing,order,82ce0ec9-a9ac-444d-8012-8869b9abee34,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-15T18:48:34.875123+00:00,inventory_confirmed,order,82ce0ec9-a9ac-444d-8012-8869b9abee34,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,"{""total_amount"": 50.9}"
+2026-01-15T18:47:58.888195+00:00,pharmacy_accept,order,82ce0ec9-a9ac-444d-8012-8869b9abee34,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-15T18:47:52.525337+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-15T18:47:30.522685+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-15T18:47:19.055521+00:00,pharmacy_assigned,order,82ce0ec9-a9ac-444d-8012-8869b9abee34,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-01-15T18:46:41.425332+00:00,order_created,order,82ce0ec9-a9ac-444d-8012-8869b9abee34,9739e756-b9e6-48a5-add9-b55512f46951,customer,"{""status"": ""pharmacist_approved"", ""total_amount"": 50.9}"
+2026-01-15T18:45:06.582700+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-15T18:44:42.921858+00:00,customer_registered,user,9739e756-b9e6-48a5-add9-b55512f46951,9739e756-b9e6-48a5-add9-b55512f46951,customer,
+2026-01-15T18:43:22.430811+00:00,customer_registered,user,37168227-e7a2-4fde-be9a-7a7db489b8b9,37168227-e7a2-4fde-be9a-7a7db489b8b9,customer,
+2026-01-15T18:42:17.984030+00:00,medicine_created,medicine,c1b494fb-01c9-4121-9067-a403802cdf66,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Janumet 50mg/500mg Tablet ""}"
+2026-01-15T18:39:08.981000+00:00,medicine_created,medicine,0941ded9-9e2a-41ed-aaf8-47c91122d46b,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Jalra-OD 100mg Tablet""}"
+2026-01-15T18:35:11.664584+00:00,medicine_created,medicine,6a3e660d-15e3-4802-87ec-dca1351fac6d,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Galvus OD 100mg Tablet""}"
+2026-01-15T18:33:12.215854+00:00,medicine_created,medicine,061a5a3f-913a-4de5-a301-2dfc6410ee3c,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Gliptagreat M 1000 Tablet ""}"
+2026-01-15T18:30:53.083950+00:00,medicine_created,medicine,ef109783-2ce7-41a8-baa1-3129cdb99a8a,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Jalra-M 50mg/1000mg Tablet""}"
+2026-01-15T18:21:04.676804+00:00,medicine_created,medicine,ea883310-5fb2-4948-9913-e4e891be57be,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Galvus Met 50mg/1000mg Tablet""}"
+2026-01-15T18:19:09.479190+00:00,medicine_created,medicine,b870fbaf-8c1d-4eb1-853e-99af6039948f,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Gliptagreat M 500mg Tablet""}"
+2026-01-15T18:15:52.522855+00:00,medicine_created,medicine,3ae99662-3898-4485-abb5-c253bcc2fc2d,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Jalra-m 50mg/500mg Tablet ""}"
+2026-01-15T18:13:44.029953+00:00,medicine_created,medicine,3ed4f295-e87a-4ec6-9a46-c565cee6f29c,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Galvus Met 50mg/500mg Tablet""}"
+2026-01-15T18:08:52.951583+00:00,medicine_created,medicine,165573f7-6bee-46f1-8415-7f60fe8f42e2,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Gliptagreat 50 Tablet""}"
+2026-01-15T18:05:19.592944+00:00,medicine_created,medicine,3abf01d2-12e6-43f8-84d6-ff5567d0432c,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Jalra 50mg Tablet""}"
+2026-01-15T18:04:10.620566+00:00,medicine_created,medicine,703bac46-1fb4-4690-b535-818b64e4c52b,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Galvus 50mg Tablet ""}"
+2026-01-15T18:01:44.240677+00:00,medicine_created,medicine,216ef0df-20b6-45d1-af92-59bf932254b8,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Gluconorm SR 500mg Tablet""}"
+2026-01-15T17:53:45.325969+00:00,customer_login,user,8970524e-bcb0-4dae-aac6-e0b600a30e78,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-01-15T17:53:17.268714+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-15T17:52:32.280297+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-15T17:49:22.211368+00:00,medicine_created,medicine,35c779af-d8ed-43a1-9849-b46d5c80456a,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Glycomet 500 SR Tablet ""}"
+2026-01-15T17:47:04.242424+00:00,medicine_created,medicine,828192b3-ac5d-4d3f-88f0-615a90d79181,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Glyciphage Tablet ""}"
+2026-01-15T17:44:48.062014+00:00,medicine_created,medicine,ca4fed78-04fb-4dac-9a09-0b38924d9be2,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Okamet 500 Tablet""}"
+2026-01-15T17:43:19.133735+00:00,medicine_created,medicine,4073e508-ceba-4bf3-901d-d0e120c431ea,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Glycomet 500 Tablet""}"
+2026-01-15T17:37:03.981647+00:00,medicine_created,medicine,00e45953-32c9-4687-bef8-6ebf4d013c3b,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Amlopres 5 Tablet ""}"
+2026-01-15T17:34:28.620609+00:00,medicine_created,medicine,053a3b9f-b42e-46c7-bffc-4dcad21f547e,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Amlokind 5 Tablet""}"
+2026-01-15T17:32:37.649143+00:00,medicine_created,medicine,ea466f85-e334-486c-8084-242d771b91e6,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Amlip 5 Tablet""}"
+2026-01-15T17:23:56.120361+00:00,medicine_created,medicine,a3232b07-4bbf-4c84-beed-f1547a3d7805,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Amlopres-AT Tablet ""}"
+2026-01-15T17:20:55.592500+00:00,medicine_created,medicine,c0a8521f-0e67-492a-9eb1-29ddbbae0f7d,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Amlip AT Tablet""}"
+2026-01-15T17:19:27.260386+00:00,medicine_created,medicine,7159a4a5-1904-44a8-ad9a-2e62b526a928,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Amlokind-AT Tablet""}"
+2026-01-15T17:17:01.514074+00:00,medicine_created,medicine,ecff0d60-bc28-42e5-bca2-aa361f1b9979,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Moxikind-CV 625 Tablet ""}"
+2026-01-15T17:15:07.713919+00:00,medicine_created,medicine,6afd3401-520d-4dac-91ce-d7e893dde59e,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Clavam 625 Tablet""}"
+2026-01-15T17:13:51.574781+00:00,medicine_deleted,medicine,a87b8bc0-7578-4546-8a9d-9e97b65a9fbb,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-15T17:13:43.054310+00:00,medicine_created,medicine,a87b8bc0-7578-4546-8a9d-9e97b65a9fbb,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Clavam 625 Tablet""}"
+2026-01-15T17:11:27.703885+00:00,medicine_created,medicine,bf800173-e2f5-4558-b52f-41643166fd83,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Augmentin 625 Duo Tablet""}"
+2026-01-15T17:03:41.178573+00:00,medicine_created,medicine,68a29ce4-300a-42b9-940a-5388732c09f8,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Rabekind-DSR Capsule""}"
+2026-01-15T17:01:39.525568+00:00,medicine_created,medicine,aa44d8cb-2918-4cd3-88b8-57d34e917250,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Pan D Capsule ""}"
+2026-01-15T16:59:58.180623+00:00,medicine_created,medicine,1d604b37-2da2-4a6f-975a-7cf87c99f0f2,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Pantosec D SR Capsule ""}"
+2026-01-15T16:56:53.736189+00:00,medicine_created,medicine,cf9d8da1-6567-40d5-af93-4878f9b02fe8,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Pnatocid DSR Capsule""}"
+2026-01-15T16:55:48.433398+00:00,medicine_deleted,medicine,d95f7ef0-cddc-4bfa-8f83-44c40f17ddfd,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-15T16:55:34.568246+00:00,medicine_created,medicine,d95f7ef0-cddc-4bfa-8f83-44c40f17ddfd,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Pantocid DSR Capsule ""}"
+2026-01-15T16:52:59.496389+00:00,medicine_created,medicine,7493c25a-0e81-4a1d-aec9-b47597702861,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Dolo 500 Tablet""}"
+2026-01-15T16:51:40.739086+00:00,medicine_created,medicine,5942ec70-dc9e-4e99-8089-0462f6a5187d,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""P 500 ""}"
+2026-01-15T16:50:15.598469+00:00,medicine_created,medicine,03591c03-c657-4604-9808-a0683de0810e,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Crocin Advance ""}"
+2026-01-15T16:48:18.987098+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T20:31:22.386453+00:00,delivery_delivered,order,a3d3f069-2036-4cea-9514-3877fc2ce6f2,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:31:15.473444+00:00,delivery_out_for_delivery,order,a3d3f069-2036-4cea-9514-3877fc2ce6f2,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:30:53.770122+00:00,delivery_accepted,order,a3d3f069-2036-4cea-9514-3877fc2ce6f2,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:30:42.072143+00:00,pharmacy_mark_ready,order,a3d3f069-2036-4cea-9514-3877fc2ce6f2,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:30:34.519328+00:00,pharmacy_mark_preparing,order,a3d3f069-2036-4cea-9514-3877fc2ce6f2,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:30:28.807313+00:00,inventory_confirmed,order,a3d3f069-2036-4cea-9514-3877fc2ce6f2,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,"{""total_amount"": 224.0}"
+2026-01-13T20:30:17.613706+00:00,pharmacy_accept,order,a3d3f069-2036-4cea-9514-3877fc2ce6f2,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:30:08.028197+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:30:01.955523+00:00,pharmacy_assigned,order,a3d3f069-2036-4cea-9514-3877fc2ce6f2,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-01-13T20:29:49.642089+00:00,order_created,order,a3d3f069-2036-4cea-9514-3877fc2ce6f2,00577e99-49cc-46ec-9720-db201224a7ae,customer,"{""status"": ""pharmacist_approved"", ""total_amount"": 224.0}"
+2026-01-13T20:29:06.167797+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-13T20:28:53.652770+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-13T20:27:43.785989+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-13T20:27:25.690255+00:00,delivery_delivered,order,e4a9f1ec-baef-43cb-b3cd-418ddc59a1b0,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:27:14.340269+00:00,delivery_out_for_delivery,order,e4a9f1ec-baef-43cb-b3cd-418ddc59a1b0,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:27:11.381045+00:00,delivery_accepted,order,e4a9f1ec-baef-43cb-b3cd-418ddc59a1b0,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:27:08.590259+00:00,pharmacy_mark_ready,order,e4a9f1ec-baef-43cb-b3cd-418ddc59a1b0,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:27:03.269963+00:00,pharmacy_mark_preparing,order,e4a9f1ec-baef-43cb-b3cd-418ddc59a1b0,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:26:57.996932+00:00,inventory_confirmed,order,e4a9f1ec-baef-43cb-b3cd-418ddc59a1b0,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,"{""total_amount"": 160.0}"
+2026-01-13T20:26:46.351437+00:00,pharmacy_accept,order,e4a9f1ec-baef-43cb-b3cd-418ddc59a1b0,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:26:35.991177+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:26:29.677305+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:26:18.012673+00:00,pharmacy_assigned,order,e4a9f1ec-baef-43cb-b3cd-418ddc59a1b0,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-01-13T20:26:11.030639+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-13T20:25:57.893454+00:00,order_created,order,e4a9f1ec-baef-43cb-b3cd-418ddc59a1b0,00577e99-49cc-46ec-9720-db201224a7ae,customer,"{""status"": ""pharmacist_approved"", ""total_amount"": 160.0}"
+2026-01-13T20:24:51.830097+00:00,delivery_accepted,order,f21f16f8-d14f-434c-86fd-76829525f967,6c36f1f8-e6a3-4477-ba71-657d014b817d,delivery_partner,
+2026-01-13T20:24:48.853229+00:00,delivery_partner_login,user,6c36f1f8-e6a3-4477-ba71-657d014b817d,6c36f1f8-e6a3-4477-ba71-657d014b817d,delivery_partner,
+2026-01-13T20:24:47.881322+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T20:24:36.427770+00:00,pharmacy_assigned,order,35719b73-9e0c-44db-8d18-76945c366436,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""088dbc3d-abad-41e1-a647-058478c11bfe""}"
+2026-01-13T20:24:30.339767+00:00,delivery_partner_login,user,6c36f1f8-e6a3-4477-ba71-657d014b817d,6c36f1f8-e6a3-4477-ba71-657d014b817d,delivery_partner,
+2026-01-13T20:24:28.858902+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-13T20:24:18.263353+00:00,pharmacy_mark_ready,order,f21f16f8-d14f-434c-86fd-76829525f967,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T20:24:18.211847+00:00,pharmacy_mark_preparing,order,f21f16f8-d14f-434c-86fd-76829525f967,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T20:24:18.161005+00:00,inventory_confirmed,order,f21f16f8-d14f-434c-86fd-76829525f967,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,"{""total_amount"": 32.0}"
+2026-01-13T20:24:18.109330+00:00,pharmacy_accept,order,f21f16f8-d14f-434c-86fd-76829525f967,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T20:24:18.054449+00:00,staff_login,user,aef19840-b731-4a8f-ab37-22201de4cbeb,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T20:24:17.773890+00:00,pharmacy_assigned,order,f21f16f8-d14f-434c-86fd-76829525f967,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""66491cea-c62f-46a2-b03e-b211f81da0b8""}"
+2026-01-13T20:24:17.665979+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-13T20:24:17.343893+00:00,order_created,order,f21f16f8-d14f-434c-86fd-76829525f967,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,"{""status"": ""pharmacist_approved"", ""total_amount"": 32.0}"
+2026-01-13T20:24:17.221957+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T20:24:16.078734+00:00,pharmacy_reject,order,ceb1c7b1-df90-4cc2-905b-b6384fe97b47,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:23:59.647123+00:00,pharmacy_reject,order,8388043c-5b53-4130-b800-249f81cd56a7,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:23:59.371907+00:00,delivery_delivered,order,91aee0ab-adba-4805-8ccb-c9b4ab714e3d,6c36f1f8-e6a3-4477-ba71-657d014b817d,delivery_partner,
+2026-01-13T20:23:59.312707+00:00,delivery_out_for_delivery,order,91aee0ab-adba-4805-8ccb-c9b4ab714e3d,6c36f1f8-e6a3-4477-ba71-657d014b817d,delivery_partner,
+2026-01-13T20:23:59.126311+00:00,delivery_partner_login,user,6c36f1f8-e6a3-4477-ba71-657d014b817d,6c36f1f8-e6a3-4477-ba71-657d014b817d,delivery_partner,
+2026-01-13T20:22:13.566568+00:00,delivery_partner_login,user,6c36f1f8-e6a3-4477-ba71-657d014b817d,6c36f1f8-e6a3-4477-ba71-657d014b817d,delivery_partner,
+2026-01-13T20:22:04.469679+00:00,delivery_partner_login,user,6c36f1f8-e6a3-4477-ba71-657d014b817d,6c36f1f8-e6a3-4477-ba71-657d014b817d,delivery_partner,
+2026-01-13T20:19:39.913911+00:00,order_cancelled,order,6e431ecc-cf07-468c-8ca9-26337dbeb524,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-13T20:19:30.217845+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-13T20:19:09.724745+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:18:48.437164+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-13T20:18:13.946636+00:00,delivery_accepted,order,6e431ecc-cf07-468c-8ca9-26337dbeb524,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:18:06.773284+00:00,pharmacy_mark_ready,order,6e431ecc-cf07-468c-8ca9-26337dbeb524,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:17:57.951902+00:00,pharmacy_mark_preparing,order,6e431ecc-cf07-468c-8ca9-26337dbeb524,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:17:49.162072+00:00,inventory_confirmed,order,6e431ecc-cf07-468c-8ca9-26337dbeb524,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,"{""total_amount"": 224.0}"
+2026-01-13T20:17:34.951880+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:17:21.940633+00:00,pharmacy_accept,order,6e431ecc-cf07-468c-8ca9-26337dbeb524,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:17:09.523929+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:16:50.960130+00:00,pharmacy_assigned,order,6e431ecc-cf07-468c-8ca9-26337dbeb524,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-01-13T20:16:31.614555+00:00,order_created,order,6e431ecc-cf07-468c-8ca9-26337dbeb524,00577e99-49cc-46ec-9720-db201224a7ae,customer,"{""status"": ""pharmacist_approved"", ""total_amount"": 224.0}"
+2026-01-13T20:16:01.352390+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-13T20:15:57.807134+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-13T20:14:34.160206+00:00,delivery_accepted,order,91aee0ab-adba-4805-8ccb-c9b4ab714e3d,6c36f1f8-e6a3-4477-ba71-657d014b817d,delivery_partner,
+2026-01-13T20:14:34.108774+00:00,delivery_partner_login,user,6c36f1f8-e6a3-4477-ba71-657d014b817d,6c36f1f8-e6a3-4477-ba71-657d014b817d,delivery_partner,
+2026-01-13T20:14:34.056832+00:00,delivery_partner_registered,user,6c36f1f8-e6a3-4477-ba71-657d014b817d,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T20:14:34.006528+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T20:14:33.725871+00:00,pharmacy_mark_ready,order,91aee0ab-adba-4805-8ccb-c9b4ab714e3d,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T20:14:33.671948+00:00,pharmacy_mark_preparing,order,91aee0ab-adba-4805-8ccb-c9b4ab714e3d,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T20:14:33.617079+00:00,inventory_confirmed,order,91aee0ab-adba-4805-8ccb-c9b4ab714e3d,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,"{""total_amount"": 32.0}"
+2026-01-13T20:14:33.559504+00:00,pharmacy_accept,order,91aee0ab-adba-4805-8ccb-c9b4ab714e3d,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T20:14:33.497569+00:00,staff_login,user,aef19840-b731-4a8f-ab37-22201de4cbeb,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T20:14:33.220344+00:00,pharmacy_assigned,order,91aee0ab-adba-4805-8ccb-c9b4ab714e3d,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""66491cea-c62f-46a2-b03e-b211f81da0b8""}"
+2026-01-13T20:14:33.100852+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-13T20:14:32.777117+00:00,order_created,order,91aee0ab-adba-4805-8ccb-c9b4ab714e3d,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,"{""status"": ""pharmacist_approved"", ""total_amount"": 32.0}"
+2026-01-13T20:14:32.667824+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T20:13:27.877661+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T20:10:21.715895+00:00,order_cancelled,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-13T20:10:09.972213+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-13T20:09:23.417764+00:00,delivery_accepted,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:09:22.218995+00:00,delivery_accepted,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:08:54.699905+00:00,delivery_accepted,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:08:50.638572+00:00,delivery_accepted,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:08:49.149884+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:08:18.514822+00:00,delivery_accepted,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:07:57.457838+00:00,delivery_accepted,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:07:48.160112+00:00,delivery_accepted,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:07:42.956581+00:00,delivery_accepted,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:07:01.650101+00:00,delivery_accepted,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:06:51.937392+00:00,delivery_accepted,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:06:18.444749+00:00,pharmacy_mark_ready,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:06:08.981977+00:00,pharmacy_mark_preparing,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:05:54.993379+00:00,inventory_confirmed,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,"{""total_amount"": 327.5}"
+2026-01-13T20:05:26.301158+00:00,pharmacy_accept,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:05:15.603772+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:04:56.791793+00:00,pharmacy_assigned,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-01-13T20:04:42.842184+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-13T20:04:07.666686+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-13T20:03:52.194658+00:00,pharmacy_assigned,order,8388043c-5b53-4130-b800-249f81cd56a7,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-01-13T20:03:30.400668+00:00,pharmacist_approve,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": ""Valid ""}"
+2026-01-13T20:03:13.762099+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T20:02:34.248738+00:00,order_created,order,b5f97e04-d9c6-4a6e-9c6b-89c678ba4648,00577e99-49cc-46ec-9720-db201224a7ae,customer,"{""status"": ""pending_pharmacist_review"", ""total_amount"": 327.5}"
+2026-01-13T20:01:19.185497+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-13T20:00:07.612662+00:00,pharmacist_reject,order,feac3920-2427-4c3f-a20d-bc60ad1fa645,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": ""not valid\n""}"
+2026-01-13T20:00:07.299114+00:00,customer_login,user,8970524e-bcb0-4dae-aac6-e0b600a30e78,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-01-13T19:58:47.700895+00:00,pharmacist_reject,order,b0f541a4-6805-4fae-93dc-b105e982d986,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": ""not valid""}"
+2026-01-13T19:57:48.735015+00:00,pharmacist_reject,order,efa680d6-f251-4878-9d34-6d289a86b18d,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": ""not valid""}"
+2026-01-13T19:57:12.025165+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-13T19:57:00.570420+00:00,customer_login,user,8970524e-bcb0-4dae-aac6-e0b600a30e78,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-01-13T19:56:06.133654+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-13T19:55:43.236829+00:00,medicine_created,medicine,7ce11eb5-1745-4ebb-a370-64a39428d471,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Ultracet ""}"
+2026-01-13T19:54:11.990813+00:00,medicine_deleted,medicine,7b171388-91a3-462c-a056-18eecde0f463,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:54:05.203258+00:00,medicine_created,medicine,e2b792b9-13e8-4d1a-ba3c-21b75a959c85,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Dolo 650""}"
+2026-01-13T19:52:44.142523+00:00,medicine_created,medicine,7b171388-91a3-462c-a056-18eecde0f463,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Ultracet ""}"
+2026-01-13T19:45:46.653919+00:00,medicine_deleted,medicine,6018bc06-6dbc-4e66-b0e0-78453c74af8a,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:44.794814+00:00,medicine_deleted,medicine,41a0adde-7bd7-4dcc-b05c-45622ff2cd19,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:42.666821+00:00,medicine_deleted,medicine,9198e720-c856-45d4-a4c9-ae5d824953ca,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:40.271986+00:00,medicine_deleted,medicine,a6e7e7cf-40e6-4cf0-bb7f-6b3608e03ed1,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:38.247711+00:00,medicine_deleted,medicine,356c80db-6d77-4bbf-8179-581408423b8f,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:36.181279+00:00,medicine_deleted,medicine,6fc7cecc-7e8a-4dce-a812-d3ade4c1e7f3,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:34.235401+00:00,medicine_deleted,medicine,a58ec9ba-3c4a-4bcf-a579-847a2b4e0a5c,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:32.016159+00:00,medicine_deleted,medicine,aca52ae8-348a-423e-a0e2-567f789ee1b2,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:29.586418+00:00,medicine_deleted,medicine,6c2e1bb8-cef1-4bb9-8756-bcd1f8ac46e4,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:27.386873+00:00,medicine_deleted,medicine,1af9eb74-344d-4411-9c0d-3107e4fa3184,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:25.471823+00:00,medicine_deleted,medicine,0bde8f61-5afe-4666-aa3b-2b0d7a597c88,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:23.256206+00:00,medicine_deleted,medicine,310c6533-7d43-4f5e-bb07-d594f91245ab,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:21.243245+00:00,medicine_deleted,medicine,18ebed7c-3cff-4cf7-8286-9b5e4b06b80d,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:18.378230+00:00,medicine_deleted,medicine,e689797f-910c-4562-835d-b41abeae5860,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:45:14.580568+00:00,medicine_deleted,medicine,7c682b09-3958-4392-87aa-094d6592a790,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:44:51.296839+00:00,medicine_deleted,medicine,def44dd3-b9f7-40bf-9ed6-cbe88cf5a97d,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:44:48.487669+00:00,medicine_deleted,medicine,68c7e8f2-fcb8-4169-88ce-ef43af264327,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:44:45.715500+00:00,medicine_deleted,medicine,b07b9acc-0a7f-4b28-9425-913fa281882c,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:44:11.322067+00:00,medicine_deleted,medicine,250dc281-96ec-42fc-89e6-8d448000f88b,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:43:22.578054+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:42:49.198387+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:41:34.590931+00:00,medicine_deleted,medicine,ade19e25-0ede-4481-afe8-c6f0c34a0c1c,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:41:29.683943+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:40:22.972481+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:40:07.330926+00:00,medicine_deleted,medicine,1565ab79-337b-4a2f-9f94-cb18a2fa4909,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:40:07.171128+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:38:32.977420+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:37:35.416590+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:33:55.029922+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:33:23.803225+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:32:48.877458+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:31:40.079897+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:29:22.531495+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T19:29:14.685986+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T19:28:45.755372+00:00,staff_login,user,aef19840-b731-4a8f-ab37-22201de4cbeb,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T19:28:17.567602+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:27:55.151163+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:27:33.283146+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T19:27:08.341372+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T19:26:52.172187+00:00,staff_login,user,aef19840-b731-4a8f-ab37-22201de4cbeb,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T19:26:51.826038+00:00,staff_login,user,aef19840-b731-4a8f-ab37-22201de4cbeb,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T19:26:51.477166+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T19:26:51.430924+00:00,order_created,order,35719b73-9e0c-44db-8d18-76945c366436,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,"{""status"": ""pharmacist_approved"", ""total_amount"": 50.0}"
+2026-01-13T19:26:51.351405+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T19:26:51.254186+00:00,medicine_created,medicine,6018bc06-6dbc-4e66-b0e0-78453c74af8a,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""TEST_Paracetamol_984cf5""}"
+2026-01-13T19:26:51.206183+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:24:56.288714+00:00,staff_login,user,aef19840-b731-4a8f-ab37-22201de4cbeb,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T19:24:47.266311+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:24:33.687497+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:23:25.195148+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T19:23:10.607355+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T19:23:01.373874+00:00,inventory_confirmed,order,3aad8df1-c68f-493d-b6ec-40d23db20a27,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,"{""total_amount"": 255.0}"
+2026-01-13T19:23:01.315827+00:00,pharmacy_accept,order,3aad8df1-c68f-493d-b6ec-40d23db20a27,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T19:23:01.147273+00:00,staff_login,user,aef19840-b731-4a8f-ab37-22201de4cbeb,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T19:22:32.284240+00:00,staff_login,user,aef19840-b731-4a8f-ab37-22201de4cbeb,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T19:22:18.624198+00:00,staff_login,user,aef19840-b731-4a8f-ab37-22201de4cbeb,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T19:22:10.731884+00:00,staff_login,user,aef19840-b731-4a8f-ab37-22201de4cbeb,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T19:22:10.433614+00:00,staff_registered,user,aef19840-b731-4a8f-ab37-22201de4cbeb,aef19840-b731-4a8f-ab37-22201de4cbeb,pharmacy_staff,
+2026-01-13T19:22:10.153420+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:21:53.055546+00:00,pharmacy_assigned,order,3aad8df1-c68f-493d-b6ec-40d23db20a27,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""66491cea-c62f-46a2-b03e-b211f81da0b8""}"
+2026-01-13T19:21:52.924459+00:00,pharmacist_approve,order,3aad8df1-c68f-493d-b6ec-40d23db20a27,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": ""Prescription verified""}"
+2026-01-13T19:21:52.862100+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-13T19:21:52.538306+00:00,order_created,order,3aad8df1-c68f-493d-b6ec-40d23db20a27,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,"{""status"": ""pending_pharmacist_review"", ""total_amount"": 255.0}"
+2026-01-13T19:21:52.394101+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T19:21:38.031616+00:00,order_created,order,8388043c-5b53-4130-b800-249f81cd56a7,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,"{""status"": ""pharmacist_approved"", ""total_amount"": 50.0}"
+2026-01-13T19:21:37.924913+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T19:21:14.861313+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:21:01.172621+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:20:13.740823+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T19:19:49.389456+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-13T17:52:01.335773+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T17:39:41.337775+00:00,delivery_partner_registered,user,05a08e5e-c2b5-4759-a44e-281880358b7d,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T17:36:05.503205+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T17:35:20.054773+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T17:34:33.991465+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T17:32:13.436719+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T17:31:53.450480+00:00,delivery_issue_reported,order,1986e8c4-7682-4627-aec0-1ca1fd668ae3,b1e320c4-85a7-4b1b-934a-ecef552e2cca,delivery_partner,"{""issue_type"": ""customer_unavailable"", ""description"": ""Customer was not available at delivery address""}"
+2026-01-13T17:31:53.380797+00:00,delivery_delivered,order,1986e8c4-7682-4627-aec0-1ca1fd668ae3,b1e320c4-85a7-4b1b-934a-ecef552e2cca,delivery_partner,
+2026-01-13T17:31:53.342850+00:00,delivery_out_for_delivery,order,1986e8c4-7682-4627-aec0-1ca1fd668ae3,b1e320c4-85a7-4b1b-934a-ecef552e2cca,delivery_partner,
+2026-01-13T17:31:53.302783+00:00,delivery_pickup,order,1986e8c4-7682-4627-aec0-1ca1fd668ae3,b1e320c4-85a7-4b1b-934a-ecef552e2cca,delivery_partner,
+2026-01-13T17:31:53.264261+00:00,delivery_accepted,order,1986e8c4-7682-4627-aec0-1ca1fd668ae3,b1e320c4-85a7-4b1b-934a-ecef552e2cca,delivery_partner,
+2026-01-13T17:31:53.145531+00:00,pharmacy_mark_ready,order,1986e8c4-7682-4627-aec0-1ca1fd668ae3,b7ec6035-9132-437f-97fa-49d6ccd857ac,pharmacy_staff,
+2026-01-13T17:31:53.105613+00:00,pharmacy_mark_preparing,order,1986e8c4-7682-4627-aec0-1ca1fd668ae3,b7ec6035-9132-437f-97fa-49d6ccd857ac,pharmacy_staff,
+2026-01-13T17:31:53.067374+00:00,inventory_confirmed,order,1986e8c4-7682-4627-aec0-1ca1fd668ae3,b7ec6035-9132-437f-97fa-49d6ccd857ac,pharmacy_staff,"{""total_amount"": 45.0}"
+2026-01-13T17:31:53.029283+00:00,pharmacy_accept,order,1986e8c4-7682-4627-aec0-1ca1fd668ae3,b7ec6035-9132-437f-97fa-49d6ccd857ac,pharmacy_staff,
+2026-01-13T17:31:52.988495+00:00,staff_registered,user,b7ec6035-9132-437f-97fa-49d6ccd857ac,b7ec6035-9132-437f-97fa-49d6ccd857ac,pharmacy_staff,
+2026-01-13T17:31:52.691531+00:00,delivery_partner_login,user,b1e320c4-85a7-4b1b-934a-ecef552e2cca,b1e320c4-85a7-4b1b-934a-ecef552e2cca,delivery_partner,
+2026-01-13T17:31:52.656399+00:00,delivery_partner_registered,user,b1e320c4-85a7-4b1b-934a-ecef552e2cca,e566ae4a-b6ee-4474-aac5-7b77c795b139,ops,
+2026-01-13T17:31:52.618993+00:00,order_created,order,feac3920-2427-4c3f-a20d-bc60ad1fa645,b2201610-c983-411f-8b95-3b046e66ed55,customer,"{""status"": ""pending_pharmacist_review""}"
+2026-01-13T17:31:52.580420+00:00,pharmacy_assigned,order,1986e8c4-7682-4627-aec0-1ca1fd668ae3,455bd9aa-3056-414e-94ad-9d7da349ac6b,pharmacist,"{""pharmacy_id"": ""8110d21d-f7d3-489f-a2d1-3b82524559e5""}"
+2026-01-13T17:31:52.539384+00:00,pharmacist_approve,order,1986e8c4-7682-4627-aec0-1ca1fd668ae3,455bd9aa-3056-414e-94ad-9d7da349ac6b,pharmacist,"{""notes"": ""Order approved for fulfillment""}"
+2026-01-13T17:31:52.464632+00:00,order_created,order,1986e8c4-7682-4627-aec0-1ca1fd668ae3,b2201610-c983-411f-8b95-3b046e66ed55,customer,"{""status"": ""pending_pharmacist_review""}"
+2026-01-13T17:31:52.388566+00:00,pharmacy_created,pharmacy,8110d21d-f7d3-489f-a2d1-3b82524559e5,e566ae4a-b6ee-4474-aac5-7b77c795b139,ops,"{""name"": ""Test Pharmacy""}"
+2026-01-13T17:31:52.277162+00:00,medicine_created,medicine,41a0adde-7bd7-4dcc-b05c-45622ff2cd19,e566ae4a-b6ee-4474-aac5-7b77c795b139,ops,"{""name"": ""Tramadol 50mg""}"
+2026-01-13T17:31:52.242536+00:00,medicine_created,medicine,9198e720-c856-45d4-a4c9-ae5d824953ca,e566ae4a-b6ee-4474-aac5-7b77c795b139,ops,"{""name"": ""Amoxicillin 250mg""}"
+2026-01-13T17:31:52.203292+00:00,medicine_created,medicine,a6e7e7cf-40e6-4cf0-bb7f-6b3608e03ed1,e566ae4a-b6ee-4474-aac5-7b77c795b139,ops,"{""name"": ""Paracetamol 500mg""}"
+2026-01-13T17:31:52.091725+00:00,staff_login,user,df18fed1-13ed-4a78-b1dc-05ae6ed8b98e,df18fed1-13ed-4a78-b1dc-05ae6ed8b98e,pharmacy_staff,
+2026-01-13T17:31:51.829555+00:00,staff_registered,user,df18fed1-13ed-4a78-b1dc-05ae6ed8b98e,df18fed1-13ed-4a78-b1dc-05ae6ed8b98e,pharmacy_staff,
+2026-01-13T17:31:51.567951+00:00,staff_login,user,455bd9aa-3056-414e-94ad-9d7da349ac6b,455bd9aa-3056-414e-94ad-9d7da349ac6b,pharmacist,
+2026-01-13T17:31:51.304746+00:00,staff_registered,user,455bd9aa-3056-414e-94ad-9d7da349ac6b,455bd9aa-3056-414e-94ad-9d7da349ac6b,pharmacist,
+2026-01-13T17:31:51.041677+00:00,staff_login,user,e566ae4a-b6ee-4474-aac5-7b77c795b139,e566ae4a-b6ee-4474-aac5-7b77c795b139,ops,
+2026-01-13T17:31:50.785034+00:00,staff_registered,user,e566ae4a-b6ee-4474-aac5-7b77c795b139,e566ae4a-b6ee-4474-aac5-7b77c795b139,ops,
+2026-01-13T17:31:50.522245+00:00,customer_login,user,b2201610-c983-411f-8b95-3b046e66ed55,b2201610-c983-411f-8b95-3b046e66ed55,customer,
+2026-01-13T17:31:50.486981+00:00,customer_registered,user,b2201610-c983-411f-8b95-3b046e66ed55,b2201610-c983-411f-8b95-3b046e66ed55,customer,
+2026-01-13T17:31:03.645840+00:00,delivery_partner_login,user,12c21283-2f78-4d49-a476-ac04384373d7,12c21283-2f78-4d49-a476-ac04384373d7,delivery_partner,
+2026-01-13T17:31:03.607395+00:00,delivery_partner_registered,user,12c21283-2f78-4d49-a476-ac04384373d7,5858b267-d0e8-4533-bae7-e37c87d65e9d,ops,
+2026-01-13T17:31:03.570068+00:00,order_created,order,b0f541a4-6805-4fae-93dc-b105e982d986,bf130b42-681e-4ed1-809e-64e21012234e,customer,"{""status"": ""pending_pharmacist_review""}"
+2026-01-13T17:31:03.527083+00:00,pharmacy_assigned,order,4e81c8f2-35ac-43fe-8877-ba54396301c4,9dfb3bef-004e-42a4-8fbd-41daea55b06b,pharmacist,"{""pharmacy_id"": ""a334b26c-e715-4b1d-af3c-f9ea12bbc453""}"
+2026-01-13T17:31:03.486863+00:00,pharmacist_approve,order,4e81c8f2-35ac-43fe-8877-ba54396301c4,9dfb3bef-004e-42a4-8fbd-41daea55b06b,pharmacist,"{""notes"": ""Order approved for fulfillment""}"
+2026-01-13T17:31:03.414380+00:00,order_created,order,4e81c8f2-35ac-43fe-8877-ba54396301c4,bf130b42-681e-4ed1-809e-64e21012234e,customer,"{""status"": ""pending_pharmacist_review""}"
+2026-01-13T17:31:03.329353+00:00,pharmacy_created,pharmacy,a334b26c-e715-4b1d-af3c-f9ea12bbc453,5858b267-d0e8-4533-bae7-e37c87d65e9d,ops,"{""name"": ""Test Pharmacy""}"
+2026-01-13T17:31:03.205460+00:00,medicine_created,medicine,356c80db-6d77-4bbf-8179-581408423b8f,5858b267-d0e8-4533-bae7-e37c87d65e9d,ops,"{""name"": ""Tramadol 50mg""}"
+2026-01-13T17:31:03.126647+00:00,medicine_created,medicine,6fc7cecc-7e8a-4dce-a812-d3ade4c1e7f3,5858b267-d0e8-4533-bae7-e37c87d65e9d,ops,"{""name"": ""Amoxicillin 250mg""}"
+2026-01-13T17:31:03.086620+00:00,medicine_created,medicine,a58ec9ba-3c4a-4bcf-a579-847a2b4e0a5c,5858b267-d0e8-4533-bae7-e37c87d65e9d,ops,"{""name"": ""Paracetamol 500mg""}"
+2026-01-13T17:31:02.931640+00:00,staff_login,user,51dcf54a-9da2-4e78-ba38-6746ecf9c5e6,51dcf54a-9da2-4e78-ba38-6746ecf9c5e6,pharmacy_staff,
+2026-01-13T17:31:02.668521+00:00,staff_registered,user,51dcf54a-9da2-4e78-ba38-6746ecf9c5e6,51dcf54a-9da2-4e78-ba38-6746ecf9c5e6,pharmacy_staff,
+2026-01-13T17:31:02.405908+00:00,staff_login,user,9dfb3bef-004e-42a4-8fbd-41daea55b06b,9dfb3bef-004e-42a4-8fbd-41daea55b06b,pharmacist,
+2026-01-13T17:31:02.145051+00:00,staff_registered,user,9dfb3bef-004e-42a4-8fbd-41daea55b06b,9dfb3bef-004e-42a4-8fbd-41daea55b06b,pharmacist,
+2026-01-13T17:31:01.879140+00:00,staff_login,user,5858b267-d0e8-4533-bae7-e37c87d65e9d,5858b267-d0e8-4533-bae7-e37c87d65e9d,ops,
+2026-01-13T17:31:01.610652+00:00,staff_registered,user,5858b267-d0e8-4533-bae7-e37c87d65e9d,5858b267-d0e8-4533-bae7-e37c87d65e9d,ops,
+2026-01-13T17:31:01.348266+00:00,customer_login,user,bf130b42-681e-4ed1-809e-64e21012234e,bf130b42-681e-4ed1-809e-64e21012234e,customer,
+2026-01-13T17:31:01.314531+00:00,customer_registered,user,bf130b42-681e-4ed1-809e-64e21012234e,bf130b42-681e-4ed1-809e-64e21012234e,customer,
+2026-01-13T17:30:13.824674+00:00,order_created,order,efa680d6-f251-4878-9d34-6d289a86b18d,b74385e0-b2a4-4459-9df0-68e9083f70ae,customer,"{""status"": ""pending_pharmacist_review""}"
+2026-01-13T17:30:13.778729+00:00,pharmacy_assigned,order,bb11fe04-be76-49af-b558-e11b44a673de,e4ec26c8-02de-4e0a-bd89-49e5337344eb,pharmacist,"{""pharmacy_id"": ""088dbc3d-abad-41e1-a647-058478c11bfe""}"
+2026-01-13T17:30:13.733196+00:00,pharmacist_approve,order,bb11fe04-be76-49af-b558-e11b44a673de,e4ec26c8-02de-4e0a-bd89-49e5337344eb,pharmacist,"{""notes"": ""Order approved for fulfillment""}"
+2026-01-13T17:30:13.644648+00:00,order_created,order,bb11fe04-be76-49af-b558-e11b44a673de,b74385e0-b2a4-4459-9df0-68e9083f70ae,customer,"{""status"": ""pending_pharmacist_review""}"
+2026-01-13T17:30:13.472595+00:00,pharmacy_created,pharmacy,088dbc3d-abad-41e1-a647-058478c11bfe,2463b2b1-81cf-402b-9e73-0d6426211138,ops,"{""name"": ""Test Pharmacy""}"
+2026-01-13T17:30:13.334613+00:00,medicine_created,medicine,aca52ae8-348a-423e-a0e2-567f789ee1b2,2463b2b1-81cf-402b-9e73-0d6426211138,ops,"{""name"": ""Tramadol 50mg""}"
+2026-01-13T17:30:13.292714+00:00,medicine_created,medicine,6c2e1bb8-cef1-4bb9-8756-bcd1f8ac46e4,2463b2b1-81cf-402b-9e73-0d6426211138,ops,"{""name"": ""Amoxicillin 250mg""}"
+2026-01-13T17:30:13.246692+00:00,medicine_created,medicine,1af9eb74-344d-4411-9c0d-3107e4fa3184,2463b2b1-81cf-402b-9e73-0d6426211138,ops,"{""name"": ""Paracetamol 500mg""}"
+2026-01-13T17:30:13.105300+00:00,staff_login,user,26a34ee3-5a4f-431e-a64b-48fdaac6b7f0,26a34ee3-5a4f-431e-a64b-48fdaac6b7f0,pharmacy_staff,
+2026-01-13T17:30:12.817393+00:00,staff_registered,user,26a34ee3-5a4f-431e-a64b-48fdaac6b7f0,26a34ee3-5a4f-431e-a64b-48fdaac6b7f0,pharmacy_staff,
+2026-01-13T17:30:12.509446+00:00,staff_login,user,e4ec26c8-02de-4e0a-bd89-49e5337344eb,e4ec26c8-02de-4e0a-bd89-49e5337344eb,pharmacist,
+2026-01-13T17:30:12.220781+00:00,staff_registered,user,e4ec26c8-02de-4e0a-bd89-49e5337344eb,e4ec26c8-02de-4e0a-bd89-49e5337344eb,pharmacist,
+2026-01-13T17:30:11.886661+00:00,staff_login,user,2463b2b1-81cf-402b-9e73-0d6426211138,2463b2b1-81cf-402b-9e73-0d6426211138,ops,
+2026-01-13T17:30:11.605088+00:00,staff_registered,user,2463b2b1-81cf-402b-9e73-0d6426211138,2463b2b1-81cf-402b-9e73-0d6426211138,ops,
+2026-01-13T17:30:11.241590+00:00,customer_login,user,b74385e0-b2a4-4459-9df0-68e9083f70ae,b74385e0-b2a4-4459-9df0-68e9083f70ae,customer,
+2026-01-13T17:30:11.188861+00:00,customer_registered,user,b74385e0-b2a4-4459-9df0-68e9083f70ae,b74385e0-b2a4-4459-9df0-68e9083f70ae,customer,
+2026-01-13T17:28:01.661617+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T17:27:43.841386+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T17:27:16.701071+00:00,delivery_partner_login,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,delivery_partner,
+2026-01-13T17:27:06.729151+00:00,delivery_partner_registered,user,028e63c6-11ea-4e9f-8e0b-72b078e7ba7e,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T17:27:06.668084+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T17:22:50.634181+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-13T15:01:48.370617+00:00,customer_login,user,8970524e-bcb0-4dae-aac6-e0b600a30e78,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-01-13T15:01:41.804756+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-10T17:25:55.279361+00:00,order_cancelled,order,e3e57fcf-222b-432b-b106-44917d2af8bd,21d2ec94-9bd9-468b-a43f-ba420dfcc32e,customer,
+2026-01-10T17:24:51.919506+00:00,pharmacist_reject,order,e3e57fcf-222b-432b-b106-44917d2af8bd,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": ""prescription not valid""}"
+2026-01-10T17:21:41.715637+00:00,order_created,order,e3e57fcf-222b-432b-b106-44917d2af8bd,21d2ec94-9bd9-468b-a43f-ba420dfcc32e,customer,"{""status"": ""pending_pharmacist_review""}"
+2026-01-10T17:20:44.940880+00:00,customer_login,user,8970524e-bcb0-4dae-aac6-e0b600a30e78,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-01-10T17:20:41.166806+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-10T17:19:31.658661+00:00,customer_login,user,8970524e-bcb0-4dae-aac6-e0b600a30e78,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-01-10T17:16:16.644656+00:00,staff_login,user,a43b6cb5-fa51-4629-aeca-f7820e54c26f,a43b6cb5-fa51-4629-aeca-f7820e54c26f,ops,
+2026-01-10T17:15:33.105117+00:00,staff_registered,user,a43b6cb5-fa51-4629-aeca-f7820e54c26f,a43b6cb5-fa51-4629-aeca-f7820e54c26f,ops,
+2026-01-10T17:12:48.928874+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-10T17:09:45.122910+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-10T17:08:37.272072+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-10T17:07:55.776836+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-10T17:06:13.076361+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-10T17:05:29.493221+00:00,order_cancelled,order,6eda79d9-eaad-4131-978e-5c6ef9552edc,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-01-10T17:03:45.194564+00:00,pharmacy_mark_ready,order,6eda79d9-eaad-4131-978e-5c6ef9552edc,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-10T17:03:35.367790+00:00,pharmacy_mark_preparing,order,6eda79d9-eaad-4131-978e-5c6ef9552edc,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-10T17:03:21.455378+00:00,inventory_confirmed,order,6eda79d9-eaad-4131-978e-5c6ef9552edc,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,"{""total_amount"": 10}"
+2026-01-10T17:03:01.062328+00:00,pharmacy_accept,order,6eda79d9-eaad-4131-978e-5c6ef9552edc,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-10T17:02:51.495675+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-10T17:02:17.877942+00:00,pharmacy_assigned,order,6eda79d9-eaad-4131-978e-5c6ef9552edc,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-01-10T17:01:15.738896+00:00,order_created,order,6eda79d9-eaad-4131-978e-5c6ef9552edc,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,"{""status"": ""pharmacist_approved""}"
+2026-01-10T17:00:19.900322+00:00,customer_login,user,8970524e-bcb0-4dae-aac6-e0b600a30e78,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-01-10T16:59:32.314500+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-10T16:57:22.862718+00:00,customer_registered,user,f808a868-6c37-4e0f-8a6f-dfb1fa67f617,f808a868-6c37-4e0f-8a6f-dfb1fa67f617,customer,
+2026-01-10T16:53:43.277362+00:00,customer_registered,user,21d2ec94-9bd9-468b-a43f-ba420dfcc32e,21d2ec94-9bd9-468b-a43f-ba420dfcc32e,customer,
+2026-01-10T16:51:26.253017+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-10T16:51:24.436599+00:00,customer_registered,user,8970524e-bcb0-4dae-aac6-e0b600a30e78,8970524e-bcb0-4dae-aac6-e0b600a30e78,customer,
+2026-01-10T16:50:22.178533+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T20:04:28.016208+00:00,order_cancelled,order,fac48d07-0cb1-4f20-897b-fac9cb515154,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T20:04:06.003735+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T20:02:47.797398+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T20:01:29.094655+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T20:00:34.149463+00:00,pharmacy_mark_ready,order,fac48d07-0cb1-4f20-897b-fac9cb515154,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-08T20:00:20.540796+00:00,pharmacy_mark_preparing,order,fac48d07-0cb1-4f20-897b-fac9cb515154,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-08T20:00:11.654400+00:00,inventory_confirmed,order,fac48d07-0cb1-4f20-897b-fac9cb515154,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,"{""total_amount"": 956}"
+2026-01-08T19:59:08.285749+00:00,pharmacy_accept,order,fac48d07-0cb1-4f20-897b-fac9cb515154,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-08T19:58:56.987220+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-08T19:58:43.266387+00:00,pharmacy_assigned,order,fac48d07-0cb1-4f20-897b-fac9cb515154,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-01-08T19:58:34.674764+00:00,pharmacist_approve,order,fac48d07-0cb1-4f20-897b-fac9cb515154,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": """"}"
+2026-01-08T19:58:18.608008+00:00,order_created,order,fac48d07-0cb1-4f20-897b-fac9cb515154,00577e99-49cc-46ec-9720-db201224a7ae,customer,"{""status"": ""pending_pharmacist_review""}"
+2026-01-08T19:57:36.655514+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:55:53.175814+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-08T19:55:21.240920+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:53:14.290302+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:52:02.973243+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:50:55.103616+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T19:40:03.891933+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:39:00.643718+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:38:35.358944+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:38:13.160919+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:37:52.290555+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:37:33.578171+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:36:09.140212+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:35:58.623281+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T19:35:48.747041+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:35:37.804358+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T19:35:26.949161+00:00,customer_login,user,3b0efd40-710d-4263-b9c0-c15f7fa69288,3b0efd40-710d-4263-b9c0-c15f7fa69288,customer,
+2026-01-08T19:35:17.554494+00:00,customer_login,user,3b0efd40-710d-4263-b9c0-c15f7fa69288,3b0efd40-710d-4263-b9c0-c15f7fa69288,customer,
+2026-01-08T19:34:45.960312+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-08T19:24:53.467001+00:00,pharmacy_mark_delivered,order,539711fe-312e-45f7-bad6-ae95bbd73f9b,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-08T19:24:40.599916+00:00,pharmacy_mark_ready,order,539711fe-312e-45f7-bad6-ae95bbd73f9b,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-08T19:24:25.215917+00:00,pharmacy_mark_preparing,order,539711fe-312e-45f7-bad6-ae95bbd73f9b,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-08T19:24:12.988473+00:00,inventory_confirmed,order,539711fe-312e-45f7-bad6-ae95bbd73f9b,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,"{""total_amount"": 1300}"
+2026-01-08T19:23:16.986425+00:00,pharmacy_accept,order,539711fe-312e-45f7-bad6-ae95bbd73f9b,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-08T19:23:01.156891+00:00,staff_login,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-08T19:22:31.775102+00:00,pharmacy_assigned,order,539711fe-312e-45f7-bad6-ae95bbd73f9b,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-01-08T19:22:21.850886+00:00,pharmacist_approve,order,539711fe-312e-45f7-bad6-ae95bbd73f9b,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": """"}"
+2026-01-08T19:22:09.082367+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-08T19:21:55.010651+00:00,order_created,order,539711fe-312e-45f7-bad6-ae95bbd73f9b,00577e99-49cc-46ec-9720-db201224a7ae,customer,"{""status"": ""pending_pharmacist_review""}"
+2026-01-08T19:20:35.339330+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:17:59.387429+00:00,staff_registered,user,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,1c34eaca-bb84-4fb4-a601-8dbb7b1077ba,pharmacy_staff,
+2026-01-08T19:17:01.179913+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T19:16:49.091338+00:00,order_cancelled,order,7f3b9ab4-9ff0-4519-a0d4-599ad9e4e8c7,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:16:22.355602+00:00,staff_login,user,aefbd2fb-6759-4910-84a2-8f4168abb7ab,aefbd2fb-6759-4910-84a2-8f4168abb7ab,pharmacy_staff,
+2026-01-08T19:16:03.485831+00:00,pharmacy_assigned,order,7f3b9ab4-9ff0-4519-a0d4-599ad9e4e8c7,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-01-08T19:15:54.989169+00:00,pharmacist_approve,order,7f3b9ab4-9ff0-4519-a0d4-599ad9e4e8c7,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": """"}"
+2026-01-08T19:15:34.438706+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-08T19:15:09.206715+00:00,order_created,order,7f3b9ab4-9ff0-4519-a0d4-599ad9e4e8c7,00577e99-49cc-46ec-9720-db201224a7ae,customer,"{""status"": ""pending_pharmacist_review""}"
+2026-01-08T19:14:23.821645+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:12:32.624708+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:12:18.237994+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T19:11:25.019543+00:00,staff_login,user,aefbd2fb-6759-4910-84a2-8f4168abb7ab,aefbd2fb-6759-4910-84a2-8f4168abb7ab,pharmacy_staff,
+2026-01-08T19:10:53.478809+00:00,staff_registered,user,aefbd2fb-6759-4910-84a2-8f4168abb7ab,aefbd2fb-6759-4910-84a2-8f4168abb7ab,pharmacy_staff,
+2026-01-08T19:08:58.170858+00:00,staff_registered,user,377f1a3e-01ae-419d-94b3-95811274335b,377f1a3e-01ae-419d-94b3-95811274335b,ops,
+2026-01-08T19:07:45.425488+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T19:04:45.310703+00:00,pharmacy_assigned,order,ceb1c7b1-df90-4cc2-905b-b6384fe97b47,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""pharmacy_id"": ""f339fa09-9bd6-4f57-acff-c86c23d36bc1""}"
+2026-01-08T19:04:33.952105+00:00,pharmacist_approve,order,ceb1c7b1-df90-4cc2-905b-b6384fe97b47,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,"{""notes"": """"}"
+2026-01-08T19:04:25.052486+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-08T19:03:48.361636+00:00,pharmacy_created,pharmacy,f339fa09-9bd6-4f57-acff-c86c23d36bc1,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Jas and Deep Pharmacy""}"
+2026-01-08T19:01:17.981629+00:00,medicine_created,medicine,250dc281-96ec-42fc-89e6-8d448000f88b,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Ultracet ""}"
+2026-01-08T18:59:39.312920+00:00,medicine_created,medicine,0bde8f61-5afe-4666-aa3b-2b0d7a597c88,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Pantocid DSR ""}"
+2026-01-08T18:57:02.684635+00:00,medicine_created,medicine,310c6533-7d43-4f5e-bb07-d594f91245ab,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""P 650""}"
+2026-01-08T18:56:08.596269+00:00,medicine_created,medicine,18ebed7c-3cff-4cf7-8286-9b5e4b06b80d,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Dolo 650""}"
+2026-01-08T18:55:08.522542+00:00,medicine_created,medicine,e689797f-910c-4562-835d-b41abeae5860,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,"{""name"": ""Crocin 500""}"
+2026-01-08T18:51:44.176164+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T18:49:06.110502+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T18:45:54.830766+00:00,customer_login,user,dc9748f5-4024-4974-8e69-6d028249fd46,dc9748f5-4024-4974-8e69-6d028249fd46,customer,
+2026-01-08T18:42:47.958234+00:00,customer_registered,user,dc9748f5-4024-4974-8e69-6d028249fd46,dc9748f5-4024-4974-8e69-6d028249fd46,customer,
+2026-01-08T18:41:17.991450+00:00,customer_login,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T18:39:54.673041+00:00,customer_registered,user,00577e99-49cc-46ec-9720-db201224a7ae,00577e99-49cc-46ec-9720-db201224a7ae,customer,
+2026-01-08T18:37:52.881065+00:00,staff_login,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-08T18:37:30.378906+00:00,staff_registered,user,5907cc48-e8c5-46d5-b773-b033362af097,5907cc48-e8c5-46d5-b773-b033362af097,pharmacist,
+2026-01-08T18:37:15.053333+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T18:36:56.773244+00:00,customer_registered,user,3b0efd40-710d-4263-b9c0-c15f7fa69288,3b0efd40-710d-4263-b9c0-c15f7fa69288,customer,
+2026-01-08T18:36:38.353462+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T18:36:17.778056+00:00,staff_login,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T18:36:08.928305+00:00,staff_registered,user,cc98c5f4-528e-474e-8920-efc6cd0904e5,cc98c5f4-528e-474e-8920-efc6cd0904e5,ops,
+2026-01-08T18:33:45.398903+00:00,customer_registered,user,1cf5c367-e529-40c3-9ee0-ffe23fb14041,1cf5c367-e529-40c3-9ee0-ffe23fb14041,customer,
+2026-01-08T18:33:07.361537+00:00,order_created,order,ceb1c7b1-df90-4cc2-905b-b6384fe97b47,7fe4e03a-7c06-4143-be5b-4fc4fa5c85ee,customer,"{""status"": ""pending_pharmacist_review""}"
+2026-01-08T18:33:07.323595+00:00,pharmacy_assigned,order,7e6a43fe-4912-4501-ac75-f81ce910f83e,f82271c2-0908-406d-83ce-8c8c27910285,pharmacist,"{""pharmacy_id"": ""ae337008-ea62-4f9b-a220-2dfba1b3c51f""}"
+2026-01-08T18:33:07.288868+00:00,pharmacist_approve,order,7e6a43fe-4912-4501-ac75-f81ce910f83e,f82271c2-0908-406d-83ce-8c8c27910285,pharmacist,"{""notes"": ""Order approved for fulfillment""}"
+2026-01-08T18:33:07.135627+00:00,order_created,order,7e6a43fe-4912-4501-ac75-f81ce910f83e,7fe4e03a-7c06-4143-be5b-4fc4fa5c85ee,customer,"{""status"": ""pending_pharmacist_review""}"
+2026-01-08T18:33:07.055502+00:00,pharmacy_created,pharmacy,ae337008-ea62-4f9b-a220-2dfba1b3c51f,282b7a35-3587-4012-9c2f-36a70542aaa9,ops,"{""name"": ""Test Pharmacy""}"
+2026-01-08T18:33:06.947194+00:00,medicine_created,medicine,7c682b09-3958-4392-87aa-094d6592a790,282b7a35-3587-4012-9c2f-36a70542aaa9,ops,"{""name"": ""Tramadol 50mg""}"
+2026-01-08T18:33:06.908130+00:00,medicine_created,medicine,def44dd3-b9f7-40bf-9ed6-cbe88cf5a97d,282b7a35-3587-4012-9c2f-36a70542aaa9,ops,"{""name"": ""Amoxicillin 250mg""}"
+2026-01-08T18:33:06.874682+00:00,medicine_created,medicine,68c7e8f2-fcb8-4169-88ce-ef43af264327,282b7a35-3587-4012-9c2f-36a70542aaa9,ops,"{""name"": ""Paracetamol 500mg""}"
+2026-01-08T18:33:06.767316+00:00,staff_login,user,6f193fd6-5476-4771-ad3b-82e2e573ffe0,6f193fd6-5476-4771-ad3b-82e2e573ffe0,pharmacy_staff,
+2026-01-08T18:33:06.505782+00:00,staff_registered,user,6f193fd6-5476-4771-ad3b-82e2e573ffe0,6f193fd6-5476-4771-ad3b-82e2e573ffe0,pharmacy_staff,
+2026-01-08T18:33:06.180232+00:00,staff_login,user,f82271c2-0908-406d-83ce-8c8c27910285,f82271c2-0908-406d-83ce-8c8c27910285,pharmacist,
+2026-01-08T18:33:05.920278+00:00,staff_registered,user,f82271c2-0908-406d-83ce-8c8c27910285,f82271c2-0908-406d-83ce-8c8c27910285,pharmacist,
+2026-01-08T18:33:05.651740+00:00,staff_login,user,282b7a35-3587-4012-9c2f-36a70542aaa9,282b7a35-3587-4012-9c2f-36a70542aaa9,ops,
+2026-01-08T18:33:05.347614+00:00,staff_registered,user,282b7a35-3587-4012-9c2f-36a70542aaa9,282b7a35-3587-4012-9c2f-36a70542aaa9,ops,
+2026-01-08T18:33:05.085648+00:00,customer_login,user,7fe4e03a-7c06-4143-be5b-4fc4fa5c85ee,7fe4e03a-7c06-4143-be5b-4fc4fa5c85ee,customer,
+2026-01-08T18:33:05.047796+00:00,customer_registered,user,7fe4e03a-7c06-4143-be5b-4fc4fa5c85ee,7fe4e03a-7c06-4143-be5b-4fc4fa5c85ee,customer,
+2026-01-08T18:31:36.705147+00:00,pharmacy_created,pharmacy,66491cea-c62f-46a2-b03e-b211f81da0b8,e2f739d8-51c3-4550-af60-51d35f19c640,ops,"{""name"": ""Test Pharmacy""}"
+2026-01-08T18:31:36.569970+00:00,medicine_created,medicine,b07b9acc-0a7f-4b28-9425-913fa281882c,e2f739d8-51c3-4550-af60-51d35f19c640,ops,"{""name"": ""Tramadol 50mg""}"
+2026-01-08T18:31:36.533154+00:00,medicine_created,medicine,ade19e25-0ede-4481-afe8-c6f0c34a0c1c,e2f739d8-51c3-4550-af60-51d35f19c640,ops,"{""name"": ""Amoxicillin 250mg""}"
+2026-01-08T18:31:36.486082+00:00,medicine_created,medicine,1565ab79-337b-4a2f-9f94-cb18a2fa4909,e2f739d8-51c3-4550-af60-51d35f19c640,ops,"{""name"": ""Paracetamol 500mg""}"
+2026-01-08T18:31:36.345855+00:00,staff_login,user,786ae2dd-5824-4306-9ec2-4f1f08e313e4,786ae2dd-5824-4306-9ec2-4f1f08e313e4,pharmacy_staff,
+2026-01-08T18:31:36.083950+00:00,staff_registered,user,786ae2dd-5824-4306-9ec2-4f1f08e313e4,786ae2dd-5824-4306-9ec2-4f1f08e313e4,pharmacy_staff,
+2026-01-08T18:31:35.819898+00:00,staff_login,user,2c6f1807-a53e-4dd9-9211-d5ab3446fa06,2c6f1807-a53e-4dd9-9211-d5ab3446fa06,pharmacist,
+2026-01-08T18:31:35.560380+00:00,staff_registered,user,2c6f1807-a53e-4dd9-9211-d5ab3446fa06,2c6f1807-a53e-4dd9-9211-d5ab3446fa06,pharmacist,
+2026-01-08T18:31:35.300093+00:00,staff_login,user,e2f739d8-51c3-4550-af60-51d35f19c640,e2f739d8-51c3-4550-af60-51d35f19c640,ops,
+2026-01-08T18:31:35.036633+00:00,staff_registered,user,e2f739d8-51c3-4550-af60-51d35f19c640,e2f739d8-51c3-4550-af60-51d35f19c640,ops,
+2026-01-08T18:31:34.752579+00:00,customer_login,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,
+2026-01-08T18:31:34.704424+00:00,customer_registered,user,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,0c353d87-3ffe-4da8-a7f5-799a23cceeeb,customer,

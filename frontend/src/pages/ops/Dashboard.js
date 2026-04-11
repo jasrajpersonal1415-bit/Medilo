@@ -16,7 +16,7 @@ import {
 } from '../../components/ui/dialog';
 import { 
   LogOut, Package, Users, Building2, Pill, Activity, 
-  Plus, Eye, Clock, ChevronDown, Truck, Trash2, Pencil
+  Plus, Eye, Clock, ChevronDown, Truck, Trash2, Pencil, Download
 } from 'lucide-react';
 import { 
   formatDateTime, getStatusClass, getStatusName, 
@@ -44,6 +44,11 @@ export default function OpsDashboard() {
   const [timelineDialog, setTimelineDialog] = useState({ open: false });
   const [deleteDialog, setDeleteDialog] = useState({ open: false, medicine: null });
   const [dialogLoading, setDialogLoading] = useState(false);
+
+  // Audit export states
+  const [exportStartDate, setExportStartDate] = useState('');
+  const [exportEndDate, setExportEndDate] = useState('');
+  const [exporting, setExporting] = useState(false);
 
   // Form states
   const [medicineForm, setMedicineForm] = useState({
@@ -103,6 +108,31 @@ export default function OpsDashboard() {
       setTimelineDialog({ open: true });
     } catch (err) {
       toast.error('Failed to load timeline');
+    }
+  };
+
+  const handleExportAuditLogs = async () => {
+    setExporting(true);
+    try {
+      const params = {};
+      if (exportStartDate) params.start_date = exportStartDate;
+      if (exportEndDate) params.end_date = exportEndDate;
+      
+      const res = await opsAPI.exportAuditLogs(params);
+      const blob = new Blob([res.data], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `medilo_audit_logs_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      toast.success('Audit logs exported successfully');
+    } catch (err) {
+      toast.error('Failed to export audit logs');
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -584,9 +614,42 @@ export default function OpsDashboard() {
         {/* Audit Tab */}
         {activeTab === 'audit' && (
           <div>
-            <div className="mb-6">
-              <h1 className="text-2xl font-semibold">Audit Logs</h1>
-              <p className="text-gray-500">System activity trail</p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <div>
+                <h1 className="text-2xl font-semibold">Audit Logs</h1>
+                <p className="text-gray-500">System activity trail</p>
+              </div>
+              <div className="flex flex-wrap items-end gap-3">
+                <div>
+                  <Label className="text-xs text-gray-500">From</Label>
+                  <Input
+                    type="date"
+                    value={exportStartDate}
+                    onChange={(e) => setExportStartDate(e.target.value)}
+                    className="w-40"
+                    data-testid="audit-export-start-date"
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-500">To</Label>
+                  <Input
+                    type="date"
+                    value={exportEndDate}
+                    onChange={(e) => setExportEndDate(e.target.value)}
+                    className="w-40"
+                    data-testid="audit-export-end-date"
+                  />
+                </div>
+                <Button
+                  onClick={handleExportAuditLogs}
+                  disabled={exporting}
+                  className="bg-[#0F62FE] hover:bg-[#0353E9]"
+                  data-testid="audit-export-csv-btn"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  {exporting ? 'Exporting...' : 'Export CSV'}
+                </Button>
+              </div>
             </div>
 
             {loading ? (
