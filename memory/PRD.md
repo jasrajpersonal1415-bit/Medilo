@@ -19,9 +19,10 @@ Build a CLOSED, THROW-AWAY PILOT APPLICATION for a healthcare startup called MED
 
 ### Top-Level Categories
 1. **Medicines** - Prescription & OTC medicines (follows bucket classification)
-2. **OTC & Wellness** - Health supplements & wellness products
-3. **Beauty & Personal Care** - Skincare & personal care products
-4. **Medical Devices** - Health monitoring devices
+2. **Beauty & Personal Care** - Skincare & personal care products
+3. **Wellness** - Health supplements & wellness products
+4. **Baby Care** - Baby health & care essentials
+5. **Medical Devices** - Health monitoring devices
 
 ### Medicine Classification (Only for Medicine type)
 | Bucket | Category | Prescription | Pharmacist Review |
