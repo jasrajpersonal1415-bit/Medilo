@@ -12,28 +12,22 @@ import { Textarea } from '../../components/ui/textarea';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from '../../components/ui/dialog';
-import { Search, ShoppingCart, Home, ClipboardList, User, Plus, Package, Pill, Heart, Sparkles, Activity, ArrowLeft, RotateCcw, Truck, Clock, CheckCircle, AlertCircle, FileUp, Upload, X, Camera } from 'lucide-react';
+import { Search, ShoppingCart, Home, ClipboardList, User, Plus, Minus, Package, Pill, Heart, Sparkles, Activity, Baby, ArrowLeft, RotateCcw, Truck, Clock, CheckCircle, AlertCircle, FileUp, Upload, X, Camera } from 'lucide-react';
 import { getBucketClass, getBucketName, formatCurrency, getStatusName } from '../../lib/utils';
 import { toast } from 'sonner';
 
-const CATEGORY_ICONS = {
-  Medicine: Pill,
-  Wellness: Heart,
-  Beauty: Sparkles,
-  Device: Activity,
-};
-
-const CATEGORY_COLORS = {
-  Medicine: 'bg-blue-50 border-blue-200 text-blue-700',
-  Wellness: 'bg-green-50 border-green-200 text-green-700',
-  Beauty: 'bg-pink-50 border-pink-200 text-pink-700',
-  Device: 'bg-purple-50 border-purple-200 text-purple-700',
+const CATEGORY_CONFIG = {
+  'Medicine': { icon: Pill, color: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE', label: 'Medicines' },
+  'Beauty & Personal Care': { icon: Sparkles, color: '#EC4899', bg: '#FDF2F8', border: '#FBCFE8', label: 'Beauty & Personal Care' },
+  'Wellness': { icon: Heart, color: '#10B981', bg: '#ECFDF5', border: '#A7F3D0', label: 'Wellness' },
+  'Baby Care': { icon: Baby, color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A', label: 'Baby Care' },
+  'Device': { icon: Activity, color: '#8B5CF6', bg: '#F5F3FF', border: '#DDD6FE', label: 'Devices' },
 };
 
 export default function CustomerHome() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { items, addItem, itemCount, clearCart } = useCart();
+  const { items, addItem, decrementItem, getItemQuantity, itemCount, clearCart } = useCart();
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
@@ -42,6 +36,7 @@ export default function CustomerHome() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [filterCategory, setFilterCategory] = useState(null);
   
   // Prescription upload state
   const [prescriptionDialog, setPrescriptionDialog] = useState(false);
@@ -60,19 +55,15 @@ export default function CustomerHome() {
     if (selectedCategory || search) {
       fetchProducts();
     }
-  }, [selectedCategory, search]);
+  }, [selectedCategory, search, filterCategory]);
 
   const fetchOrders = async () => {
     try {
       const response = await orderAPI.getAll();
-      
-      // Get active orders (not delivered or cancelled)
       const active = response.data.filter(order => 
         !['delivered', 'cancelled'].includes(order.status)
       );
       setActiveOrders(active);
-      
-      // Get last 3 delivered orders for quick reorder
       const delivered = response.data
         .filter(order => order.status === 'delivered')
         .slice(0, 3);
@@ -90,7 +81,6 @@ export default function CustomerHome() {
       setError(null);
     } catch (err) {
       setError('Failed to load categories');
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -101,14 +91,13 @@ export default function CustomerHome() {
     try {
       const params = {};
       if (selectedCategory) params.product_type = selectedCategory;
+      if (filterCategory && search) params.product_type = filterCategory;
       if (search) params.search = search;
-      
       const response = await medicineAPI.getAll(params);
       setProducts(response.data);
       setError(null);
     } catch (err) {
       setError('Failed to load products');
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -118,17 +107,15 @@ export default function CustomerHome() {
     addItem(product);
   };
 
-  const isInCart = (productId) => {
-    return items.some((item) => item.id === productId);
+  const handleRemoveFromCart = (productId) => {
+    decrementItem(productId);
   };
 
   const handleReorder = async (order) => {
     try {
-      // Fetch current product details for each item in the order
       for (const item of order.items) {
         const response = await medicineAPI.getOne(item.medicine_id);
         if (response.data) {
-          // Add each item to cart with the quantity from the original order
           for (let i = 0; i < item.quantity; i++) {
             addItem(response.data);
           }
@@ -138,11 +125,30 @@ export default function CustomerHome() {
       navigate('/cart');
     } catch (err) {
       toast.error('Some items may no longer be available');
-      console.error(err);
     }
   };
 
-  // Prescription upload handlers
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategory(categoryId);
+    setSearch('');
+    setFilterCategory(null);
+  };
+
+  const handleBackToCategories = () => {
+    setSelectedCategory(null);
+    setProducts([]);
+    setSearch('');
+    setFilterCategory(null);
+  };
+
+  const handleSearch = (value) => {
+    setSearch(value);
+    if (value && !selectedCategory) {
+      setSelectedCategory(null);
+    }
+  };
+
+  // Prescription handlers
   const handlePrescriptionFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -150,7 +156,6 @@ export default function CustomerHome() {
         toast.error('File size must be less than 5MB');
         return;
       }
-      
       const reader = new FileReader();
       reader.onloadend = () => {
         setPrescriptionImage(reader.result);
@@ -165,27 +170,20 @@ export default function CustomerHome() {
       toast.error('Please upload a prescription image');
       return;
     }
-
     setUploadingPrescription(true);
     try {
-      // Navigate to cart with prescription data
-      // Store prescription in sessionStorage to pass to cart/checkout
       sessionStorage.setItem('pendingPrescription', JSON.stringify({
         image: prescriptionImage,
         note: prescriptionNote
       }));
-      
       toast.success('Prescription uploaded! Browse medicines to add to your order.');
       setPrescriptionDialog(false);
       setPrescriptionImage(null);
       setPrescriptionPreview(null);
       setPrescriptionNote('');
-      
-      // Navigate to medicines category
       setSelectedCategory('Medicine');
     } catch (err) {
       toast.error('Failed to process prescription');
-      console.error(err);
     } finally {
       setUploadingPrescription(false);
     }
@@ -194,31 +192,9 @@ export default function CustomerHome() {
   const clearPrescriptionUpload = () => {
     setPrescriptionImage(null);
     setPrescriptionPreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const handleCategoryClick = (categoryId) => {
-    setSelectedCategory(categoryId);
-    setSearch('');
-  };
-
-  const handleBackToCategories = () => {
-    setSelectedCategory(null);
-    setProducts([]);
-    setSearch('');
-  };
-
-  const handleSearch = (value) => {
-    setSearch(value);
-    if (value && !selectedCategory) {
-      // Search across all categories
-      setSelectedCategory(null);
-    }
-  };
-
-  // Get status icon and color for active order banner
   const getStatusConfig = (status) => {
     const configs = {
       pending_pharmacist_review: { icon: Clock, color: 'bg-yellow-50 border-yellow-200 text-yellow-800', label: 'Under Review' },
@@ -237,151 +213,231 @@ export default function CustomerHome() {
     return configs[status] || { icon: Clock, color: 'bg-gray-50 border-gray-200 text-gray-800', label: getStatusName(status) };
   };
 
-  // Render Active Order Status Banner
+  // ==================== RENDER SECTIONS ====================
+
   const renderActiveOrderBanner = () => {
     if (activeOrders.length === 0) return null;
-    
-    // Show the most recent active order
     const order = activeOrders[0];
     const { icon: StatusIcon, color, label } = getStatusConfig(order.status);
     
     return (
       <div 
-        className={`mb-4 p-3 rounded-lg border-2 cursor-pointer ${color}`}
+        className={`mb-4 p-3 rounded-xl border cursor-pointer ${color}`}
         onClick={() => navigate(`/order/${order.id}`)}
         data-testid="active-order-banner"
       >
         <div className="flex items-center gap-3">
-          <div className="shrink-0">
-            <StatusIcon className="h-6 w-6" />
-          </div>
+          <StatusIcon className="h-5 w-5 shrink-0" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold">{label}</p>
             <p className="text-xs opacity-80 truncate">
               {order.items.map(i => i.medicine_name).join(', ')}
             </p>
           </div>
-          <div className="shrink-0 text-xs font-medium">
-            View →
-          </div>
+          <span className="text-xs font-medium shrink-0">View →</span>
         </div>
         {activeOrders.length > 1 && (
-          <p className="text-xs mt-2 opacity-70">
-            +{activeOrders.length - 1} more active order(s)
-          </p>
+          <p className="text-xs mt-1.5 opacity-60">+{activeOrders.length - 1} more active order(s)</p>
         )}
       </div>
     );
   };
 
-  // Render Prescription Upload Shortcut
-  const renderPrescriptionShortcut = () => (
-    <Card 
-      className="mb-6 p-4 bg-gradient-to-r from-teal-50 to-cyan-50 border-2 border-teal-200 cursor-pointer hover:shadow-md transition-all"
+  const renderPrescriptionBanner = () => (
+    <div 
+      className="mb-5 p-4 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white cursor-pointer active:scale-[0.98] transition-transform"
       onClick={() => setPrescriptionDialog(true)}
       data-testid="prescription-upload-shortcut"
     >
-      <div className="flex items-center gap-4">
-        <div className="shrink-0 w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
-          <FileUp className="h-6 w-6 text-teal-600" />
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+          <FileUp className="h-5 w-5" />
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-teal-800">Upload Prescription</h3>
-          <p className="text-xs text-teal-600">Have a prescription? Upload and order medicines directly</p>
+          <p className="font-semibold text-sm">Upload Prescription</p>
+          <p className="text-xs text-white/80">Get medicines delivered to your door</p>
         </div>
-        <div className="shrink-0">
-          <Camera className="h-5 w-5 text-teal-500" />
-        </div>
+        <Camera className="h-5 w-5 text-white/70" />
       </div>
-    </Card>
+    </div>
   );
 
-  // Render Quick Reorder section
   const renderQuickReorder = () => {
     if (recentOrders.length === 0) return null;
-    
     return (
       <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-          <RotateCcw className="h-5 w-5 text-gray-600" />
-          Quick Reorder
-        </h2>
-        <div className="space-y-2">
+        <h2 className="text-base font-semibold mb-3 text-gray-800">Quick Reorder</h2>
+        <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4" style={{ scrollbarWidth: 'none' }}>
           {recentOrders.map((order) => (
-            <Card 
-              key={order.id} 
-              className="p-3 border border-gray-200"
+            <div 
+              key={order.id}
+              className="min-w-[200px] bg-gray-50 rounded-xl p-3 border border-gray-100 shrink-0"
               data-testid={`reorder-card-${order.id}`}
             >
-              <div className="flex items-center justify-between">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    {order.items.map(i => i.medicine_name).join(', ')}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {order.items.length} item(s) • {formatCurrency(order.total_amount)}
-                  </p>
-                </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleReorder(order)}
-                  className="ml-2 shrink-0"
-                  data-testid={`reorder-btn-${order.id}`}
-                >
-                  <RotateCcw className="h-3 w-3 mr-1" />
-                  Reorder
-                </Button>
-              </div>
-            </Card>
+              <p className="text-xs font-medium text-gray-800 truncate">
+                {order.items.map(i => i.medicine_name).join(', ')}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">{order.items.length} item(s) · {formatCurrency(order.total_amount)}</p>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleReorder(order)}
+                className="mt-2 w-full h-7 text-xs"
+                data-testid={`reorder-btn-${order.id}`}
+              >
+                <RotateCcw className="h-3 w-3 mr-1" />
+                Reorder
+              </Button>
+            </div>
           ))}
         </div>
       </div>
     );
   };
 
-  // Render category tiles
   const renderCategories = () => (
-    <div className="grid grid-cols-2 gap-3">
-      {categories.map((category) => {
-        const IconComponent = CATEGORY_ICONS[category.id] || Package;
-        const colorClass = CATEGORY_COLORS[category.id] || 'bg-gray-50 border-gray-200 text-gray-700';
-        
-        return (
-          <Card
-            key={category.id}
-            className={`p-4 cursor-pointer border-2 transition-all hover:shadow-md ${colorClass}`}
-            onClick={() => handleCategoryClick(category.id)}
-            data-testid={`category-${category.id.toLowerCase()}`}
-          >
-            <div className="flex flex-col items-center text-center">
-              <IconComponent className="h-8 w-8 mb-2" />
-              <h3 className="font-medium text-sm">{category.name}</h3>
+    <div>
+      <h2 className="text-base font-semibold mb-3 text-gray-800">Shop by Category</h2>
+      <div className="grid grid-cols-3 gap-3">
+        {categories.map((category) => {
+          const config = CATEGORY_CONFIG[category.id] || { icon: Package, color: '#6B7280', bg: '#F9FAFB', border: '#E5E7EB', label: category.name };
+          const IconComp = config.icon;
+          
+          return (
+            <div
+              key={category.id}
+              className="flex flex-col items-center p-3 rounded-xl cursor-pointer active:scale-95 transition-all border-2 hover:shadow-md"
+              style={{ backgroundColor: config.bg, borderColor: config.border }}
+              onClick={() => handleCategoryClick(category.id)}
+              data-testid={`category-${category.id.toLowerCase().replace(/[^a-z]/g, '-')}`}
+            >
+              <div className="w-10 h-10 rounded-full flex items-center justify-center mb-2" style={{ backgroundColor: config.color + '20' }}>
+                <IconComp className="h-5 w-5" style={{ color: config.color }} />
+              </div>
+              <span className="text-xs font-medium text-center leading-tight text-gray-700">{config.label}</span>
+              {category.count > 0 && (
+                <span className="text-[10px] text-gray-400 mt-0.5">{category.count} items</span>
+              )}
             </div>
-          </Card>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 
-  // Render product list
-  const renderProducts = () => (
-    <div className="space-y-3">
-      {/* Back button when viewing category */}
-      {selectedCategory && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleBackToCategories}
-          className="mb-2"
-          data-testid="back-to-categories"
+  const renderCategoryFilter = () => {
+    if (!search || selectedCategory) return null;
+    return (
+      <div className="flex gap-2 overflow-x-auto pb-2 mb-3" style={{ scrollbarWidth: 'none' }} data-testid="category-filter">
+        <button
+          className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+            !filterCategory ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200'
+          }`}
+          onClick={() => setFilterCategory(null)}
         >
-          <ArrowLeft className="h-4 w-4 mr-1" />
-          All Categories
-        </Button>
+          All
+        </button>
+        {Object.entries(CATEGORY_CONFIG).map(([id, config]) => (
+          <button
+            key={id}
+            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+              filterCategory === id ? 'text-white' : 'bg-white text-gray-600 border-gray-200'
+            }`}
+            style={filterCategory === id ? { backgroundColor: config.color, borderColor: config.color } : {}}
+            onClick={() => setFilterCategory(filterCategory === id ? null : id)}
+            data-testid={`filter-${id.toLowerCase().replace(/[^a-z]/g, '-')}`}
+          >
+            {config.label}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
+  const renderProductCard = (product) => {
+    const config = CATEGORY_CONFIG[product.product_type] || CATEGORY_CONFIG['Medicine'];
+    const IconComp = config.icon;
+    const qty = getItemQuantity(product.id);
+    const inCart = qty > 0;
+
+    return (
+      <div 
+        key={product.id}
+        className="bg-white rounded-xl border border-gray-100 p-3 shadow-sm hover:shadow-md transition-shadow"
+        data-testid={`product-card-${product.id}`}
+      >
+        {/* Product icon area */}
+        <div className="w-full h-20 rounded-lg flex items-center justify-center mb-3" style={{ backgroundColor: config.bg }}>
+          <IconComp className="h-8 w-8" style={{ color: config.color }} />
+        </div>
+
+        {/* Info */}
+        <div className="min-h-[60px]">
+          {product.product_type === 'Medicine' && product.bucket && (
+            <Badge className={`${getBucketClass(product.bucket)} text-[10px] mb-1`}>
+              {getBucketName(product.bucket)}
+            </Badge>
+          )}
+          <h3 className="text-sm font-medium text-gray-900 line-clamp-2 leading-tight">{product.name}</h3>
+          <p className="text-[11px] text-gray-400 mt-0.5 truncate">{product.manufacturer}</p>
+        </div>
+
+        {/* Price + Cart */}
+        <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-50">
+          <span className="text-sm font-bold text-gray-900">{formatCurrency(product.price)}</span>
+          
+          {inCart ? (
+            <div className="flex items-center gap-1" data-testid={`qty-control-${product.id}`}>
+              <button
+                onClick={() => handleRemoveFromCart(product.id)}
+                className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors"
+                data-testid={`remove-from-cart-${product.id}`}
+              >
+                <Minus className="h-3.5 w-3.5" />
+              </button>
+              <span className="w-6 text-center text-sm font-semibold text-[#0F62FE]">{qty}</span>
+              <button
+                onClick={() => handleAddToCart(product)}
+                className="w-7 h-7 rounded-lg bg-[#0F62FE] flex items-center justify-center text-white hover:bg-[#0353E9] transition-colors"
+                data-testid={`add-to-cart-${product.id}`}
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ) : (
+            <Button
+              data-testid={`add-to-cart-${product.id}`}
+              onClick={() => handleAddToCart(product)}
+              size="sm"
+              className="h-7 px-3 text-xs bg-[#0F62FE] hover:bg-[#0353E9] rounded-lg"
+            >
+              <Plus className="h-3 w-3 mr-1" />
+              Add
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderProducts = () => (
+    <div>
+      {selectedCategory && (
+        <div className="flex items-center gap-2 mb-4">
+          <button
+            onClick={handleBackToCategories}
+            className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+            data-testid="back-to-categories"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <h2 className="text-lg font-semibold text-gray-800">
+            {CATEGORY_CONFIG[selectedCategory]?.label || selectedCategory}
+          </h2>
+        </div>
       )}
 
-      {/* Category legend for medicines only */}
+      {/* Category legend for medicines */}
       {selectedCategory === 'Medicine' && (
         <div className="flex gap-2 mb-3 flex-wrap">
           <Badge className="bucket-otc text-xs">OTC - No Rx</Badge>
@@ -390,88 +446,46 @@ export default function CustomerHome() {
         </div>
       )}
 
+      {/* Category filter chips for search */}
+      {renderCategoryFilter()}
+
       {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="spinner" />
-        </div>
+        <div className="flex justify-center py-12"><div className="spinner" /></div>
       ) : products.length === 0 ? (
-        <div className="empty-state">
-          <Package className="empty-state-icon mx-auto" />
-          <h3 className="empty-state-title">No Products Found</h3>
-          <p className="empty-state-text">
+        <div className="text-center py-16">
+          <Package className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+          <h3 className="font-medium text-gray-500">No Products Found</h3>
+          <p className="text-sm text-gray-400 mt-1">
             {search ? 'Try a different search term' : 'Products will appear here once added'}
           </p>
         </div>
       ) : (
-        products.map((product) => (
-          <Card 
-            key={product.id} 
-            className="p-4 card-hover"
-            data-testid={`product-card-${product.id}`}
-          >
-            <div className="flex justify-between items-start gap-3">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  {/* Show bucket badge only for medicines */}
-                  {product.product_type === 'Medicine' && product.bucket ? (
-                    <Badge className={`${getBucketClass(product.bucket)} text-xs`}>
-                      {getBucketName(product.bucket)}
-                    </Badge>
-                  ) : (
-                    <Badge className={`${CATEGORY_COLORS[product.product_type]?.split(' ')[0] || 'bg-gray-100'} text-xs border`}>
-                      {product.product_type}
-                    </Badge>
-                  )}
-                </div>
-                <h3 className="font-medium text-gray-900 truncate">{product.name}</h3>
-                <p className="text-sm text-gray-500 truncate">{product.generic_name}</p>
-                <p className="text-xs text-gray-400 mt-1">
-                  {product.strength && `${product.strength} • `}{product.pack_size || product.form} • {product.manufacturer}
-                </p>
-                <p className="text-base font-semibold text-[#0F62FE] mt-1">
-                  {formatCurrency(product.price)}
-                </p>
-              </div>
-              <Button
-                data-testid={`add-to-cart-${product.id}`}
-                onClick={() => handleAddToCart(product)}
-                size="sm"
-                variant={isInCart(product.id) ? 'secondary' : 'default'}
-                className={isInCart(product.id) ? '' : 'bg-[#0F62FE] hover:bg-[#0353E9]'}
-              >
-                {isInCart(product.id) ? (
-                  'Added'
-                ) : (
-                  <>
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add
-                  </>
-                )}
-              </Button>
-            </div>
-          </Card>
-        ))
+        <div className="grid grid-cols-2 gap-3">
+          {products.map(renderProductCard)}
+        </div>
       )}
     </div>
   );
 
+  // ==================== MAIN RENDER ====================
+
   return (
-    <div className="mobile-container bg-white min-h-screen pb-20">
+    <div className="mobile-container bg-gray-50 min-h-screen pb-20">
       {/* Header */}
-      <div className="sticky-header px-4 py-4">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-white sticky top-0 z-30 px-4 pt-3 pb-3 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
           <div>
-            <h1 className="medilo-logo-sm">MEDILO</h1>
+            <h1 className="text-xl font-bold text-[#0F62FE] tracking-tight">MEDILO</h1>
             <p className="text-xs text-gray-500">Hi, {user?.name}</p>
           </div>
           <Link 
             to="/cart" 
-            className="relative p-2"
+            className="relative w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center"
             data-testid="cart-link"
           >
-            <ShoppingCart className="h-6 w-6 text-gray-700" />
+            <ShoppingCart className="h-5 w-5 text-gray-700" />
             {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#0F62FE] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-[#0F62FE] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
                 {itemCount}
               </span>
             )}
@@ -484,41 +498,51 @@ export default function CustomerHome() {
           <Input
             data-testid="product-search-input"
             type="text"
-            placeholder="Search products..."
+            placeholder="Search medicines, wellness, beauty..."
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
-            className="pl-10 bg-gray-50"
+            className="pl-10 bg-gray-50 rounded-xl border-gray-200 h-10 text-sm"
           />
         </div>
       </div>
 
       {/* Content */}
       <div className="px-4 py-4">
-        {/* Active Order Status Banner - always show at top */}
         {renderActiveOrderBanner()}
         
         {error ? (
           <div className="text-center py-12 text-red-600">{error}</div>
         ) : loading && !selectedCategory && !search && categories.length === 0 ? (
-          <div className="flex justify-center py-12">
-            <div className="spinner" />
-          </div>
+          <div className="flex justify-center py-12"><div className="spinner" /></div>
         ) : selectedCategory || search ? (
           renderProducts()
         ) : (
           <>
-            {/* Prescription Upload Shortcut */}
-            {renderPrescriptionShortcut()}
-            
-            {/* Quick Reorder Section */}
+            {renderPrescriptionBanner()}
             {renderQuickReorder()}
-            
-            {/* Categories */}
-            <h2 className="text-lg font-semibold mb-4">Shop by Category</h2>
             {renderCategories()}
           </>
         )}
       </div>
+
+      {/* Floating Cart Bar */}
+      {itemCount > 0 && !selectedCategory && !search && (
+        <div className="fixed bottom-16 left-4 right-4 z-20 max-w-md mx-auto">
+          <div 
+            className="bg-[#0F62FE] text-white rounded-xl px-4 py-3 flex items-center justify-between shadow-lg cursor-pointer active:scale-[0.98] transition-transform"
+            onClick={() => navigate('/cart')}
+            data-testid="floating-cart-bar"
+          >
+            <div>
+              <p className="text-sm font-semibold">{itemCount} item(s) in cart</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">View Cart</span>
+              <ShoppingCart className="h-4 w-4" />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Bottom Navigation */}
       <nav className="bottom-nav">
@@ -553,12 +577,9 @@ export default function CustomerHome() {
           </DialogHeader>
           
           <div className="space-y-4 py-4">
-            {/* Upload Area */}
             <div 
-              className={`relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
-                prescriptionPreview 
-                  ? 'border-teal-300 bg-teal-50' 
-                  : 'border-gray-300 hover:border-teal-400 hover:bg-gray-50'
+              className={`relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
+                prescriptionPreview ? 'border-teal-300 bg-teal-50' : 'border-gray-300 hover:border-teal-400 hover:bg-gray-50'
               }`}
               onClick={() => fileInputRef.current?.click()}
             >
@@ -570,19 +591,11 @@ export default function CustomerHome() {
                 className="hidden"
                 data-testid="prescription-file-input"
               />
-              
               {prescriptionPreview ? (
                 <div className="relative">
-                  <img 
-                    src={prescriptionPreview} 
-                    alt="Prescription preview" 
-                    className="max-h-48 mx-auto rounded-lg"
-                  />
+                  <img src={prescriptionPreview} alt="Prescription preview" className="max-h-48 mx-auto rounded-lg" />
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      clearPrescriptionUpload();
-                    }}
+                    onClick={(e) => { e.stopPropagation(); clearPrescriptionUpload(); }}
                     className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
                   >
                     <X className="h-4 w-4" />
@@ -597,7 +610,6 @@ export default function CustomerHome() {
               )}
             </div>
 
-            {/* Notes */}
             <div>
               <Label className="text-sm text-gray-600">Additional Notes (Optional)</Label>
               <Textarea
@@ -609,7 +621,6 @@ export default function CustomerHome() {
               />
             </div>
 
-            {/* Info */}
             <div className="bg-blue-50 rounded-lg p-3">
               <p className="text-xs text-blue-700">
                 <strong>How it works:</strong> Upload your prescription, then browse and add the prescribed medicines to your cart. Our pharmacist will verify before dispatch.
@@ -618,26 +629,14 @@ export default function CustomerHome() {
           </div>
 
           <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setPrescriptionDialog(false)}
-            >
-              Cancel
-            </Button>
+            <Button variant="outline" onClick={() => setPrescriptionDialog(false)}>Cancel</Button>
             <Button 
               onClick={handlePrescriptionSubmit}
               disabled={!prescriptionImage || uploadingPrescription}
               className="bg-teal-600 hover:bg-teal-700"
               data-testid="submit-prescription"
             >
-              {uploadingPrescription ? (
-                <div className="spinner h-4 w-4" />
-              ) : (
-                <>
-                  <Upload className="h-4 w-4 mr-2" />
-                  Continue to Medicines
-                </>
-              )}
+              {uploadingPrescription ? <div className="spinner h-4 w-4" /> : <><Upload className="h-4 w-4 mr-2" />Continue to Medicines</>}
             </Button>
           </DialogFooter>
         </DialogContent>

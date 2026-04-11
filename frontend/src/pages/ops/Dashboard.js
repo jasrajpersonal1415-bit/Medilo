@@ -727,8 +727,9 @@ export default function OpsDashboard() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Medicine">Medicine</SelectItem>
-                  <SelectItem value="Wellness">OTC & Wellness</SelectItem>
-                  <SelectItem value="Beauty">Beauty & Personal Care</SelectItem>
+                  <SelectItem value="Wellness">Wellness</SelectItem>
+                  <SelectItem value="Beauty & Personal Care">Beauty & Personal Care</SelectItem>
+                  <SelectItem value="Baby Care">Baby Care</SelectItem>
                   <SelectItem value="Device">Medical Device</SelectItem>
                 </SelectContent>
               </Select>

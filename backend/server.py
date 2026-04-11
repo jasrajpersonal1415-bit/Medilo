@@ -63,7 +63,8 @@ class MedicineBucket(str, Enum):
 class ProductType(str, Enum):
     MEDICINE = "Medicine"
     WELLNESS = "Wellness"
-    BEAUTY = "Beauty"
+    BEAUTY_PERSONAL_CARE = "Beauty & Personal Care"
+    BABY_CARE = "Baby Care"
     DEVICE = "Device"
 
 class OrderStatus(str, Enum):
@@ -466,8 +467,9 @@ async def get_categories():
     """Get product counts by category for homepage display"""
     categories = [
         {"id": "Medicine", "name": "Medicines", "icon": "pill", "description": "Prescription & OTC medicines"},
-        {"id": "Wellness", "name": "OTC & Wellness", "icon": "heart", "description": "Health supplements & wellness"},
-        {"id": "Beauty", "name": "Beauty & Personal Care", "icon": "sparkles", "description": "Skincare & personal care"},
+        {"id": "Beauty & Personal Care", "name": "Beauty & Personal Care", "icon": "sparkles", "description": "Skincare & personal care"},
+        {"id": "Wellness", "name": "Wellness", "icon": "heart", "description": "Health supplements & wellness"},
+        {"id": "Baby Care", "name": "Baby Care", "icon": "baby", "description": "Baby health & care essentials"},
         {"id": "Device", "name": "Medical Devices", "icon": "activity", "description": "Health monitoring devices"},
     ]
     
@@ -521,9 +523,10 @@ async def delete_medicine(medicine_id: str, user: dict = Depends(get_current_use
     return {"message": "Medicine deactivated"}
 
 # CSV Import Routes
-VALID_CATEGORIES = {"Medicine": "Medicine", "Wellness": "Wellness", "Beauty": "Beauty", "Device": "Device",
-                    "medicine": "Medicine", "wellness": "Wellness", "beauty": "Beauty", "device": "Device",
-                    "OTC & Wellness": "Wellness", "Beauty & Personal Care": "Beauty", "Medical Devices": "Device"}
+VALID_CATEGORIES = {"Medicine": "Medicine", "Wellness": "Wellness", "Beauty": "Beauty & Personal Care", "Device": "Device",
+                    "medicine": "Medicine", "wellness": "Wellness", "beauty": "Beauty & Personal Care", "device": "Device",
+                    "OTC & Wellness": "Wellness", "Beauty & Personal Care": "Beauty & Personal Care", "Medical Devices": "Device",
+                    "Baby Care": "Baby Care", "baby care": "Baby Care", "BabyCare": "Baby Care"}
 VALID_BUCKETS = {"OTC": "OTC", "SCHEDULE_H": "SCHEDULE_H", "SCHEDULE_H1": "SCHEDULE_H1",
                  "otc": "OTC", "Schedule H": "SCHEDULE_H", "Schedule H1": "SCHEDULE_H1",
                  "schedule_h": "SCHEDULE_H", "schedule_h1": "SCHEDULE_H1"}
@@ -539,7 +542,7 @@ def parse_csv_row(row, row_num):
     category_raw = (row.get("Category") or row.get("category") or "").strip()
     category = VALID_CATEGORIES.get(category_raw)
     if not category:
-        errors.append(f"Row {row_num}: Invalid Category '{category_raw}'. Must be Medicine, Wellness, Beauty, or Device")
+        errors.append(f"Row {row_num}: Invalid Category '{category_raw}'. Must be Medicine, Wellness, Beauty & Personal Care, Baby Care, or Device")
     
     type_raw = (row.get("Type") or row.get("type") or "").strip()
     bucket = None
@@ -1685,3 +1688,13 @@ app.add_middleware(
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+@app.on_event("startup")
+async def migrate_categories():
+    """Migrate old category values to new ones"""
+    result = await db.medicines.update_many(
+        {"product_type": "Beauty"},
+        {"$set": {"product_type": "Beauty & Personal Care"}}
+    )
+    if result.modified_count > 0:
+        logger.info(f"Migrated {result.modified_count} products from 'Beauty' to 'Beauty & Personal Care'")

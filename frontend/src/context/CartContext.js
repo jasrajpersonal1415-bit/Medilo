@@ -71,6 +71,20 @@ export const CartProvider = ({ children }) => {
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
+  const getItemQuantity = (medicineId) => {
+    const item = items.find((i) => i.id === medicineId);
+    return item ? item.quantity : 0;
+  };
+
+  const decrementItem = (medicineId) => {
+    const item = items.find((i) => i.id === medicineId);
+    if (item && item.quantity > 1) {
+      updateQuantity(medicineId, item.quantity - 1);
+    } else {
+      removeItem(medicineId);
+    }
+  };
+
   // Check highest bucket in cart
   const getHighestBucket = () => {
     const bucketPriority = { OTC: 0, SCHEDULE_H: 1, SCHEDULE_H1: 2 };
@@ -95,6 +109,8 @@ export const CartProvider = ({ children }) => {
         addItem,
         removeItem,
         updateQuantity,
+        decrementItem,
+        getItemQuantity,
         clearCart,
         itemCount,
         prescriptionImage,
