@@ -268,6 +268,10 @@ class OrderResponse(BaseModel):
     delivery_partner_name: Optional[str] = None
     rejection_reason: Optional[str] = None
     total_amount: Optional[float] = None
+    subtotal: Optional[float] = None
+    category_discount: Optional[float] = None
+    cart_discount: Optional[float] = None
+    total_savings: Optional[float] = None
     invoice_generated: bool = False
     created_at: str
     updated_at: str
@@ -912,6 +916,67 @@ async def update_pharmacy(pharmacy_id: str, data: PharmacyCreate, user: dict = D
     pharmacy = await db.pharmacies.find_one({"id": pharmacy_id}, {"_id": 0})
     return PharmacyResponse(**pharmacy)
 
+# Discount Configuration
+CATEGORY_DISCOUNTS = {
+    "Medicine": 0.10,
+    "Baby Care": 0.20,
+    "Wellness": 0.12,
+    "Beauty & Personal Care": 0.08,
+    "Device": 0.0,
+}
+
+CART_DISCOUNT_TIERS = [
+    (3000, 0.10),  # ≥₹3000 → extra 10% (checked first = highest)
+    (2000, 0.05),  # ≥₹2000 → extra 5%
+]
+
+def calculate_discounts(items_with_prices):
+    """Calculate category and cart-level discounts.
+    items_with_prices: list of dicts with product_type, unit_price, quantity
+    Returns: subtotal, category_discount, cart_discount, total_savings, total_amount
+    """
+    subtotal = 0.0
+    category_discount = 0.0
+    medicine_subtotal_after_discount = 0.0
+    
+    for item in items_with_prices:
+        item_total = item["unit_price"] * item["quantity"]
+        subtotal += item_total
+        
+        product_type = item.get("product_type", "Medicine")
+        cat_rate = CATEGORY_DISCOUNTS.get(product_type, 0.0)
+        item_discount = item_total * cat_rate
+        category_discount += item_discount
+        
+        if product_type == "Medicine":
+            medicine_subtotal_after_discount += item_total - item_discount
+    
+    # Cart-level discount: applies only on medicine subtotal after category discount
+    cart_discount = 0.0
+    for threshold, rate in CART_DISCOUNT_TIERS:
+        if medicine_subtotal_after_discount >= threshold:
+            cart_discount = medicine_subtotal_after_discount * rate
+            break  # Highest eligible only
+    
+    total_savings = round(category_discount + cart_discount, 2)
+    total_amount = round(subtotal - total_savings, 2)
+    
+    return {
+        "subtotal": round(subtotal, 2),
+        "category_discount": round(category_discount, 2),
+        "cart_discount": round(cart_discount, 2),
+        "total_savings": total_savings,
+        "total_amount": total_amount,
+    }
+
+@api_router.get("/discount-config")
+async def get_discount_config():
+    """Return discount configuration for frontend display"""
+    return {
+        "category_discounts": CATEGORY_DISCOUNTS,
+        "cart_discount_tiers": [{"threshold": t, "rate": r} for t, r in CART_DISCOUNT_TIERS]
+    }
+
 # Order Routes
 @api_router.post("/orders", response_model=OrderResponse)
 async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)):
@@ -924,6 +989,7 @@ async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)
     highest_bucket = None  # None means no medicines requiring review
     bucket_priority = {MedicineBucket.OTC: 0, MedicineBucket.SCHEDULE_H: 1, MedicineBucket.SCHEDULE_H1: 2}
     has_medicines_requiring_review = False
+    items_for_discount = []
     
     for item in data.items:
         medicine = await db.medicines.find_one({"id": item.medicine_id, "is_active": True}, {"_id": 0})
@@ -946,6 +1012,7 @@ async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)
         )
         items.append(order_item.model_dump())
         total_amount += unit_price * item.quantity
+        items_for_discount.append({"unit_price": unit_price, "quantity": item.quantity, "product_type": product_type})
         
         # Only check bucket for Medicine type products
         if product_type == ProductType.MEDICINE.value and medicine.get("bucket"):
@@ -954,6 +1021,9 @@ async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)
                 highest_bucket = med_bucket
             if med_bucket in [MedicineBucket.SCHEDULE_H, MedicineBucket.SCHEDULE_H1]:
                 has_medicines_requiring_review = True
+    
+    # Calculate discounts
+    discount_info = calculate_discounts(items_for_discount)
     
     # Validate prescription requirements (only for medicines)
     if highest_bucket == MedicineBucket.SCHEDULE_H1 and not data.prescription_image:
@@ -991,14 +1061,18 @@ async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)
         "delivery_partner_id": None,
         "delivery_partner_name": None,
         "rejection_reason": None,
-        "total_amount": total_amount,  # Price calculated from MEDILO master
+        "total_amount": discount_info["total_amount"],
+        "subtotal": discount_info["subtotal"],
+        "category_discount": discount_info["category_discount"],
+        "cart_discount": discount_info["cart_discount"],
+        "total_savings": discount_info["total_savings"],
         "invoice_generated": False,
         "created_at": get_utc_now(),
         "updated_at": get_utc_now()
     }
     
     await db.orders.insert_one(order)
-    await log_audit("order_created", "order", order["id"], user["id"], user["role"], {"status": initial_status.value, "total_amount": total_amount})
+    await log_audit("order_created", "order", order["id"], user["id"], user["role"], {"status": initial_status.value, "total_amount": discount_info["total_amount"], "total_savings": discount_info["total_savings"]})
     
     return OrderResponse(**{k: v for k, v in order.items() if k not in ["_id", "highest_bucket"]})
 
