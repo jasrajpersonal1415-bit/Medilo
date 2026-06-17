@@ -247,12 +247,15 @@ Build a CLOSED, THROW-AWAY PILOT APPLICATION for a healthcare startup called MED
 ## Changelog
 
 ### June, 2026
-- ✅ **Customer Profile Phase 3 Complete** — Notifications, About MEDILO, and Privacy & Security pages.
-  - Wired previously orphaned components into App.js router (`/profile/notifications`, `/profile/about`, `/profile/privacy`).
-  - Added new "Account" section + Notifications entry to Profile menu (`Profile.js`).
-  - Notifications: list/mark-read/mark-all-read/delete/clear via `/api/customer/notifications`.
-  - Privacy & Security: Privacy Policy & Terms dialogs + account-deletion request (`/api/customer/delete-account-request`).
-  - Tested via testing_agent (iteration_10): 33/34 assertions pass; all 3 routes + regression on existing profile links verified.
+- ✅ **Ops Customer Management Suite Complete (P1)** — new "Customers" section in Ops Dashboard with 4 sub-tabs:
+  - **Customer Database**: searchable table (orders, spend, addresses, wishlist, Rx, open tickets, status) + detail drawer with inner tabs (Orders / Addresses / Prescriptions / Wishlist).
+  - **Support Panel**: all tickets with status filter; ops can open conversation, reply (notifies customer), and change status (Open/In Progress/Resolved/Closed).
+  - **Notification Management**: broadcast to all active customers or per-customer (from detail view).
+  - **Customer Analytics**: totals/active/new(7d,30d), ordering customers, top spenders, most-wishlisted products, order status distribution, ticket counts.
+  - Backend: `/ops/customers`, `/ops/customers/{id}`, `/ops/support-tickets` (+reply/status), `/ops/notifications/send`, `/ops/analytics/customers`. New file `pages/ops/CustomerManagement.js`.
+  - Tested: backend via curl + testing_agent iteration_11 (100% frontend pass, no bugs).
+
+- ✅ **Customer Profile Phase 3 Complete** — Notifications, About MEDILO, Privacy & Security pages wired (iteration_10).
 
 ### April 11, 2026
 - ✅ **PWA Implementation Validated** - Service Worker, Manifest, Icons all working
