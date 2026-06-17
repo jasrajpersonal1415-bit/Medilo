@@ -11,7 +11,7 @@ import {
 import { 
   ArrowLeft, User, MapPin, Heart, ShoppingCart, ClipboardList,
   ChevronRight, LogOut, Package, IndianRupee, Calendar,
-  Pencil, Home, FileText, Headphones
+  Pencil, Home, FileText, Headphones, Bell, Info, Shield
 } from 'lucide-react';
 import { formatCurrency } from '../../lib/utils';
 import { toast } from 'sonner';
@@ -68,12 +68,20 @@ export default function Profile() {
         { icon: MapPin, label: 'Address Book', desc: `${profile?.address_count || 0} saved`, path: '/profile/addresses', color: '#10B981' },
         { icon: Heart, label: 'Wishlist', desc: `${profile?.wishlist_count || 0} items`, path: '/profile/wishlist', color: '#EC4899' },
         { icon: FileText, label: 'My Prescriptions', desc: 'Uploaded prescriptions', path: '/profile/prescriptions', color: '#14B8A6' },
+        { icon: Bell, label: 'Notifications', desc: 'Order & delivery updates', path: '/profile/notifications', color: '#8B5CF6' },
       ]
     },
     {
       section: 'Help',
       items: [
         { icon: Headphones, label: 'Customer Support', desc: 'Raise a ticket or contact us', path: '/profile/support', color: '#F59E0B' },
+      ]
+    },
+    {
+      section: 'Account',
+      items: [
+        { icon: Info, label: 'About MEDILO', desc: 'Company info & contact', path: '/profile/about', color: '#0F62FE' },
+        { icon: Shield, label: 'Privacy & Security', desc: 'Policies & account control', path: '/profile/privacy', color: '#EF4444' },
       ]
     },
   ];

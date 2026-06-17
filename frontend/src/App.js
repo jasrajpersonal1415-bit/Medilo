@@ -17,6 +17,9 @@ import AddressBook from './pages/customer/AddressBook';
 import Wishlist from './pages/customer/Wishlist';
 import Prescriptions from './pages/customer/Prescriptions';
 import Support from './pages/customer/Support';
+import Notifications from './pages/customer/Notifications';
+import AboutMedilo from './pages/customer/AboutMedilo';
+import PrivacySecurity from './pages/customer/PrivacySecurity';
 
 // Staff Pages
 import StaffLogin from './pages/staff/Login';
@@ -254,6 +257,30 @@ function AppRoutes() {
         element={
           <CustomerRoute>
             <Support />
+          </CustomerRoute>
+        } 
+      />
+      <Route 
+        path="/profile/notifications" 
+        element={
+          <CustomerRoute>
+            <Notifications />
+          </CustomerRoute>
+        } 
+      />
+      <Route 
+        path="/profile/about" 
+        element={
+          <CustomerRoute>
+            <AboutMedilo />
+          </CustomerRoute>
+        } 
+      />
+      <Route 
+        path="/profile/privacy" 
+        element={
+          <CustomerRoute>
+            <PrivacySecurity />
           </CustomerRoute>
         } 
       />
