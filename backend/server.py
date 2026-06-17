@@ -1999,6 +1999,276 @@ async def toggle_user_active(user_id: str, user: dict = Depends(get_current_user
     
     return {"message": f"User {'activated' if new_status else 'deactivated'}"}
 
+# ==================== Ops: Customer Management Suite ====================
+class OpsNotificationSend(BaseModel):
+    customer_id: Optional[str] = None
+    broadcast: bool = False
+    title: str
+    message: str
+    type: str = "system"
+
+class TicketStatusUpdate(BaseModel):
+    status: str
+
+def _ensure_ops(user: dict):
+    if user["role"] != UserRole.OPS.value:
+        raise HTTPException(status_code=403, detail="Only ops can access this")
+
+async def _grouped_counts(coll, ids, extra_match: dict = None):
+    match = {"customer_id": {"$in": ids}}
+    if extra_match:
+        match.update(extra_match)
+    out = {}
+    async for row in coll.aggregate([{"$match": match}, {"$group": {"_id": "$customer_id", "c": {"$sum": 1}}}]):
+        out[row["_id"]] = row["c"]
+    return out
+
+@api_router.get("/ops/customers")
+async def ops_list_customers(search: str = None, user: dict = Depends(get_current_user)):
+    _ensure_ops(user)
+    query = {"role": UserRole.CUSTOMER.value}
+    if search:
+        rx = {"$regex": search, "$options": "i"}
+        query["$or"] = [{"name": rx}, {"phone": rx}, {"email": rx}]
+    customers = await db.users.find(query, {"_id": 0, "password_hash": 0}).sort("created_at", -1).to_list(1000)
+    ids = [c["id"] for c in customers]
+
+    order_stats = {}
+    async for row in db.orders.aggregate([
+        {"$match": {"customer_id": {"$in": ids}}},
+        {"$group": {"_id": "$customer_id", "count": {"$sum": 1},
+                    "spend": {"$sum": {"$cond": [{"$eq": ["$status", "delivered"]}, {"$ifNull": ["$total_amount", 0]}, 0]}}}}
+    ]):
+        order_stats[row["_id"]] = {"count": row["count"], "spend": round(row.get("spend") or 0, 2)}
+
+    addr_counts = await _grouped_counts(db.addresses, ids)
+    wish_counts = await _grouped_counts(db.wishlist, ids)
+    presc_counts = await _grouped_counts(db.prescriptions, ids)
+    open_tickets = await _grouped_counts(db.support_tickets, ids, {"status": {"$in": ["Open", "In Progress"]}})
+
+    result = []
+    for c in customers:
+        cid = c["id"]
+        os_ = order_stats.get(cid, {"count": 0, "spend": 0})
+        result.append({
+            "id": cid,
+            "name": c.get("name", ""),
+            "phone": c.get("phone", ""),
+            "email": c.get("email", ""),
+            "is_active": c.get("is_active", True),
+            "created_at": c.get("created_at", ""),
+            "total_orders": os_["count"],
+            "total_spend": os_["spend"],
+            "address_count": addr_counts.get(cid, 0),
+            "wishlist_count": wish_counts.get(cid, 0),
+            "prescription_count": presc_counts.get(cid, 0),
+            "open_tickets": open_tickets.get(cid, 0),
+        })
+    return result
+
+@api_router.get("/ops/customers/{customer_id}")
+async def ops_customer_detail(customer_id: str, user: dict = Depends(get_current_user)):
+    _ensure_ops(user)
+    c = await db.users.find_one({"id": customer_id, "role": UserRole.CUSTOMER.value}, {"_id": 0, "password_hash": 0})
+    if not c:
+        raise HTTPException(status_code=404, detail="Customer not found")
+
+    orders = await db.orders.find({"customer_id": customer_id}, {"_id": 0, "highest_bucket": 0}).sort("created_at", -1).to_list(1000)
+    addresses = await db.addresses.find({"customer_id": customer_id}, {"_id": 0}).sort("is_default", -1).to_list(50)
+    prescriptions = await db.prescriptions.find({"customer_id": customer_id}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    tickets = await db.support_tickets.find({"customer_id": customer_id}, {"_id": 0}).sort("created_at", -1).to_list(100)
+
+    wishlist_items = await db.wishlist.find({"customer_id": customer_id}, {"_id": 0}).sort("created_at", -1).to_list(200)
+    wishlist = []
+    for item in wishlist_items:
+        product = await db.medicines.find_one({"id": item["product_id"]}, {"_id": 0})
+        if product:
+            wishlist.append({
+                "id": item["id"],
+                "product_id": item["product_id"],
+                "product_name": product.get("name", ""),
+                "product_type": product.get("product_type", "Medicine"),
+                "price": product.get("price", 0),
+                "manufacturer": product.get("manufacturer", ""),
+                "image_path": product.get("image_path"),
+                "created_at": item["created_at"],
+            })
+
+    total_spend = round(sum((o.get("total_amount") or 0) for o in orders if o.get("status") == "delivered"), 2)
+    return {
+        "profile": {
+            "id": c["id"],
+            "name": c.get("name", ""),
+            "phone": c.get("phone", ""),
+            "email": c.get("email", ""),
+            "is_active": c.get("is_active", True),
+            "created_at": c.get("created_at", ""),
+        },
+        "stats": {
+            "total_orders": len(orders),
+            "total_spend": total_spend,
+            "address_count": len(addresses),
+            "wishlist_count": len(wishlist),
+            "prescription_count": len(prescriptions),
+            "open_tickets": sum(1 for t in tickets if t.get("status") in ("Open", "In Progress")),
+        },
+        "orders": orders,
+        "addresses": addresses,
+        "prescriptions": prescriptions,
+        "wishlist": wishlist,
+        "tickets": tickets,
+    }
+
+@api_router.get("/ops/support-tickets")
+async def ops_list_tickets(status: str = None, user: dict = Depends(get_current_user)):
+    _ensure_ops(user)
+    q = {}
+    if status:
+        q["status"] = status
+    tickets = await db.support_tickets.find(q, {"_id": 0}).sort("updated_at", -1).to_list(500)
+    return tickets
+
+@api_router.get("/ops/support-tickets/{ticket_id}")
+async def ops_get_ticket(ticket_id: str, user: dict = Depends(get_current_user)):
+    _ensure_ops(user)
+    ticket = await db.support_tickets.find_one({"id": ticket_id}, {"_id": 0})
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    return ticket
+
+@api_router.post("/ops/support-tickets/{ticket_id}/reply")
+async def ops_reply_ticket(ticket_id: str, data: dict, user: dict = Depends(get_current_user)):
+    _ensure_ops(user)
+    message = data.get("message", "").strip()
+    if not message:
+        raise HTTPException(status_code=400, detail="Message required")
+    ticket = await db.support_tickets.find_one({"id": ticket_id})
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    new_msg = {"sender": "support", "message": message, "timestamp": get_utc_now()}
+    new_status = ticket.get("status", "Open")
+    if new_status == "Open":
+        new_status = "In Progress"
+    await db.support_tickets.update_one(
+        {"id": ticket_id},
+        {"$push": {"messages": new_msg}, "$set": {"updated_at": get_utc_now(), "status": new_status}}
+    )
+    await db.notifications.insert_one({
+        "id": generate_id(),
+        "customer_id": ticket["customer_id"],
+        "title": "Support replied to your ticket",
+        "message": message[:140],
+        "type": "system",
+        "is_read": False,
+        "created_at": get_utc_now(),
+    })
+    await log_audit("ticket_reply", "support_ticket", ticket_id, user["id"], user["role"])
+    return {"message": "Reply sent"}
+
+@api_router.post("/ops/support-tickets/{ticket_id}/status")
+async def ops_update_ticket_status(ticket_id: str, data: TicketStatusUpdate, user: dict = Depends(get_current_user)):
+    _ensure_ops(user)
+    valid = ["Open", "In Progress", "Resolved", "Closed"]
+    if data.status not in valid:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    res = await db.support_tickets.update_one(
+        {"id": ticket_id},
+        {"$set": {"status": data.status, "updated_at": get_utc_now()}}
+    )
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    await log_audit("ticket_status_changed", "support_ticket", ticket_id, user["id"], user["role"], {"status": data.status})
+    return {"message": "Status updated"}
+
+@api_router.post("/ops/notifications/send")
+async def ops_send_notification(data: OpsNotificationSend, user: dict = Depends(get_current_user)):
+    _ensure_ops(user)
+    now = get_utc_now()
+    if data.broadcast:
+        customers = await db.users.find({"role": UserRole.CUSTOMER.value, "is_active": True}, {"_id": 0, "id": 1}).to_list(1000)
+        targets = [c["id"] for c in customers]
+    elif data.customer_id:
+        targets = [data.customer_id]
+    else:
+        raise HTTPException(status_code=400, detail="customer_id or broadcast required")
+    docs = [{
+        "id": generate_id(),
+        "customer_id": cid,
+        "title": data.title,
+        "message": data.message,
+        "type": data.type,
+        "is_read": False,
+        "created_at": now,
+    } for cid in targets]
+    if docs:
+        await db.notifications.insert_many(docs)
+    await log_audit("notification_sent", "notification",
+                    "broadcast" if data.broadcast else (data.customer_id or ""),
+                    user["id"], user["role"], {"count": len(docs)})
+    return {"message": f"Notification sent to {len(docs)} customer(s)", "count": len(docs)}
+
+@api_router.get("/ops/analytics/customers")
+async def ops_customer_analytics(user: dict = Depends(get_current_user)):
+    _ensure_ops(user)
+    total_customers = await db.users.count_documents({"role": UserRole.CUSTOMER.value})
+    active_customers = await db.users.count_documents({"role": UserRole.CUSTOMER.value, "is_active": True})
+    now = datetime.now(timezone.utc)
+    d7 = (now - timedelta(days=7)).isoformat()
+    d30 = (now - timedelta(days=30)).isoformat()
+    new_7 = await db.users.count_documents({"role": UserRole.CUSTOMER.value, "created_at": {"$gte": d7}})
+    new_30 = await db.users.count_documents({"role": UserRole.CUSTOMER.value, "created_at": {"$gte": d30}})
+    ordering_customers = len(await db.orders.distinct("customer_id"))
+
+    top_spenders = []
+    async for row in db.orders.aggregate([
+        {"$match": {"status": "delivered"}},
+        {"$group": {"_id": "$customer_id", "spend": {"$sum": {"$ifNull": ["$total_amount", 0]}}, "orders": {"$sum": 1}}},
+        {"$sort": {"spend": -1}}, {"$limit": 5}
+    ]):
+        u = await db.users.find_one({"id": row["_id"]}, {"_id": 0, "name": 1, "phone": 1})
+        top_spenders.append({
+            "customer_id": row["_id"],
+            "name": (u or {}).get("name", ""),
+            "phone": (u or {}).get("phone", ""),
+            "spend": round(row["spend"], 2),
+            "orders": row["orders"],
+        })
+
+    status_dist = {}
+    async for row in db.orders.aggregate([{"$group": {"_id": "$status", "c": {"$sum": 1}}}]):
+        status_dist[row["_id"]] = row["c"]
+
+    open_tickets = await db.support_tickets.count_documents({"status": {"$in": ["Open", "In Progress"]}})
+    total_tickets = await db.support_tickets.count_documents({})
+
+    top_wishlist = []
+    async for row in db.wishlist.aggregate([
+        {"$group": {"_id": "$product_id", "c": {"$sum": 1}}},
+        {"$sort": {"c": -1}}, {"$limit": 8}
+    ]):
+        p = await db.medicines.find_one({"id": row["_id"]}, {"_id": 0, "name": 1, "product_type": 1, "price": 1})
+        if p:
+            top_wishlist.append({
+                "product_id": row["_id"],
+                "name": p.get("name", ""),
+                "product_type": p.get("product_type", ""),
+                "price": p.get("price", 0),
+                "count": row["c"],
+            })
+
+    return {
+        "total_customers": total_customers,
+        "active_customers": active_customers,
+        "new_customers_7d": new_7,
+        "new_customers_30d": new_30,
+        "ordering_customers": ordering_customers,
+        "top_spenders": top_spenders,
+        "order_status_distribution": status_dist,
+        "open_tickets": open_tickets,
+        "total_tickets": total_tickets,
+        "top_wishlist_products": top_wishlist,
+    }
+
 # Delivery Partner Routes
 @api_router.post("/auth/delivery/register", response_model=UserResponse)
 async def register_delivery_partner(data: DeliveryPartnerCreate, user: dict = Depends(get_current_user)):

@@ -16,7 +16,7 @@ import {
 } from '../../components/ui/dialog';
 import { 
   LogOut, Package, Users, Building2, Pill, Activity, 
-  Plus, Eye, Clock, ChevronDown, Truck, Trash2, Pencil, Download, Upload, ImageIcon, X
+  Plus, Eye, Clock, ChevronDown, Truck, Trash2, Pencil, Download, Upload, ImageIcon, X, UserCog
 } from 'lucide-react';
 import { 
   formatDateTime, getStatusClass, getStatusName, 
@@ -24,6 +24,7 @@ import {
 } from '../../lib/utils';
 import { toast } from 'sonner';
 import CSVImportDialog from '../../components/CSVImportDialog';
+import CustomerManagement from './CustomerManagement';
 
 export default function OpsDashboard() {
   const { user, logout } = useAuth();
@@ -330,6 +331,14 @@ export default function OpsDashboard() {
             <span>Users</span>
           </button>
           <button
+            onClick={() => setActiveTab('customers')}
+            className={`nav-item w-full text-left ${activeTab === 'customers' ? 'active' : ''}`}
+            data-testid="nav-customers"
+          >
+            <UserCog className="h-5 w-5" />
+            <span>Customers</span>
+          </button>
+          <button
             onClick={() => setActiveTab('audit')}
             className={`nav-item w-full text-left ${activeTab === 'audit' ? 'active' : ''}`}
           >
@@ -356,6 +365,9 @@ export default function OpsDashboard() {
 
       {/* Main Content */}
       <main className="dashboard-main">
+        {/* Customers Tab */}
+        {activeTab === 'customers' && <CustomerManagement />}
+
         {/* Orders Tab */}
         {activeTab === 'orders' && (
           <div>

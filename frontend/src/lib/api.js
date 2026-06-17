@@ -112,6 +112,15 @@ export const opsAPI = {
   getUsers: (role) => api.get('/ops/users', { params: { role } }),
   toggleUserActive: (userId) => api.post(`/ops/users/${userId}/toggle-active`),
   exportAuditLogs: (params) => api.get('/ops/audit-logs/export', { params, responseType: 'text' }),
+  // Customer Management Suite
+  listCustomers: (search) => api.get('/ops/customers', { params: { search } }),
+  getCustomer: (id) => api.get(`/ops/customers/${id}`),
+  listTickets: (status) => api.get('/ops/support-tickets', { params: { status } }),
+  getTicket: (id) => api.get(`/ops/support-tickets/${id}`),
+  replyTicket: (id, message) => api.post(`/ops/support-tickets/${id}/reply`, { message }),
+  updateTicketStatus: (id, status) => api.post(`/ops/support-tickets/${id}/status`, { status }),
+  sendNotification: (data) => api.post('/ops/notifications/send', data),
+  getCustomerAnalytics: () => api.get('/ops/analytics/customers'),
 };
 
 // Health check
