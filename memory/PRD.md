@@ -246,6 +246,14 @@ Build a CLOSED, THROW-AWAY PILOT APPLICATION for a healthcare startup called MED
 
 ## Changelog
 
+### June, 2026
+- ✅ **Customer Profile Phase 3 Complete** — Notifications, About MEDILO, and Privacy & Security pages.
+  - Wired previously orphaned components into App.js router (`/profile/notifications`, `/profile/about`, `/profile/privacy`).
+  - Added new "Account" section + Notifications entry to Profile menu (`Profile.js`).
+  - Notifications: list/mark-read/mark-all-read/delete/clear via `/api/customer/notifications`.
+  - Privacy & Security: Privacy Policy & Terms dialogs + account-deletion request (`/api/customer/delete-account-request`).
+  - Tested via testing_agent (iteration_10): 33/34 assertions pass; all 3 routes + regression on existing profile links verified.
+
 ### April 11, 2026
 - ✅ **PWA Implementation Validated** - Service Worker, Manifest, Icons all working
 - ✅ **Audit Log Export** - CSV export with date range filters on Ops Dashboard
