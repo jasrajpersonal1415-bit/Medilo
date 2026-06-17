@@ -11,7 +11,7 @@ import {
 import { 
   ArrowLeft, User, MapPin, Heart, ShoppingCart, ClipboardList,
   ChevronRight, LogOut, Package, IndianRupee, Calendar,
-  Pencil, Home
+  Pencil, Home, FileText, Headphones
 } from 'lucide-react';
 import { formatCurrency } from '../../lib/utils';
 import { toast } from 'sonner';
@@ -67,6 +67,13 @@ export default function Profile() {
         { icon: ClipboardList, label: 'My Orders', desc: `${profile?.total_orders || 0} orders`, path: '/orders', color: '#3B82F6' },
         { icon: MapPin, label: 'Address Book', desc: `${profile?.address_count || 0} saved`, path: '/profile/addresses', color: '#10B981' },
         { icon: Heart, label: 'Wishlist', desc: `${profile?.wishlist_count || 0} items`, path: '/profile/wishlist', color: '#EC4899' },
+        { icon: FileText, label: 'My Prescriptions', desc: 'Uploaded prescriptions', path: '/profile/prescriptions', color: '#14B8A6' },
+      ]
+    },
+    {
+      section: 'Help',
+      items: [
+        { icon: Headphones, label: 'Customer Support', desc: 'Raise a ticket or contact us', path: '/profile/support', color: '#F59E0B' },
       ]
     },
   ];

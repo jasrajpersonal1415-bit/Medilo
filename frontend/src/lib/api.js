@@ -129,6 +129,19 @@ export const customerAPI = {
   getWishlist: () => api.get('/customer/wishlist'),
   addToWishlist: (productId) => api.post('/customer/wishlist', { product_id: productId }),
   removeFromWishlist: (productId) => api.delete(`/customer/wishlist/${productId}`),
+  // Prescriptions
+  uploadPrescription: (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.post('/customer/prescriptions', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+  },
+  getPrescriptions: () => api.get('/customer/prescriptions'),
+  deletePrescription: (id) => api.delete(`/customer/prescriptions/${id}`),
+  // Support Tickets
+  createTicket: (data) => api.post('/customer/support-tickets', data),
+  getTickets: () => api.get('/customer/support-tickets'),
+  getTicket: (id) => api.get(`/customer/support-tickets/${id}`),
+  replyToTicket: (id, message) => api.post(`/customer/support-tickets/${id}/reply`, { message }),
 };
 
 export default api;

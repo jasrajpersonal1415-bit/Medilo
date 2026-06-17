@@ -15,6 +15,8 @@ import OrderDetail from './pages/customer/OrderDetail';
 import Profile from './pages/customer/Profile';
 import AddressBook from './pages/customer/AddressBook';
 import Wishlist from './pages/customer/Wishlist';
+import Prescriptions from './pages/customer/Prescriptions';
+import Support from './pages/customer/Support';
 
 // Staff Pages
 import StaffLogin from './pages/staff/Login';
@@ -236,6 +238,22 @@ function AppRoutes() {
         element={
           <CustomerRoute>
             <Wishlist />
+          </CustomerRoute>
+        } 
+      />
+      <Route 
+        path="/profile/prescriptions" 
+        element={
+          <CustomerRoute>
+            <Prescriptions />
+          </CustomerRoute>
+        } 
+      />
+      <Route 
+        path="/profile/support" 
+        element={
+          <CustomerRoute>
+            <Support />
           </CustomerRoute>
         } 
       />

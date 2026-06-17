@@ -774,6 +774,143 @@ async def remove_from_wishlist(product_id: str, user: dict = Depends(get_current
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Not in wishlist")
     return {"message": "Removed from wishlist"}
+
+# ==================== Prescriptions ====================
+@api_router.post("/customer/prescriptions")
+async def upload_prescription(
+    file: UploadFile = File(...),
+    user: dict = Depends(get_current_user)
+):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    
+    allowed = {"image/jpeg", "image/png", "image/webp", "application/pdf"}
+    if file.content_type not in allowed:
+        raise HTTPException(status_code=400, detail="Only JPEG, PNG, WebP, and PDF files are allowed")
+    
+    data = await file.read()
+    if len(data) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File must be less than 10MB")
+    
+    ext = file.filename.split(".")[-1] if "." in file.filename else "png"
+    path = f"{APP_NAME}/prescriptions/{user['id']}/{uuid.uuid4()}.{ext}"
+    result = put_object(path, data, file.content_type)
+    
+    prescription = {
+        "id": generate_id(),
+        "customer_id": user["id"],
+        "file_path": result["path"],
+        "file_name": file.filename,
+        "file_type": file.content_type,
+        "file_size": len(data),
+        "status": "uploaded",
+        "created_at": get_utc_now()
+    }
+    await db.prescriptions.insert_one(prescription)
+    prescription.pop("_id", None)
+    return prescription
+
+@api_router.get("/customer/prescriptions")
+async def list_prescriptions(user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    prescriptions = await db.prescriptions.find(
+        {"customer_id": user["id"]}, {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    return prescriptions
+
+@api_router.delete("/customer/prescriptions/{prescription_id}")
+async def delete_prescription(prescription_id: str, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    result = await db.prescriptions.delete_one({"id": prescription_id, "customer_id": user["id"]})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Prescription not found")
+    return {"message": "Prescription deleted"}
+
+# ==================== Support Tickets ====================
+class TicketCategory(str, Enum):
+    ORDER_ISSUE = "Order Issue"
+    DELIVERY_ISSUE = "Delivery Issue"
+    PAYMENT_ISSUE = "Payment Issue"
+    PRODUCT_ISSUE = "Product Issue"
+    PRESCRIPTION_ISSUE = "Prescription Issue"
+    ACCOUNT_ISSUE = "Account Issue"
+    OTHER = "Other"
+
+class TicketCreate(BaseModel):
+    subject: str
+    category: TicketCategory
+    description: str
+    order_id: Optional[str] = None
+
+@api_router.post("/customer/support-tickets")
+async def create_support_ticket(data: TicketCreate, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    
+    ticket = {
+        "id": generate_id(),
+        "ticket_number": f"TKT-{uuid.uuid4().hex[:8].upper()}",
+        "customer_id": user["id"],
+        "customer_name": user.get("name", ""),
+        "customer_phone": user.get("phone", ""),
+        "subject": data.subject,
+        "category": data.category.value,
+        "description": data.description,
+        "order_id": data.order_id,
+        "status": "Open",
+        "messages": [{
+            "sender": "customer",
+            "message": data.description,
+            "timestamp": get_utc_now()
+        }],
+        "created_at": get_utc_now(),
+        "updated_at": get_utc_now()
+    }
+    await db.support_tickets.insert_one(ticket)
+    ticket.pop("_id", None)
+    return ticket
+
+@api_router.get("/customer/support-tickets")
+async def list_support_tickets(user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    tickets = await db.support_tickets.find(
+        {"customer_id": user["id"]}, {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    return tickets
+
+@api_router.get("/customer/support-tickets/{ticket_id}")
+async def get_support_ticket(ticket_id: str, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    ticket = await db.support_tickets.find_one(
+        {"id": ticket_id, "customer_id": user["id"]}, {"_id": 0}
+    )
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    return ticket
+
+@api_router.post("/customer/support-tickets/{ticket_id}/reply")
+async def reply_to_ticket(ticket_id: str, data: dict, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    message = data.get("message", "").strip()
+    if not message:
+        raise HTTPException(status_code=400, detail="Message required")
+    
+    ticket = await db.support_tickets.find_one({"id": ticket_id, "customer_id": user["id"]})
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    
+    new_msg = {"sender": "customer", "message": message, "timestamp": get_utc_now()}
+    await db.support_tickets.update_one(
+        {"id": ticket_id},
+        {"$push": {"messages": new_msg}, "$set": {"updated_at": get_utc_now()}}
+    )
+    return {"message": "Reply sent"}
+
 ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
 
