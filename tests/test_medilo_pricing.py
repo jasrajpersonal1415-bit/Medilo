@@ -16,7 +16,7 @@ import os
 import uuid
 from datetime import datetime, timedelta
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://health-orders-2.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://medilo-pharmacy.preview.emergentagent.com')
 
 # Test credentials
 OPS_CREDS = {"email": "ops@medilo.com", "password": "test123"}

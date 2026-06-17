@@ -142,6 +142,15 @@ export const customerAPI = {
   getTickets: () => api.get('/customer/support-tickets'),
   getTicket: (id) => api.get(`/customer/support-tickets/${id}`),
   replyToTicket: (id, message) => api.post(`/customer/support-tickets/${id}/reply`, { message }),
+  // Notifications
+  getNotifications: () => api.get('/customer/notifications'),
+  getUnreadCount: () => api.get('/customer/notifications/unread-count'),
+  markRead: (id) => api.post(`/customer/notifications/${id}/read`),
+  markAllRead: () => api.post('/customer/notifications/read-all'),
+  deleteNotification: (id) => api.delete(`/customer/notifications/${id}`),
+  clearNotifications: () => api.delete('/customer/notifications'),
+  // Account
+  requestDeleteAccount: () => api.post('/customer/delete-account-request'),
 };
 
 export default api;

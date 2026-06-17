@@ -911,6 +911,86 @@ async def reply_to_ticket(ticket_id: str, data: dict, user: dict = Depends(get_c
     )
     return {"message": "Reply sent"}
 
+# ==================== Notifications ====================
+@api_router.get("/customer/notifications")
+async def list_notifications(user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    notifs = await db.notifications.find(
+        {"customer_id": user["id"]}, {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    return notifs
+
+@api_router.get("/customer/notifications/unread-count")
+async def notification_unread_count(user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    count = await db.notifications.count_documents({"customer_id": user["id"], "is_read": False})
+    return {"count": count}
+
+@api_router.post("/customer/notifications/{notification_id}/read")
+async def mark_notification_read(notification_id: str, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    await db.notifications.update_one(
+        {"id": notification_id, "customer_id": user["id"]},
+        {"$set": {"is_read": True}}
+    )
+    return {"message": "Marked as read"}
+
+@api_router.post("/customer/notifications/read-all")
+async def mark_all_notifications_read(user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    await db.notifications.update_many(
+        {"customer_id": user["id"], "is_read": False},
+        {"$set": {"is_read": True}}
+    )
+    return {"message": "All marked as read"}
+
+@api_router.delete("/customer/notifications/{notification_id}")
+async def delete_notification(notification_id: str, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    await db.notifications.delete_one({"id": notification_id, "customer_id": user["id"]})
+    return {"message": "Notification deleted"}
+
+@api_router.delete("/customer/notifications")
+async def clear_all_notifications(user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    await db.notifications.delete_many({"customer_id": user["id"]})
+    return {"message": "All notifications cleared"}
+
+# Delete Account Request
+@api_router.post("/customer/delete-account-request")
+async def request_account_deletion(user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    existing = await db.support_tickets.find_one(
+        {"customer_id": user["id"], "category": "Account Issue", "subject": {"$regex": "Delete Account"}, "status": {"$ne": "Resolved"}}
+    )
+    if existing:
+        raise HTTPException(status_code=400, detail="A delete account request is already pending")
+    
+    ticket = {
+        "id": generate_id(),
+        "ticket_number": f"TKT-{uuid.uuid4().hex[:8].upper()}",
+        "customer_id": user["id"],
+        "customer_name": user.get("name", ""),
+        "customer_phone": user.get("phone", ""),
+        "subject": "Delete Account Request",
+        "category": "Account Issue",
+        "description": "Customer has requested account deletion. Please review and process as per policy.",
+        "order_id": None,
+        "status": "Open",
+        "messages": [{"sender": "system", "message": "Account deletion request submitted. Our team will review and process within 7 working days.", "timestamp": get_utc_now()}],
+        "created_at": get_utc_now(),
+        "updated_at": get_utc_now()
+    }
+    await db.support_tickets.insert_one(ticket)
+    return {"message": "Account deletion request submitted", "ticket_id": ticket["id"]}
+
 ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
 
@@ -1420,6 +1500,14 @@ async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)
     
     await db.orders.insert_one(order)
     await log_audit("order_created", "order", order["id"], user["id"], user["role"], {"status": initial_status.value, "total_amount": discount_info["total_amount"], "total_savings": discount_info["total_savings"]})
+    
+    # Create notification
+    await db.notifications.insert_one({
+        "id": generate_id(), "customer_id": user["id"],
+        "type": "order_update", "title": "Order Placed",
+        "message": f"Your order has been placed successfully. Total: ₹{discount_info['total_amount']}",
+        "order_id": order["id"], "is_read": False, "created_at": get_utc_now()
+    })
     
     return OrderResponse(**{k: v for k, v in order.items() if k not in ["_id", "highest_bucket"]})
 
