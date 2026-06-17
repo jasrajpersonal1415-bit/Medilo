@@ -564,6 +564,216 @@ async def delete_medicine(medicine_id: str, user: dict = Depends(get_current_use
     return {"message": "Medicine deactivated"}
 
 # Product Image Upload
+
+# ==================== Address Book Models ====================
+class AddressLabel(str, Enum):
+    HOME = "Home"
+    WORK = "Work"
+    HOSTEL = "Hostel"
+    OTHER = "Other"
+
+class AddressCreate(BaseModel):
+    label: AddressLabel = AddressLabel.HOME
+    full_name: str
+    mobile: str
+    house_flat: str
+    street: str
+    landmark: Optional[str] = ""
+    city: str
+    state: str
+    pincode: str
+    is_default: bool = False
+
+class AddressResponse(BaseModel):
+    id: str
+    customer_id: str
+    label: str
+    full_name: str
+    mobile: str
+    house_flat: str
+    street: str
+    landmark: Optional[str] = ""
+    city: str
+    state: str
+    pincode: str
+    is_default: bool = False
+    created_at: str
+
+class ProfileUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+
+# ==================== Customer Profile & Address & Wishlist Routes ====================
+@api_router.get("/customer/profile")
+async def get_customer_profile(user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    db_user = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    order_count = await db.orders.count_documents({"customer_id": user["id"]})
+    total_spend_pipeline = [
+        {"$match": {"customer_id": user["id"], "status": "delivered"}},
+        {"$group": {"_id": None, "total": {"$sum": "$total_amount"}}}
+    ]
+    spend_result = await db.orders.aggregate(total_spend_pipeline).to_list(1)
+    total_spend = spend_result[0]["total"] if spend_result else 0
+    address_count = await db.addresses.count_documents({"customer_id": user["id"]})
+    wishlist_count = await db.wishlist.count_documents({"customer_id": user["id"]})
+    
+    return {
+        "id": db_user["id"],
+        "name": db_user.get("name", ""),
+        "phone": db_user.get("phone", ""),
+        "email": db_user.get("email", ""),
+        "created_at": db_user.get("created_at", ""),
+        "total_orders": order_count,
+        "total_spend": round(total_spend, 2),
+        "address_count": address_count,
+        "wishlist_count": wishlist_count,
+    }
+
+@api_router.put("/customer/profile")
+async def update_customer_profile(data: ProfileUpdate, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    update_fields = {}
+    if data.name is not None:
+        update_fields["name"] = data.name
+    if data.email is not None:
+        update_fields["email"] = data.email
+    if not update_fields:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    await db.users.update_one({"id": user["id"]}, {"$set": update_fields})
+    return {"message": "Profile updated"}
+
+# Address Book
+@api_router.get("/customer/addresses")
+async def list_addresses(user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    addresses = await db.addresses.find({"customer_id": user["id"]}, {"_id": 0}).sort("is_default", -1).to_list(50)
+    return addresses
+
+@api_router.post("/customer/addresses")
+async def create_address(data: AddressCreate, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    
+    if data.is_default:
+        await db.addresses.update_many({"customer_id": user["id"]}, {"$set": {"is_default": False}})
+    
+    # If first address, make it default
+    count = await db.addresses.count_documents({"customer_id": user["id"]})
+    if count == 0:
+        data.is_default = True
+    
+    address = {
+        "id": generate_id(),
+        "customer_id": user["id"],
+        **data.model_dump(),
+        "label": data.label.value,
+        "created_at": get_utc_now()
+    }
+    await db.addresses.insert_one(address)
+    address.pop("_id", None)
+    return address
+
+@api_router.put("/customer/addresses/{address_id}")
+async def update_address(address_id: str, data: AddressCreate, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    existing = await db.addresses.find_one({"id": address_id, "customer_id": user["id"]})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Address not found")
+    
+    if data.is_default:
+        await db.addresses.update_many({"customer_id": user["id"]}, {"$set": {"is_default": False}})
+    
+    update_data = data.model_dump()
+    update_data["label"] = data.label.value
+    await db.addresses.update_one({"id": address_id}, {"$set": update_data})
+    return {"message": "Address updated"}
+
+@api_router.delete("/customer/addresses/{address_id}")
+async def delete_address(address_id: str, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    result = await db.addresses.delete_one({"id": address_id, "customer_id": user["id"]})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Address not found")
+    return {"message": "Address deleted"}
+
+@api_router.post("/customer/addresses/{address_id}/set-default")
+async def set_default_address(address_id: str, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    existing = await db.addresses.find_one({"id": address_id, "customer_id": user["id"]})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Address not found")
+    await db.addresses.update_many({"customer_id": user["id"]}, {"$set": {"is_default": False}})
+    await db.addresses.update_one({"id": address_id}, {"$set": {"is_default": True}})
+    return {"message": "Default address updated"}
+
+# Wishlist
+@api_router.get("/customer/wishlist")
+async def list_wishlist(user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    wishlist_items = await db.wishlist.find({"customer_id": user["id"]}, {"_id": 0}).sort("created_at", -1).to_list(200)
+    
+    # Enrich with product details
+    enriched = []
+    for item in wishlist_items:
+        product = await db.medicines.find_one({"id": item["product_id"], "is_active": True}, {"_id": 0})
+        if product:
+            enriched.append({
+                "id": item["id"],
+                "product_id": item["product_id"],
+                "product_name": product.get("name", ""),
+                "product_type": product.get("product_type", "Medicine"),
+                "price": product.get("price", 0),
+                "manufacturer": product.get("manufacturer", ""),
+                "image_path": product.get("image_path"),
+                "is_active": product.get("is_active", True),
+                "created_at": item["created_at"]
+            })
+    return enriched
+
+@api_router.post("/customer/wishlist")
+async def add_to_wishlist(data: dict, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    product_id = data.get("product_id")
+    if not product_id:
+        raise HTTPException(status_code=400, detail="product_id required")
+    
+    product = await db.medicines.find_one({"id": product_id, "is_active": True}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    existing = await db.wishlist.find_one({"customer_id": user["id"], "product_id": product_id})
+    if existing:
+        raise HTTPException(status_code=400, detail="Already in wishlist")
+    
+    wishlist_item = {
+        "id": generate_id(),
+        "customer_id": user["id"],
+        "product_id": product_id,
+        "created_at": get_utc_now()
+    }
+    await db.wishlist.insert_one(wishlist_item)
+    return {"message": "Added to wishlist", "id": wishlist_item["id"]}
+
+@api_router.delete("/customer/wishlist/{product_id}")
+async def remove_from_wishlist(product_id: str, user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Customer only")
+    result = await db.wishlist.delete_one({"customer_id": user["id"], "product_id": product_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Not in wishlist")
+    return {"message": "Removed from wishlist"}
 ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
 

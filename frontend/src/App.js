@@ -12,6 +12,9 @@ import CustomerHome from './pages/customer/Home';
 import Cart from './pages/customer/Cart';
 import Orders from './pages/customer/Orders';
 import OrderDetail from './pages/customer/OrderDetail';
+import Profile from './pages/customer/Profile';
+import AddressBook from './pages/customer/AddressBook';
+import Wishlist from './pages/customer/Wishlist';
 
 // Staff Pages
 import StaffLogin from './pages/staff/Login';
@@ -209,6 +212,30 @@ function AppRoutes() {
         element={
           <CustomerRoute>
             <OrderDetail />
+          </CustomerRoute>
+        } 
+      />
+      <Route 
+        path="/profile" 
+        element={
+          <CustomerRoute>
+            <Profile />
+          </CustomerRoute>
+        } 
+      />
+      <Route 
+        path="/profile/addresses" 
+        element={
+          <CustomerRoute>
+            <AddressBook />
+          </CustomerRoute>
+        } 
+      />
+      <Route 
+        path="/profile/wishlist" 
+        element={
+          <CustomerRoute>
+            <Wishlist />
           </CustomerRoute>
         } 
       />

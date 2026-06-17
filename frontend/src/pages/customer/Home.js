@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
-import { medicineAPI, orderAPI } from '../../lib/api';
+import { medicineAPI, orderAPI, customerAPI } from '../../lib/api';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Card } from '../../components/ui/card';
@@ -45,10 +45,12 @@ export default function CustomerHome() {
   const [prescriptionNote, setPrescriptionNote] = useState('');
   const [uploadingPrescription, setUploadingPrescription] = useState(false);
   const fileInputRef = useRef(null);
+  const [wishlistIds, setWishlistIds] = useState(new Set());
 
   useEffect(() => {
     fetchCategories();
     fetchOrders();
+    fetchWishlistIds();
   }, []);
 
   useEffect(() => {
@@ -109,6 +111,29 @@ export default function CustomerHome() {
 
   const handleRemoveFromCart = (productId) => {
     decrementItem(productId);
+  };
+
+  const fetchWishlistIds = async () => {
+    try {
+      const res = await customerAPI.getWishlist();
+      setWishlistIds(new Set(res.data.map(i => i.product_id)));
+    } catch (err) {}
+  };
+
+  const toggleWishlist = async (productId) => {
+    try {
+      if (wishlistIds.has(productId)) {
+        await customerAPI.removeFromWishlist(productId);
+        setWishlistIds(prev => { const s = new Set(prev); s.delete(productId); return s; });
+        toast.success('Removed from wishlist');
+      } else {
+        await customerAPI.addToWishlist(productId);
+        setWishlistIds(prev => new Set(prev).add(productId));
+        toast.success('Added to wishlist');
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Failed');
+    }
   };
 
   const handleReorder = async (order) => {
@@ -363,9 +388,18 @@ export default function CustomerHome() {
     return (
       <div 
         key={product.id}
-        className="bg-white rounded-xl border border-gray-100 p-3 shadow-sm hover:shadow-md transition-shadow"
+        className="bg-white rounded-xl border border-gray-100 p-3 shadow-sm hover:shadow-md transition-shadow relative"
         data-testid={`product-card-${product.id}`}
       >
+        {/* Wishlist heart */}
+        <button
+          onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
+          className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm"
+          data-testid={`wishlist-btn-${product.id}`}
+        >
+          <Heart className={`h-3.5 w-3.5 ${wishlistIds.has(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
+        </button>
+
         {/* Product icon area */}
         <div className="w-full h-20 rounded-lg flex items-center justify-center mb-3 overflow-hidden" style={{ backgroundColor: config.bg }}>
           {product.image_path ? (
@@ -488,18 +522,27 @@ export default function CustomerHome() {
             <h1 className="text-xl font-bold text-[#0F62FE] tracking-tight">MEDILO</h1>
             <p className="text-xs text-gray-500">Hi, {user?.name}</p>
           </div>
-          <Link 
-            to="/cart" 
-            className="relative w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center"
-            data-testid="cart-link"
-          >
-            <ShoppingCart className="h-5 w-5 text-gray-700" />
-            {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#0F62FE] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                {itemCount}
-              </span>
-            )}
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link 
+              to="/profile" 
+              className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center"
+              data-testid="profile-link"
+            >
+              <User className="h-5 w-5 text-gray-700" />
+            </Link>
+            <Link 
+              to="/cart" 
+              className="relative w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center"
+              data-testid="cart-link"
+            >
+              <ShoppingCart className="h-5 w-5 text-gray-700" />
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#0F62FE] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
+            </Link>
+          </div>
         </div>
 
         {/* Search */}

@@ -117,4 +117,18 @@ export const opsAPI = {
 // Health check
 export const healthCheck = () => api.get('/health');
 
+// Customer Profile API
+export const customerAPI = {
+  getProfile: () => api.get('/customer/profile'),
+  updateProfile: (data) => api.put('/customer/profile', data),
+  getAddresses: () => api.get('/customer/addresses'),
+  createAddress: (data) => api.post('/customer/addresses', data),
+  updateAddress: (id, data) => api.put(`/customer/addresses/${id}`, data),
+  deleteAddress: (id) => api.delete(`/customer/addresses/${id}`),
+  setDefaultAddress: (id) => api.post(`/customer/addresses/${id}/set-default`),
+  getWishlist: () => api.get('/customer/wishlist'),
+  addToWishlist: (productId) => api.post('/customer/wishlist', { product_id: productId }),
+  removeFromWishlist: (productId) => api.delete(`/customer/wishlist/${productId}`),
+};
+
 export default api;
