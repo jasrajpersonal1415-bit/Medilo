@@ -18,6 +18,12 @@ import io
 import csv
 import base64
 import requests as http_requests
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import mm
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_RIGHT, TA_CENTER, TA_LEFT
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -31,6 +37,9 @@ db = client[os.environ['DB_NAME']]
 STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
 EMERGENT_KEY = os.environ.get("EMERGENT_LLM_KEY")
 APP_NAME = "medilo"
+# GST / Invoice configuration (single MEDILO GSTIN, GST-inclusive MRP pricing)
+MEDILO_GSTIN = os.environ.get("MEDILO_GSTIN", "07ABCDE1234F1Z5")
+GST_RATE = float(os.environ.get("MEDILO_GST_RATE", "12"))
 storage_key = None
 
 def init_storage():
@@ -1778,98 +1787,187 @@ async def cancel_order(order_id: str, user: dict = Depends(get_current_user)):
     order = await db.orders.find_one({"id": order_id}, {"_id": 0, "highest_bucket": 0})
     return OrderResponse(**order)
 
-# Invoice Route (Simple HTML-based PDF simulation)
+# Invoice Route (GST-compliant PDF)
+def _inr(x):
+    return f"Rs. {x:,.2f}"
+
+def build_invoice_pdf(order: dict, pharmacy: dict) -> bytes:
+    """Generate a GST-style tax invoice PDF (prices are GST-inclusive MRP, CGST+SGST split)."""
+    items = order.get("items", [])
+
+    # Subtotal (GST-inclusive MRP, before discount)
+    subtotal = order.get("subtotal")
+    if subtotal is None:
+        subtotal = sum((it.get("unit_price", 0) or 0) * it.get("quantity", 0) for it in items)
+    subtotal = round(subtotal or 0, 2)
+
+    # Net payable (GST-inclusive, after discount)
+    net = order.get("total_amount")
+    if net is None:
+        net = subtotal
+    net = round(net or 0, 2)
+
+    # Discount as a percentage (no item-wise breakdown)
+    total_savings = order.get("total_savings")
+    if total_savings is None:
+        total_savings = round(max(subtotal - net, 0), 2)
+    discount_pct = round((total_savings / subtotal * 100), 1) if subtotal > 0 and total_savings > 0 else 0
+
+    # Back-calculate GST out of the GST-inclusive net amount
+    taxable_value = round(net / (1 + GST_RATE / 100), 2)
+    total_gst = round(net - taxable_value, 2)
+    cgst = round(total_gst / 2, 2)
+    sgst = round(total_gst - cgst, 2)
+    half_rate = GST_RATE / 2
+
+    styles = getSampleStyleSheet()
+    small = ParagraphStyle("small", parent=styles["Normal"], fontSize=8, leading=10, textColor=colors.HexColor("#444444"))
+    cell = ParagraphStyle("cell", parent=styles["Normal"], fontSize=9, leading=11)
+    cell_sub = ParagraphStyle("cell_sub", parent=styles["Normal"], fontSize=7, leading=9, textColor=colors.HexColor("#777777"))
+    h_title = ParagraphStyle("h_title", parent=styles["Normal"], fontSize=22, leading=24, textColor=colors.HexColor("#0F62FE"), fontName="Helvetica-Bold")
+    label_r = ParagraphStyle("label_r", parent=styles["Normal"], fontSize=9, leading=12, alignment=TA_RIGHT)
+    value_r = ParagraphStyle("value_r", parent=styles["Normal"], fontSize=9, leading=12, alignment=TA_RIGHT, fontName="Helvetica-Bold")
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=18 * mm, bottomMargin=18 * mm,
+                            leftMargin=16 * mm, rightMargin=16 * mm, title=f"Invoice {order['id'][:8].upper()}")
+    elems = []
+
+    # ---- Header band: brand + TAX INVOICE ----
+    header = Table([[
+        Paragraph("MEDILO", h_title),
+        Paragraph("<b>TAX INVOICE</b>", ParagraphStyle("ti", parent=styles["Normal"], fontSize=14, alignment=TA_RIGHT, fontName="Helvetica-Bold"))
+    ]], colWidths=[90 * mm, 88 * mm])
+    header.setStyle(TableStyle([
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LINEBELOW", (0, 0), (-1, -1), 1.2, colors.HexColor("#0F62FE")),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+    ]))
+    elems.append(header)
+    elems.append(Spacer(1, 8))
+
+    # ---- Seller (pharmacy) + invoice meta ----
+    ph_name = (pharmacy or {}).get("name", "N/A")
+    ph_addr = (pharmacy or {}).get("address", "N/A")
+    ph_lic = (pharmacy or {}).get("license_number", "N/A")
+    seller = (
+        f"<b>MEDILO Healthcare Pvt. Ltd.</b><br/>"
+        f"GSTIN: {MEDILO_GSTIN}<br/>"
+        f"Dispensing Pharmacy: {ph_name}<br/>"
+        f"Drug License No: {ph_lic}<br/>"
+        f"{ph_addr}"
+    )
+    meta = (
+        f"Invoice No: <b>INV-{order['id'][:8].upper()}</b><br/>"
+        f"Order ID: {order['id'][:8].upper()}<br/>"
+        f"Invoice Date: {str(order.get('created_at', ''))[:10]}<br/>"
+        f"Place of Supply: India"
+    )
+    info = Table([[Paragraph(seller, small), Paragraph(meta, ParagraphStyle("meta", parent=small, alignment=TA_RIGHT))]],
+                 colWidths=[100 * mm, 78 * mm])
+    info.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP")]))
+    elems.append(info)
+    elems.append(Spacer(1, 10))
+
+    # ---- Bill To ----
+    bill_to = (
+        f"<b>Bill To</b><br/>{order.get('customer_name', '')} ({order.get('customer_phone', '')})<br/>"
+        f"{order.get('delivery_address', '')}"
+    )
+    bt = Table([[Paragraph(bill_to, small)]], colWidths=[178 * mm])
+    bt.setStyle(TableStyle([
+        ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#dddddd")),
+        ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#f9fafb")),
+        ("TOPPADDING", (0, 0), (-1, -1), 6), ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+        ("LEFTPADDING", (0, 0), (-1, -1), 8),
+    ]))
+    elems.append(bt)
+    elems.append(Spacer(1, 10))
+
+    # ---- Items table ----
+    data = [["#", "Item Description", "Qty", "Rate\n(incl. GST)", "Amount"]]
+    for idx, it in enumerate(items, 1):
+        name = it.get("medicine_name", "")
+        batch = it.get("batch_number") or "-"
+        expiry = it.get("expiry_date") or "-"
+        desc = Paragraph(f"{name}<br/><font size=7 color='#777777'>Batch: {batch} &nbsp; Exp: {expiry}</font>", cell)
+        qty = it.get("quantity", 0)
+        rate = it.get("unit_price", 0) or 0
+        amount = rate * qty
+        data.append([str(idx), desc, str(qty), _inr(rate), _inr(amount)])
+
+    tbl = Table(data, colWidths=[10 * mm, 96 * mm, 14 * mm, 28 * mm, 30 * mm], repeatRows=1)
+    tbl.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#0F62FE")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), 9),
+        ("FONTSIZE", (0, 1), (-1, -1), 9),
+        ("ALIGN", (2, 0), (2, -1), "CENTER"),
+        ("ALIGN", (3, 0), (-1, -1), "RIGHT"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#dddddd")),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f7f9fc")]),
+        ("TOPPADDING", (0, 0), (-1, -1), 5), ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+    ]))
+    elems.append(tbl)
+    elems.append(Spacer(1, 10))
+
+    # ---- Summary (right aligned) ----
+    summary_rows = [
+        [Paragraph("Subtotal (MRP)", label_r), Paragraph(_inr(subtotal), value_r)],
+    ]
+    if discount_pct > 0:
+        summary_rows.append([Paragraph(f"Discount ({discount_pct}%)", label_r),
+                             Paragraph(f"- {_inr(total_savings)}", ParagraphStyle("disc", parent=value_r, textColor=colors.HexColor("#16a34a")))])
+    summary_rows += [
+        [Paragraph("Net Amount (incl. GST)", label_r), Paragraph(_inr(net), value_r)],
+        [Paragraph("Taxable Value", label_r), Paragraph(_inr(taxable_value), value_r)],
+        [Paragraph(f"CGST @ {half_rate:g}%", label_r), Paragraph(_inr(cgst), value_r)],
+        [Paragraph(f"SGST @ {half_rate:g}%", label_r), Paragraph(_inr(sgst), value_r)],
+        [Paragraph("<b>Grand Total</b>", ParagraphStyle("gt", parent=label_r, fontSize=11)),
+         Paragraph(f"<b>{_inr(net)}</b>", ParagraphStyle("gtv", parent=value_r, fontSize=11, textColor=colors.HexColor("#0F62FE")))],
+    ]
+    summary = Table(summary_rows, colWidths=[48 * mm, 38 * mm], hAlign="RIGHT")
+    summary.setStyle(TableStyle([
+        ("TOPPADDING", (0, 0), (-1, -1), 3), ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+        ("LINEABOVE", (0, -1), (-1, -1), 0.8, colors.HexColor("#0F62FE")),
+        ("LINEBELOW", (0, len(summary_rows) - 2), (-1, len(summary_rows) - 2), 0.4, colors.HexColor("#dddddd")),
+    ]))
+    elems.append(summary)
+    elems.append(Spacer(1, 18))
+
+    note = (
+        f"All prices are inclusive of GST @ {GST_RATE:g}% (CGST {half_rate:g}% + SGST {half_rate:g}%). "
+        "This is a computer-generated invoice and does not require a signature."
+    )
+    elems.append(Paragraph(note, ParagraphStyle("note", parent=small, fontSize=7.5, textColor=colors.HexColor("#888888"))))
+
+    doc.build(elems)
+    buf.seek(0)
+    return buf.getvalue()
+
 @api_router.get("/orders/{order_id}/invoice")
 async def get_invoice(order_id: str, user: dict = Depends(get_current_user)):
     order = await db.orders.find_one({"id": order_id}, {"_id": 0})
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    
+
     # Check access
     if user["role"] == UserRole.CUSTOMER.value and order["customer_id"] != user["id"]:
         raise HTTPException(status_code=403, detail="Access denied")
-    
+
     if not order.get("invoice_generated"):
         raise HTTPException(status_code=400, detail="Invoice not yet generated")
-    
+
     pharmacy = await db.pharmacies.find_one({"id": order.get("pharmacy_id")}, {"_id": 0})
-    
-    # Generate simple invoice HTML
-    items_html = ""
-    for item in order["items"]:
-        items_html += f"""
-        <tr>
-            <td>{item['medicine_name']}</td>
-            <td>{item.get('batch_number', '-')}</td>
-            <td>{item.get('expiry_date', '-')}</td>
-            <td>{item['quantity']}</td>
-            <td>₹{item.get('unit_price', 0):.2f}</td>
-            <td>₹{(item.get('unit_price', 0) * item['quantity']):.2f}</td>
-        </tr>
-        """
-    
-    invoice_html = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Invoice - {order_id[:8]}</title>
-        <style>
-            body {{ font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }}
-            .header {{ text-align: center; border-bottom: 2px solid #0F62FE; padding-bottom: 20px; }}
-            .logo {{ color: #0F62FE; font-size: 24px; font-weight: bold; }}
-            table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
-            th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-            th {{ background: #f5f5f5; }}
-            .total {{ font-weight: bold; font-size: 18px; text-align: right; }}
-            .pharmacy-info {{ background: #f9f9f9; padding: 15px; margin: 20px 0; }}
-        </style>
-    </head>
-    <body>
-        <div class="header">
-            <div class="logo">MEDILO</div>
-            <p>Tax Invoice</p>
-        </div>
-        
-        <div class="pharmacy-info">
-            <strong>Pharmacy:</strong> {pharmacy.get('name', 'N/A') if pharmacy else 'N/A'}<br>
-            <strong>License No:</strong> {pharmacy.get('license_number', 'N/A') if pharmacy else 'N/A'}<br>
-            <strong>Address:</strong> {pharmacy.get('address', 'N/A') if pharmacy else 'N/A'}
-        </div>
-        
-        <p><strong>Order ID:</strong> {order['id'][:8].upper()}</p>
-        <p><strong>Date:</strong> {order['created_at'][:10]}</p>
-        <p><strong>Customer:</strong> {order['customer_name']} ({order['customer_phone']})</p>
-        <p><strong>Delivery Address:</strong> {order['delivery_address']}</p>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>Medicine</th>
-                    <th>Batch No.</th>
-                    <th>Expiry</th>
-                    <th>Qty</th>
-                    <th>Unit Price</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                {items_html}
-            </tbody>
-        </table>
-        
-        <p class="total">Total: ₹{order.get('total_amount', 0):.2f}</p>
-        
-        <p style="margin-top: 40px; font-size: 12px; color: #666;">
-            This is a computer-generated invoice and does not require a signature.
-        </p>
-    </body>
-    </html>
-    """
-    
+    pdf_bytes = build_invoice_pdf(order, pharmacy)
+
+    filename = f"MEDILO_Invoice_{order_id[:8].upper()}.pdf"
     return StreamingResponse(
-        io.BytesIO(invoice_html.encode()),
-        media_type="text/html",
-        headers={"Content-Disposition": f"inline; filename=invoice_{order_id[:8]}.html"}
+        io.BytesIO(pdf_bytes),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
 # Ops Routes

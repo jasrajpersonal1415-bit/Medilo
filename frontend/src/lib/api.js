@@ -75,7 +75,7 @@ export const orderAPI = {
   uploadPrescription: (id, prescription_image) => 
     api.post(`/orders/${id}/upload-prescription`, { prescription_image }),
   cancel: (id) => api.post(`/orders/${id}/cancel`),
-  getInvoice: (id) => api.get(`/orders/${id}/invoice`, { responseType: 'text' }),
+  getInvoice: (id) => api.get(`/orders/${id}/invoice`, { responseType: 'blob' }),
 };
 
 // Pharmacist API

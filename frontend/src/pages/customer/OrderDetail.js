@@ -232,14 +232,18 @@ export default function OrderDetail() {
                 setDownloadingInvoice(true);
                 try {
                   const response = await orderAPI.getInvoice(order.id);
-                  // Open HTML invoice in new window
-                  const newWindow = window.open('', '_blank');
-                  if (newWindow) {
-                    newWindow.document.write(response.data);
-                    newWindow.document.close();
-                  } else {
-                    toast.error('Please allow popups to view invoice');
-                  }
+                  const blob = new Blob([response.data], { type: 'application/pdf' });
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `MEDILO_Invoice_${order.id.slice(0, 8).toUpperCase()}.pdf`;
+                  document.body.appendChild(a);
+                  a.click();
+                  setTimeout(() => {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                  }, 200);
+                  toast.success('Invoice downloaded');
                 } catch (err) {
                   toast.error('Failed to download invoice');
                 } finally {
