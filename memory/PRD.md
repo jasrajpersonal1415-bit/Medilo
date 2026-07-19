@@ -158,7 +158,7 @@ Build a CLOSED, THROW-AWAY PILOT APPLICATION for a healthcare startup called MED
 ## Prioritized Backlog
 
 ### P1 - High Priority
-- [ ] PDF invoice generation (currently HTML)
+- [x] PDF invoice generation (GST-compliant, reportlab) — GSTIN, CGST+SGST split (12% GST-inclusive MRP back-calc), discount shown as percentage
 - [x] Audit log export (CSV)
 - [ ] Push notifications for order status
 
@@ -247,7 +247,15 @@ Build a CLOSED, THROW-AWAY PILOT APPLICATION for a healthcare startup called MED
 ## Changelog
 
 ### June, 2026
-- ✅ **Ops Customer Management Suite Complete (P1)** — new "Customers" section in Ops Dashboard with 4 sub-tabs:
+- ✅ **PDF Invoice Generation Complete (P1)** — replaced HTML invoice with a GST-compliant downloadable PDF (reportlab).
+  - Single MEDILO GSTIN on invoice (`MEDILO_GSTIN` env, default placeholder `07ABCDE1234F1Z5`).
+  - Prices treated as GST-inclusive MRP; GST back-calculated at flat 12% (`MEDILO_GST_RATE` env) → **CGST 6% + SGST 6%** split.
+  - Discount shown as a **percentage line** (no item-wise breakdown), per requirement.
+  - Proper tax-invoice layout: brand header, seller/GSTIN block, Bill-To, items table (batch/expiry), summary (Subtotal / Discount% / Net / Taxable / CGST / SGST / Grand Total).
+  - `build_invoice_pdf()` in server.py; `/orders/{id}/invoice` now returns `application/pdf`. Frontend downloads blob as `MEDILO_Invoice_<id>.pdf`.
+  - Verified via curl + PDF content analysis (2 orders: with & without discount). Unit tests: `backend/tests/test_invoice.py`.
+
+- ✅ **Ops Customer Management Suite Complete (P1)** — Customer DB, Support panel, Notification mgmt, Analytics (iteration_11).
   - **Customer Database**: searchable table (orders, spend, addresses, wishlist, Rx, open tickets, status) + detail drawer with inner tabs (Orders / Addresses / Prescriptions / Wishlist).
   - **Support Panel**: all tickets with status filter; ops can open conversation, reply (notifies customer), and change status (Open/In Progress/Resolved/Closed).
   - **Notification Management**: broadcast to all active customers or per-customer (from detail view).
