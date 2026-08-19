@@ -247,7 +247,12 @@ Build a CLOSED, THROW-AWAY PILOT APPLICATION for a healthcare startup called MED
 ## Changelog
 
 ### June, 2026
-- ✅ **PDF Invoice Generation Complete (P1)** — replaced HTML invoice with a GST-compliant downloadable PDF (reportlab).
+- ✅ **Backend + Frontend Modular Refactor (P2)** — purely structural, behavior-preserving.
+  - Backend: split monolithic `server.py` (~2666 lines) → `config.py` (env/db/JWT/GST/storage), `models.py` (enums + Pydantic), `services.py` (auth/JWT helpers, audit, discounts, CSV parse, invoice PDF), and `routers/*.py` (auth, medicines, customer, pharmacies, orders, pharmacist, pharmacy, ops, delivery). `server.py` is now a thin app that composes routers. All `/api` URLs & response shapes unchanged.
+  - Frontend: split `CustomerManagement.js` (~720 lines) → `pages/ops/customers/{shared, CustomersTab, SupportTab, NotificationsTab, AnalyticsTab}.js`.
+  - Verified: testing_agent iteration_12 — backend 29/29 pytest, frontend 100%, no regressions. Regression suite at `backend/tests/test_refactor_regression.py`.
+
+- ✅ **PDF Invoice Generation Complete (P1)** — GST-compliant downloadable PDF (reportlab).
   - Single MEDILO GSTIN on invoice (`MEDILO_GSTIN` env, default placeholder `07ABCDE1234F1Z5`).
   - Prices treated as GST-inclusive MRP; GST back-calculated at flat 12% (`MEDILO_GST_RATE` env) → **CGST 6% + SGST 6%** split.
   - Discount shown as a **percentage line** (no item-wise breakdown), per requirement.
