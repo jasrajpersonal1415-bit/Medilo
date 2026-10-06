@@ -1,0 +1,23 @@
+{
+  "summary": "Tested order-status push notifications end-to-end. Backend: 9 pytest cases pass covering full lifecycle (OTC order: pharmacist_approved -> assigned_to_pharmacy -> pharmacy_accepted -> inventory_confirmed -> preparing -> ready_for_pickup -> picked_up -> out_for_delivery -> delivered) plus cancel path, correct type mapping (delivery_update vs order_update), order_id presence, and Web Push API contract (VAPID key, idempotent subscribe, unsubscribe, 403 for non-customer, 400 for missing endpoint). Frontend: Notifications screen renders items (17 rendered from test data), push-enable-card + enable-push-btn visible when not subscribed, clicking an in-app notification with order_id correctly navigates to /order/{id}.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_order_notifications.py",
+    "/app/test_reports/pytest/notifications_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "services.py notify_customer sends web pushes serially in a for-loop with asyncio.to_thread per subscription; for a customer with many devices this blocks the request. Consider asyncio.gather or fire-and-forget via BackgroundTasks so order-status API latency is not coupled to push delivery.",
+    "routers/customer.py /push/unsubscribe accepts any authenticated role (only /subscribe is customer-gated). Minor: harmless but inconsistent; the delete is scoped by customer_id so a non-customer can't delete customer subs, but the endpoint should ideally also 403 non-customers for symmetry.",
+    "routers/orders.py upload-prescription takes prescription_image as a bare query string param (not a body/Pydantic model) which is awkward and lacks validation; consider a request body model.",
+    "notify_order_status swallows all exceptions via a broad `except Exception`; this is good for robustness but masks real DB errors (e.g., insert failure). Consider logging at error level with the stack trace."
+  ],
+  "updated_files": ["/app/backend/tests/test_order_notifications.py"],
+  "success_rate": {"backend": "100% (9/9)", "frontend": "100%"},
+  "test_credentials": "Customer 9876543210, pharmacist@medilo.com/test123, pharmacy_staff@test.com/test123 (pharmacy_id 66491cea-c62f-46a2-b03e-b211f81da0b8), delivery 9988776655",
+  "seed_data_creation": "Created 2 TEST orders during the lifecycle test (one driven through to 'delivered', one cancelled). Produced ~10 in-app notifications on the customer feed; no cleanup performed since persisted test data is harmless and useful for manual verification.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend lifecycle test (/app/backend/tests/test_order_notifications.py) is self-contained and reusable: it logs in all roles via existing seeded accounts, drives an OTC order (Dolo 650 id e2b792b9-13e8-4d1a-ba3c-21b75a959c85) through every status, asserts exactly 9 notifications per order with correct type mapping and order_id. For a pharmacist-review variant, use a SCHEDULE_H medicine and provide schedule_h_declaration=true (initial status becomes pending_pharmacist_review and pharmacist 'approve' action adds one more notification). Real browser push popups cannot be asserted in automation (no push service); only the subscribe/unsubscribe/VAPID API contract and the Enable UI are tested."
+}

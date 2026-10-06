@@ -467,6 +467,8 @@ async def subscribe_push(subscription: dict = Body(...), user: dict = Depends(ge
 
 @router.post("/push/unsubscribe")
 async def unsubscribe_push(data: dict = Body(...), user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Only customers can unsubscribe")
     endpoint = data.get("endpoint")
     if endpoint:
         await db.push_subscriptions.delete_one({"endpoint": endpoint, "customer_id": user["id"]})

@@ -437,6 +437,15 @@ def _send_webpush_sync(subscription: dict, payload: dict):
         return "error"
 
 
+async def _dispatch_push(subs, payload):
+    """Send web pushes concurrently; prune expired subscriptions. Runs in background."""
+    async def _one(s):
+        result = await asyncio.to_thread(_send_webpush_sync, s["subscription"], payload)
+        if result == "expired":
+            await db.push_subscriptions.delete_one({"id": s["id"]})
+    await asyncio.gather(*[_one(s) for s in subs], return_exceptions=True)
+
+
 async def notify_customer(customer_id: str, title: str, message: str,
                           ntype: str = "order_update", order_id: str = None):
     """Create an in-app notification AND push to the customer's subscribed devices."""
@@ -452,17 +461,14 @@ async def notify_customer(customer_id: str, title: str, message: str,
         "created_at": get_utc_now(),
     })
 
-    # Web push (best-effort, prune dead subscriptions)
+    # Web push (fire-and-forget so API latency isn't coupled to push delivery)
     if not VAPID_PRIVATE_KEY:
         return
     subs = await db.push_subscriptions.find({"customer_id": customer_id}, {"_id": 0}).to_list(100)
     if not subs:
         return
     payload = {"title": title, "body": message, "order_id": order_id, "type": ntype}
-    for s in subs:
-        result = await asyncio.to_thread(_send_webpush_sync, s["subscription"], payload)
-        if result == "expired":
-            await db.push_subscriptions.delete_one({"id": s["id"]})
+    asyncio.create_task(_dispatch_push(subs, payload))
 
 
 async def notify_order_status(customer_id: str, order_id: str, new_status: str):

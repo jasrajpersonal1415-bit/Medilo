@@ -247,6 +247,11 @@ Build a CLOSED, THROW-AWAY PILOT APPLICATION for a healthcare startup called MED
 ## Changelog
 
 ### June, 2026
+- ✅ **Order-Status Push Notifications (P2)** — both in-app + browser Web Push.
+  - Every order status transition (placed, pharmacist approved/rejected/prescription-needed, pharmacy assigned/accepted, inventory confirmed, preparing, ready, picked up, out for delivery, delivered, cancelled) auto-creates an in-app notification (feed + bell) via `services.notify_order_status`.
+  - Web Push with **self-generated VAPID keys** (no third-party account): `pywebpush`; endpoints `/api/push/vapid-public-key`, `/push/subscribe`, `/push/unsubscribe`; subscriptions in `push_subscriptions`; dead subs auto-pruned on 404/410. Push dispatched fire-and-forget (non-blocking, concurrent).
+  - Frontend: `lib/push.js` + opt-in "Enable" card on Notifications page; `sw.js` push + notificationclick handlers (deep-link to `/order/{id}`).
+  - Tested: testing_agent iteration_14 — backend 9/9 lifecycle pytest, frontend 100%, no bugs. Regression suite `backend/tests/test_order_notifications.py`.
 - ✅ **Ops Dashboard Panel Extraction (P2)** — moved the 5 inline panels (Orders, Medicines, Pharmacies, Users, Audit Logs) out of `Dashboard.js` into prop-driven presentational components under `pages/ops/panels/*`. Dashboard.js reduced 1221 → 914 lines; all stateful dialogs retained. Added `data-testid`s to all sidebar nav items. Tested: testing_agent iteration_13 (100% frontend, no regressions).
 - ✅ **Backend + Frontend Modular Refactor (P2)** — purely structural, behavior-preserving.
   - Backend: split monolithic `server.py` (~2666 lines) → `config.py` (env/db/JWT/GST/storage), `models.py` (enums + Pydantic), `services.py` (auth/JWT helpers, audit, discounts, CSV parse, invoice PDF), and `routers/*.py` (auth, medicines, customer, pharmacies, orders, pharmacist, pharmacy, ops, delivery). `server.py` is now a thin app that composes routers. All `/api` URLs & response shapes unchanged.
