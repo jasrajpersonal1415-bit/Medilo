@@ -3,7 +3,13 @@
     "name": "MEDILO",
     "persona": "Clinical, Disciplined, Trustworthy, Strict",
     "aesthetic": "Sterile Utility",
-    "core_values": ["Compliance", "Auditability", "Correctness", "Speed"],
+    "core_values": [
+      "Compliance",
+      "Auditability",
+      "Correctness",
+      "Speed",
+      "Patient Safety"
+    ],
     "design_principles": [
       "Function over Form: No decoration without purpose.",
       "High Contrast: Legibility is patient safety.",
@@ -63,43 +69,39 @@
       }
     },
     "usage_rules": [
-      "Never use gradients.",
+      "Never use gradients under any circumstances. Solid backgrounds only.",
       "Backgrounds must be solid #F4F7F6 or #FFFFFF.",
       "Text must be #161616 (Black) or #525252 (Dark Grey). Never pure black on white.",
-      "Primary color is ONLY for primary actions (Submit, Approve).",
-      "Destructive color is for Reject/Delete/Schedule H1 warnings."
+      "Primary color #0F62FE is ONLY for primary actions (Submit, OTP Verification, Login).",
+      "Destructive color #DA1E28 is for error alerts and invalid validation states."
     ]
   },
   "layout": {
-    "spacing_system": "Generous but structured. Use p-4, p-6, p-8.",
+    "spacing_system": "Generous but structured. Use p-4, p-6, p-8, p-12.",
     "grid_system": {
       "mobile": "grid-cols-1 gap-4",
-      "dashboard": "grid-cols-12 gap-4 md:gap-6",
-      "mode_b_control_room": {
-        "summary": "col-span-12 md:col-span-3",
-        "main_chart": "col-span-12 md:col-span-9",
-        "feed": "col-span-12 md:col-span-4"
-      }
+      "desktop_split": "grid grid-cols-1 lg:grid-cols-12 min-h-screen",
+      "dashboard": "grid-cols-12 gap-4 md:gap-6"
     },
     "containers": {
-      "card": "bg-white border border-gray-200 shadow-sm rounded-md",
+      "card": "bg-white border border-gray-200 shadow-sm rounded-md p-6 sm:p-8",
       "dashboard_shell": "h-screen flex overflow-hidden bg-background",
-      "mobile_shell": "min-h-screen bg-background pb-20"
+      "mobile_shell": "min-h-screen bg-background pb-20 max-w-md mx-auto px-4"
     }
   },
   "components": {
     "buttons": {
       "radius": "rounded-md",
       "styles": {
-        "primary": "bg-primary text-white hover:bg-primary/90 shadow-sm",
-        "secondary": "bg-white border border-gray-300 text-gray-900 hover:bg-gray-50",
-        "destructive": "bg-destructive text-white hover:bg-destructive/90",
-        "ghost": "hover:bg-gray-100 text-gray-700"
+        "primary": "bg-primary text-white hover:bg-primary/90 shadow-sm font-medium h-11 px-6 text-base focus:ring-2 focus:ring-offset-2 focus:ring-primary",
+        "secondary": "bg-white border border-gray-300 text-gray-900 hover:bg-gray-50 h-11 px-6 text-base",
+        "destructive": "bg-destructive text-white hover:bg-destructive/90 h-11 px-6",
+        "ghost": "hover:bg-gray-100 text-gray-700 h-10 px-4"
       }
     },
     "inputs": {
       "radius": "rounded-md",
-      "style": "border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
+      "style": "border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white h-11 px-3 text-base"
     },
     "cards": {
       "radius": "rounded-md",
@@ -109,6 +111,59 @@
       "radius": "rounded-sm",
       "style": "font-mono text-xs font-medium px-2 py-0.5 uppercase"
     }
+  },
+  "login_screen_specifications": {
+    "customer_login": {
+      "route": "/login",
+      "target_device": "Mobile-first PWA (constrained preview width max-w-md on desktop)",
+      "layout_structure": "Single column clinical PWA layout centered with fixed header badge, top pharmacy trust bar, clear tab switch between 'Sign In' & 'Register', phone input with '+91' prefix & format hint, OTP flow trigger, clear license/compliance notice footer, and quick navigation switcher pills for Staff and Delivery logins.",
+      "visual_hierarchy": [
+        "Header: Medilo Pill/Cross Logo + 'India Closed Pilot • Licensed Pharmacy Portal' status badge",
+        "Title Section: 'Customer Sign In' with subtext 'Enter your 10-digit mobile number for instant OTP authentication'",
+        "Auth Mode Switch: Segmented pill toggle for [ Existing Customer / New Register ]",
+        "Form Section: Mobile input (+91 standard prefix with flag icon/label), full name input when Register mode is active, Terms check notice",
+        "Action Button: Full-width primary blue button ('Get OTP' / 'Complete Registration')",
+        "Trust Signals Banner: 3-column micro trust strip [ 100% Verified Medicines | Licensed Pharmacists | Encrypted Audit Trail ]",
+        "Role Portal Switcher: Clean grey card footer with quick tabs to 'Staff Portal (Pharmacist / Ops)' and 'Delivery Partner Portal'"
+      ]
+    },
+    "staff_login": {
+      "route": "/staff/login",
+      "target_device": "Desktop Staff Portal",
+      "layout_structure": "Split-screen desktop design (Left 5-col: Deep clinical brand & compliance panel with active operational stats, Right 7-col: High-efficiency email/password staff authentication form).",
+      "visual_hierarchy": [
+        "Left Panel (Brand & Operational Panel): Dark Navy #161616 background with IBM Blue #0F62FE accent accents, live system operational status badge ('MEDILO v2.4 • System Operational'), compliance notices, and quick stats (Licensed Pharmacist Verification Active, Schedule H/H1 Audit Logging Enabled).",
+        "Right Panel (Auth Form Container): Clean #F4F7F6 background with white central card container.",
+        "Role Selection Tabs: [ Pharmacist | Pharmacy Staff | Operations Admin ] to pre-fill or tag login intent.",
+        "Form Fields: Staff Email (@medilo.in / registered domain) with Icon + Password with show/hide toggle.",
+        "Security Note: 'Restricted Access: Authorized Clinical & Ops Personnel Only. All activities logged.'",
+        "Action Button: Primary button 'Sign In to Staff Workspace'",
+        "Footer Link: 'Switch to Customer Mobile Portal' / 'Delivery Partner Portal'"
+      ]
+    },
+    "delivery_login": {
+      "route": "/delivery/login",
+      "target_device": "Mobile-first / Field Delivery Partner Portal",
+      "layout_structure": "Clean high-contrast operational layout optimized for mobile field agents.",
+      "visual_hierarchy": [
+        "Header: 'Delivery Partner Portal' with Truck/Package Icon badge",
+        "Form Section: Registered Mobile Number input + Partner ID (optional)",
+        "Action Button: 'Verify & Access Delivery Queue'",
+        "Footer: Link back to Customer & Staff portals"
+      ]
+    },
+    "trust_signals": [
+      "CDSCO / State Pharmacy License Compliance Badge",
+      "256-Bit Encrypted Patient & Audit Data Signal",
+      "Schedule H / H1 Prescription Protocol Badge",
+      "Closed Pilot Access Tag (300 Verified Users)"
+    ],
+    "micro_interactions": [
+      "Smooth tab transition between Sign In and Register states",
+      "Focus state highlighting with 2px solid IBM Blue outer ring",
+      "Disabled state on loading with spinner icon and 'Verifying credentials...'",
+      "Sonner notification toast triggers on validation error or OTP dispatch"
+    ]
   },
   "visual_enhancers": {
     "shadows": "shadow-sm for cards, shadow-md for dropdowns. No large diffuse shadows.",
@@ -121,8 +176,7 @@
     "images": {
       "pharmacist_review": "https://images.unsplash.com/photo-1576091358783-a212ec293ff3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwxfHxwaGFybWFjaXN0JTIwcmV2aWV3aW5nJTIwcHJlc2NyaXB0aW9ufGVufDB8fHx8MTc2Nzg5NjI5Mnww&ixlib=rb-4.1.0&q=85",
       "pharmacy_interior": "https://images.unsplash.com/photo-1582146804102-b4a01b0a51ae?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjBwaGFybWFjeSUyMHN0b3JlJTIwaW50ZXJpb3IlMjBjbGVhbnxlbnwwfHx8fDE3Njc4OTYyOTN8MA&ixlib=rb-4.1.0&q=85",
-      "medicines_generic": "https://images.unsplash.com/photo-1638929935038-94137b62f315?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHw0fHxtZWRpY2luZSUyMGJsaXN0ZXIlMjBwYWNrcyUyMGFuZCUyMGJvdHRsZXN8ZW58MHx8fHwxNzY3ODk2Mjk0fDA&ixlib=rb-4.1.0&q=85",
-      "logo_placeholder": "https://placehold.co/200x50/0F62FE/FFFFFF?text=MEDILO"
+      "medicines_generic": "https://images.unsplash.com/photo-1638929935038-94137b62f315?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHw0fHxtZWRpY2luZSUyMGJsaXN0ZXIlMjBwYWNrcyUyMGFuZCUyMGJvdHRsZXN8ZW58MHx8fHwxNzY3ODk2Mjk0fDA&ixlib=rb-4.1.0&q=85"
     }
   },
   "accessibility": {
@@ -159,6 +213,7 @@
     "Components MUST use named exports (export const ComponentName = ...)",
     "Pages MUST use default exports (export default function PageName() {...})",
     "Use sonner for toasts",
-    "Sonner component are located in /app/src/components/ui/sonner.tsx"
+    "Sonner component are located in /app/src/components/ui/sonner.tsx",
+    "All interactive and key informational elements MUST include a data-testid attribute to facilitate robust automated testing."
   ]
 }
