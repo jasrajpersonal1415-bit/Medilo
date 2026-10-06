@@ -1,4 +1,4 @@
-const CACHE_NAME = 'medilo-v1';
+const CACHE_NAME = 'medilo-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -78,31 +78,47 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Handle push notifications (for future use)
+// Handle push notifications
 self.addEventListener('push', (event) => {
-  if (event.data) {
-    const data = event.data.json();
-    const options = {
-      body: data.body,
-      icon: '/icons/icon-192x192.png',
-      badge: '/icons/icon-72x72.png',
-      vibrate: [100, 50, 100],
-      data: {
-        url: data.url || '/'
-      }
-    };
-    
-    event.waitUntil(
-      self.registration.showNotification(data.title || 'MEDILO', options)
-    );
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch (e) {
+    data = { title: 'MEDILO', body: event.data ? event.data.text() : '' };
   }
+  const url = data.order_id ? `/order/${data.order_id}` : '/profile/notifications';
+  const options = {
+    body: data.body || '',
+    icon: '/icons/icon-192x192.png',
+    badge: '/icons/icon-72x72.png',
+    vibrate: [100, 50, 100],
+    tag: data.order_id || 'medilo-notification',
+    renotify: true,
+    data: { url }
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'MEDILO', options)
+  );
 });
 
-// Handle notification click
+// Handle notification click - focus existing tab or open a new one
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  
+  const targetUrl = (event.notification.data && event.notification.data.url) || '/profile/notifications';
+
   event.waitUntil(
-    clients.openWindow(event.notification.data.url || '/')
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if ('focus' in client) {
+          if ('navigate' in client) {
+            client.navigate(targetUrl).catch(() => {});
+          }
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) return clients.openWindow(targetUrl);
+      return undefined;
+    })
   );
 });

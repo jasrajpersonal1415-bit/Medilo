@@ -11,6 +11,7 @@ from services import (
     generate_id, get_utc_now, get_current_user, log_audit, CATEGORY_DISCOUNTS,
     CART_DISCOUNT_TIERS, calculate_discounts, build_invoice_pdf,
 )
+from services import notify_order_status
 
 router = APIRouter(prefix="/api")
 
@@ -118,15 +119,9 @@ async def create_order(data: OrderCreate, user: dict = Depends(get_current_user)
     
     await db.orders.insert_one(order)
     await log_audit("order_created", "order", order["id"], user["id"], user["role"], {"status": initial_status.value, "total_amount": discount_info["total_amount"], "total_savings": discount_info["total_savings"]})
-    
-    # Create notification
-    await db.notifications.insert_one({
-        "id": generate_id(), "customer_id": user["id"],
-        "type": "order_update", "title": "Order Placed",
-        "message": f"Your order has been placed successfully. Total: ₹{discount_info['total_amount']}",
-        "order_id": order["id"], "is_read": False, "created_at": get_utc_now()
-    })
-    
+
+    await notify_order_status(user["id"], order["id"], initial_status.value)
+
     return OrderResponse(**{k: v for k, v in order.items() if k not in ["_id", "highest_bucket"]})
 
 @router.get("/orders", response_model=List[OrderResponse])
@@ -179,7 +174,9 @@ async def upload_prescription(order_id: str, prescription_image: str, user: dict
     
     await db.orders.update_one({"id": order_id}, {"$set": update_data})
     await log_audit("prescription_uploaded", "order", order_id, user["id"], user["role"])
-    
+
+    await notify_order_status(order["customer_id"], order_id, OrderStatus.PENDING_PHARMACIST_REVIEW.value)
+
     order = await db.orders.find_one({"id": order_id}, {"_id": 0, "highest_bucket": 0})
     return OrderResponse(**order)
 
@@ -207,7 +204,9 @@ async def cancel_order(order_id: str, user: dict = Depends(get_current_user)):
     
     await db.orders.update_one({"id": order_id}, {"$set": update_data})
     await log_audit("order_cancelled", "order", order_id, user["id"], user["role"])
-    
+
+    await notify_order_status(order["customer_id"], order_id, OrderStatus.CANCELLED.value)
+
     order = await db.orders.find_one({"id": order_id}, {"_id": 0, "highest_bucket": 0})
     return OrderResponse(**order)
 

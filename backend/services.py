@@ -1,8 +1,11 @@
 import uuid
 import io
+import json
+import asyncio
 from datetime import datetime, timezone, timedelta
 import jwt
 import bcrypt
+from pywebpush import webpush, WebPushException
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials
 from reportlab.lib.pagesizes import A4
@@ -16,6 +19,7 @@ from typing import List
 from config import (
     db, logger, security, JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRATION_HOURS,
     MEDILO_GSTIN, GST_RATE,
+    VAPID_PRIVATE_KEY, VAPID_CLAIM_EMAIL,
 )
 from models import UserRole
 
@@ -389,3 +393,86 @@ def build_invoice_pdf(order: dict, pharmacy: dict) -> bytes:
     doc.build(elems)
     buf.seek(0)
     return buf.getvalue()
+
+
+
+# ==================== Web Push + Order Status Notifications ====================
+ORDER_STATUS_MESSAGES = {
+    "pending_pharmacist_review": ("Order received", "Order #{oid} is pending pharmacist review."),
+    "pharmacist_approved": ("Order approved", "Good news! Order #{oid} was approved by our pharmacist."),
+    "pharmacist_rejected": ("Order rejected", "Unfortunately order #{oid} was rejected by the pharmacist."),
+    "prescription_requested": ("Prescription needed", "Please upload a valid prescription for order #{oid} to proceed."),
+    "assigned_to_pharmacy": ("Pharmacy assigned", "Order #{oid} has been assigned to a pharmacy."),
+    "pharmacy_accepted": ("Pharmacy accepted", "A pharmacy has accepted order #{oid}."),
+    "pharmacy_rejected": ("Reassigning order", "The pharmacy couldn't fulfill order #{oid}. We're reassigning it."),
+    "inventory_confirmed": ("Items confirmed", "All items for order #{oid} are in stock."),
+    "preparing": ("Preparing your order", "Order #{oid} is being prepared."),
+    "ready_for_pickup": ("Ready for pickup", "Order #{oid} is ready and awaiting a delivery partner."),
+    "picked_up": ("Order picked up", "Your order #{oid} has been picked up by the delivery partner."),
+    "out_for_delivery": ("Out for delivery", "Order #{oid} is out for delivery and arriving soon!"),
+    "delivered": ("Delivered", "Order #{oid} has been delivered. Thank you for choosing MEDILO!"),
+    "cancelled": ("Order cancelled", "Order #{oid} has been cancelled."),
+}
+_DELIVERY_STATUSES = {"picked_up", "out_for_delivery", "delivered"}
+
+
+def _send_webpush_sync(subscription: dict, payload: dict):
+    """Blocking webpush send. Returns 'ok', 'expired', or 'error'."""
+    try:
+        webpush(
+            subscription_info=subscription,
+            data=json.dumps(payload),
+            vapid_private_key=VAPID_PRIVATE_KEY,
+            vapid_claims={"sub": VAPID_CLAIM_EMAIL},
+        )
+        return "ok"
+    except WebPushException as e:
+        status = getattr(e.response, "status_code", None)
+        if status in (404, 410):
+            return "expired"
+        logger.warning(f"WebPush failed ({status}): {e}")
+        return "error"
+    except Exception as e:
+        logger.warning(f"WebPush unexpected error: {e}")
+        return "error"
+
+
+async def notify_customer(customer_id: str, title: str, message: str,
+                          ntype: str = "order_update", order_id: str = None):
+    """Create an in-app notification AND push to the customer's subscribed devices."""
+    # In-app notification feed
+    await db.notifications.insert_one({
+        "id": generate_id(),
+        "customer_id": customer_id,
+        "type": ntype,
+        "title": title,
+        "message": message,
+        "order_id": order_id,
+        "is_read": False,
+        "created_at": get_utc_now(),
+    })
+
+    # Web push (best-effort, prune dead subscriptions)
+    if not VAPID_PRIVATE_KEY:
+        return
+    subs = await db.push_subscriptions.find({"customer_id": customer_id}, {"_id": 0}).to_list(100)
+    if not subs:
+        return
+    payload = {"title": title, "body": message, "order_id": order_id, "type": ntype}
+    for s in subs:
+        result = await asyncio.to_thread(_send_webpush_sync, s["subscription"], payload)
+        if result == "expired":
+            await db.push_subscriptions.delete_one({"id": s["id"]})
+
+
+async def notify_order_status(customer_id: str, order_id: str, new_status: str):
+    """Notify a customer about an order status transition (in-app + web push)."""
+    tmpl = ORDER_STATUS_MESSAGES.get(new_status)
+    if not tmpl:
+        return
+    title, body = tmpl[0], tmpl[1].format(oid=order_id[:8].upper())
+    ntype = "delivery_update" if new_status in _DELIVERY_STATUSES else "order_update"
+    try:
+        await notify_customer(customer_id, title, body, ntype, order_id)
+    except Exception as e:
+        logger.warning(f"notify_order_status failed for {order_id}: {e}")

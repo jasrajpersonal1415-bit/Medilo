@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
-from config import db, put_object, APP_NAME
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Body
+from config import db, put_object, APP_NAME, VAPID_PUBLIC_KEY
 import uuid
 from enum import Enum
 from typing import Optional
@@ -439,3 +439,36 @@ async def request_account_deletion(user: dict = Depends(get_current_user)):
     }
     await db.support_tickets.insert_one(ticket)
     return {"message": "Account deletion request submitted", "ticket_id": ticket["id"]}
+
+
+# ==================== Web Push Subscriptions ====================
+@router.get("/push/vapid-public-key")
+async def get_vapid_public_key(user: dict = Depends(get_current_user)):
+    return {"public_key": VAPID_PUBLIC_KEY}
+
+@router.post("/push/subscribe")
+async def subscribe_push(subscription: dict = Body(...), user: dict = Depends(get_current_user)):
+    if user["role"] != UserRole.CUSTOMER.value:
+        raise HTTPException(status_code=403, detail="Only customers can subscribe")
+    endpoint = subscription.get("endpoint")
+    if not endpoint:
+        raise HTTPException(status_code=400, detail="Invalid subscription")
+    await db.push_subscriptions.update_one(
+        {"endpoint": endpoint},
+        {"$set": {
+            "customer_id": user["id"],
+            "subscription": subscription,
+            "endpoint": endpoint,
+            "updated_at": get_utc_now(),
+        }, "$setOnInsert": {"id": generate_id(), "created_at": get_utc_now()}},
+        upsert=True,
+    )
+    return {"message": "Subscribed to push notifications"}
+
+@router.post("/push/unsubscribe")
+async def unsubscribe_push(data: dict = Body(...), user: dict = Depends(get_current_user)):
+    endpoint = data.get("endpoint")
+    if endpoint:
+        await db.push_subscriptions.delete_one({"endpoint": endpoint, "customer_id": user["id"]})
+    return {"message": "Unsubscribed"}
+

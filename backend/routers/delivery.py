@@ -10,6 +10,7 @@ from services import (
     generate_id, get_utc_now, create_token,
     get_current_user, log_audit,
 )
+from services import notify_order_status
 
 router = APIRouter(prefix="/api")
 
@@ -168,7 +169,9 @@ async def accept_delivery(order_id: str, user: dict = Depends(get_current_user))
     
     await db.orders.update_one({"id": order_id}, {"$set": update_data})
     await log_audit("delivery_accepted", "order", order_id, user["id"], user["role"])
-    
+
+    await notify_order_status(order["customer_id"], order_id, OrderStatus.PICKED_UP.value)
+
     # Return updated order
     order = await db.orders.find_one({"id": order_id}, {"_id": 0})
     pharmacy = await db.pharmacies.find_one({"id": order.get("pharmacy_id")}, {"_id": 0}) if order.get("pharmacy_id") else {}
@@ -223,7 +226,9 @@ async def delivery_action(order_id: str, data: DeliveryAction, user: dict = Depe
     
     await db.orders.update_one({"id": order_id}, {"$set": update_data})
     await log_audit(f"delivery_{data.action}", "order", order_id, user["id"], user["role"])
-    
+
+    await notify_order_status(order["customer_id"], order_id, update_data["status"])
+
     # Return updated order
     order = await db.orders.find_one({"id": order_id}, {"_id": 0})
     pharmacy = await db.pharmacies.find_one({"id": order.get("pharmacy_id")}, {"_id": 0}) if order.get("pharmacy_id") else {}

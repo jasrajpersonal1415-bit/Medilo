@@ -160,6 +160,10 @@ export const customerAPI = {
   clearNotifications: () => api.delete('/customer/notifications'),
   // Account
   requestDeleteAccount: () => api.post('/customer/delete-account-request'),
+  // Web Push
+  getVapidKey: () => api.get('/push/vapid-public-key'),
+  subscribePush: (subscription) => api.post('/push/subscribe', subscription),
+  unsubscribePush: (endpoint) => api.post('/push/unsubscribe', { endpoint }),
 };
 
 export default api;

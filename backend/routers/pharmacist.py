@@ -7,6 +7,7 @@ from models import (
 from services import (
     get_utc_now, get_current_user, log_audit,
 )
+from services import notify_order_status
 
 router = APIRouter(prefix="/api")
 
@@ -59,7 +60,9 @@ async def pharmacist_action(order_id: str, data: PharmacistAction, user: dict = 
     
     await db.orders.update_one({"id": order_id}, {"$set": update_data})
     await log_audit(f"pharmacist_{data.action}", "order", order_id, user["id"], user["role"], {"notes": data.notes})
-    
+
+    await notify_order_status(order["customer_id"], order_id, update_data["status"])
+
     order = await db.orders.find_one({"id": order_id}, {"_id": 0, "highest_bucket": 0})
     return OrderResponse(**order)
 
@@ -91,7 +94,9 @@ async def assign_pharmacy(order_id: str, pharmacy_id: str, user: dict = Depends(
     
     await db.orders.update_one({"id": order_id}, {"$set": update_data})
     await log_audit("pharmacy_assigned", "order", order_id, user["id"], user["role"], {"pharmacy_id": pharmacy_id})
-    
+
+    await notify_order_status(order["customer_id"], order_id, OrderStatus.ASSIGNED_TO_PHARMACY.value)
+
     order = await db.orders.find_one({"id": order_id}, {"_id": 0, "highest_bucket": 0})
     return OrderResponse(**order)
 

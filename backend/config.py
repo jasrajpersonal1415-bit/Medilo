@@ -21,6 +21,10 @@ APP_NAME = "medilo"
 # GST / Invoice configuration (single MEDILO GSTIN, GST-inclusive MRP pricing)
 MEDILO_GSTIN = os.environ.get("MEDILO_GSTIN", "07ABCDE1234F1Z5")
 GST_RATE = float(os.environ.get("MEDILO_GST_RATE", "12"))
+# Web Push (VAPID) configuration
+VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY")
+VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY")
+VAPID_CLAIM_EMAIL = os.environ.get("VAPID_CLAIM_EMAIL", "mailto:support@medilo.com")
 storage_key = None
 
 

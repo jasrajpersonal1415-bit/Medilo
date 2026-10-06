@@ -5,9 +5,10 @@ import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { 
   ArrowLeft, Bell, Package, Truck, FileText, CheckCircle, 
-  Trash2, CheckCheck, AlertCircle
+  Trash2, CheckCheck, AlertCircle, BellRing, BellOff
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { getPushStatus, enablePush, disablePush, isPushSupported } from '../../lib/push';
 
 const TYPE_CONFIG = {
   order_update: { icon: Package, color: '#3B82F6', bg: '#EFF6FF' },
@@ -21,8 +22,33 @@ export default function Notifications() {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pushStatus, setPushStatus] = useState('default');
+  const [pushBusy, setPushBusy] = useState(false);
 
   useEffect(() => { fetchNotifications(); }, []);
+  useEffect(() => { getPushStatus().then(setPushStatus); }, []);
+
+  const handleEnablePush = async () => {
+    setPushBusy(true);
+    const res = await enablePush();
+    setPushBusy(false);
+    if (res.ok) {
+      setPushStatus('subscribed');
+      toast.success('Push notifications enabled');
+    } else if (res.reason === 'denied') {
+      toast.error('Permission blocked. Enable notifications in your browser settings.');
+    } else {
+      toast.error('Push not supported on this device');
+    }
+  };
+
+  const handleDisablePush = async () => {
+    setPushBusy(true);
+    await disablePush();
+    setPushBusy(false);
+    setPushStatus('default');
+    toast.success('Push notifications turned off');
+  };
 
   const fetchNotifications = async () => {
     try {
@@ -112,6 +138,28 @@ export default function Notifications() {
       </div>
 
       <div className="p-4">
+        {isPushSupported() && pushStatus !== 'subscribed' && pushStatus !== 'unsupported' && (
+          <div className="bg-white rounded-xl p-3.5 shadow-sm flex items-center gap-3 mb-3" data-testid="push-enable-card">
+            <div className="w-9 h-9 rounded-xl bg-[#EFF6FF] flex items-center justify-center shrink-0">
+              <BellRing className="h-4 w-4 text-[#0F62FE]" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900">Get order alerts</p>
+              <p className="text-xs text-gray-500">Track your order even when the app is closed</p>
+            </div>
+            <Button size="sm" className="bg-[#0F62FE] hover:bg-[#0353E9] h-8 text-xs" onClick={handleEnablePush} disabled={pushBusy} data-testid="enable-push-btn">
+              {pushBusy ? '...' : 'Enable'}
+            </Button>
+          </div>
+        )}
+        {isPushSupported() && pushStatus === 'subscribed' && (
+          <div className="flex items-center justify-between mb-3 px-1" data-testid="push-active-row">
+            <span className="text-xs text-green-600 flex items-center gap-1"><BellRing className="h-3.5 w-3.5" /> Push notifications on</span>
+            <button className="text-xs text-gray-400 hover:text-red-500 flex items-center gap-1" onClick={handleDisablePush} disabled={pushBusy} data-testid="disable-push-btn">
+              <BellOff className="h-3.5 w-3.5" /> Turn off
+            </button>
+          </div>
+        )}
         {loading ? (
           <div className="flex justify-center py-12"><div className="spinner" /></div>
         ) : notifications.length === 0 ? (
