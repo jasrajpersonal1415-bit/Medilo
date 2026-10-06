@@ -25,6 +25,11 @@ import {
 import { toast } from 'sonner';
 import CSVImportDialog from '../../components/CSVImportDialog';
 import CustomerManagement from './CustomerManagement';
+import OrdersPanel from './panels/OrdersPanel';
+import MedicinesPanel from './panels/MedicinesPanel';
+import PharmaciesPanel from './panels/PharmaciesPanel';
+import UsersPanel from './panels/UsersPanel';
+import AuditPanel from './panels/AuditPanel';
 
 export default function OpsDashboard() {
   const { user, logout } = useAuth();
@@ -370,373 +375,62 @@ export default function OpsDashboard() {
 
         {/* Orders Tab */}
         {activeTab === 'orders' && (
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h1 className="text-2xl font-semibold">All Orders</h1>
-                <p className="text-gray-500">Monitor and view order details (Read-only)</p>
-              </div>
-            </div>
-
-            {loading ? (
-              <div className="flex justify-center py-12"><div className="spinner" /></div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Order ID</th>
-                      <th>Customer</th>
-                      <th>Status</th>
-                      <th>Items</th>
-                      <th>Pharmacy</th>
-                      <th>Date</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {orders.map((order) => (
-                      <tr key={order.id}>
-                        <td className="mono text-xs">{order.id.slice(0, 8).toUpperCase()}</td>
-                        <td>
-                          <p className="font-medium">{order.customer_name}</p>
-                          <p className="text-xs text-gray-500">{order.customer_phone}</p>
-                        </td>
-                        <td>
-                          <Badge className={getStatusClass(order.status)}>
-                            {getStatusName(order.status)}
-                          </Badge>
-                        </td>
-                        <td>{order.items.length} item(s)</td>
-                        <td>{order.pharmacy_name || '-'}</td>
-                        <td className="text-xs">{formatDateTime(order.created_at)}</td>
-                        <td>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => viewOrderTimeline(order)}
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            Timeline
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+          <OrdersPanel orders={orders} loading={loading} onViewTimeline={viewOrderTimeline} />
         )}
 
         {/* Medicines Tab */}
         {activeTab === 'medicines' && (
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h1 className="text-2xl font-semibold">Medicines</h1>
-                <p className="text-gray-500">Manage medicine catalog</p>
-              </div>
-              <div className="flex gap-2">
-                <Button 
-                  onClick={() => setCSVImportOpen(true)}
-                  variant="outline"
-                  data-testid="import-csv-btn"
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Import CSV
-                </Button>
-                <Button 
-                  onClick={() => {
-                    setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine', batch: '' });
-                    setImageFile(null); setImagePreview(null);
-                    setMedicineDialog({ open: true, data: null });
-                  }}
-                  className="bg-[#0F62FE] hover:bg-[#0353E9]"
-                  data-testid="add-medicine-btn"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Medicine
-                </Button>
-                <Button 
-                  onClick={() => {
-                    setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: null, strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Wellness', batch: '' });
-                    setImageFile(null); setImagePreview(null);
-                    setMedicineDialog({ open: true, data: null });
-                  }}
-                  variant="outline"
-                  data-testid="add-product-btn"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Product
-                </Button>
-              </div>
-            </div>
-
-            {loading ? (
-              <div className="flex justify-center py-12"><div className="spinner" /></div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Generic Name</th>
-                      <th>Type</th>
-                      <th>Category</th>
-                      <th>Strength</th>
-                      <th>Pack Size</th>
-                      <th>Price (₹)</th>
-                      <th>Manufacturer</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {medicines.map((med) => (
-                      <tr key={med.id}>
-                        <td className="font-medium">{med.name}</td>
-                        <td>{med.generic_name}</td>
-                        <td>
-                          <Badge variant="outline" className="text-xs">
-                            {med.product_type || 'Medicine'}
-                          </Badge>
-                        </td>
-                        <td>
-                          {med.product_type === 'Medicine' && med.bucket ? (
-                            <Badge className={getBucketClass(med.bucket)}>
-                              {getBucketName(med.bucket)}
-                            </Badge>
-                          ) : (
-                            <span className="text-gray-400">-</span>
-                          )}
-                        </td>
-                        <td>{med.strength || '-'}</td>
-                        <td>{med.pack_size}</td>
-                        <td className="font-medium">₹{med.price?.toFixed(2) || '0.00'}</td>
-                        <td>{med.manufacturer}</td>
-                        <td className="flex gap-1">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                            onClick={() => handleEditMedicine(med)}
-                            data-testid={`edit-medicine-${med.id}`}
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                            onClick={() => handleDeleteMedicine(med.id, med.name)}
-                            data-testid={`delete-medicine-${med.id}`}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+          <MedicinesPanel
+            medicines={medicines}
+            loading={loading}
+            onImportCSV={() => setCSVImportOpen(true)}
+            onAddMedicine={() => {
+              setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: 'OTC', strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Medicine', batch: '' });
+              setImageFile(null); setImagePreview(null);
+              setMedicineDialog({ open: true, data: null });
+            }}
+            onAddProduct={() => {
+              setMedicineForm({ id: null, name: '', generic_name: '', manufacturer: '', bucket: null, strength: '', form: '', pack_size: '', price: '', description: '', product_type: 'Wellness', batch: '' });
+              setImageFile(null); setImagePreview(null);
+              setMedicineDialog({ open: true, data: null });
+            }}
+            onEdit={handleEditMedicine}
+            onDelete={(med) => handleDeleteMedicine(med.id, med.name)}
+          />
         )}
 
         {/* Pharmacies Tab */}
         {activeTab === 'pharmacies' && (
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h1 className="text-2xl font-semibold">Pharmacies</h1>
-                <p className="text-gray-500">Manage registered pharmacies</p>
-              </div>
-              <Button 
-                onClick={() => setPharmacyDialog({ open: true, data: null })}
-                className="bg-[#0F62FE] hover:bg-[#0353E9]"
-                data-testid="add-pharmacy-btn"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Pharmacy
-              </Button>
-            </div>
-
-            {loading ? (
-              <div className="flex justify-center py-12"><div className="spinner" /></div>
-            ) : (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {pharmacies.map((pharmacy) => (
-                  <Card key={pharmacy.id} className="card-hover">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base">{pharmacy.name}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-xs text-gray-500 mb-1">License: {pharmacy.license_number}</p>
-                      <p className="text-sm text-gray-700">{pharmacy.address}</p>
-                      <p className="text-sm text-gray-700">{pharmacy.city} - {pharmacy.pincode}</p>
-                      <p className="text-sm text-gray-500 mt-2">{pharmacy.phone}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
+          <PharmaciesPanel
+            pharmacies={pharmacies}
+            loading={loading}
+            onAddPharmacy={() => setPharmacyDialog({ open: true, data: null })}
+          />
         )}
 
         {/* Users Tab */}
         {activeTab === 'users' && (
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h1 className="text-2xl font-semibold">Users</h1>
-                <p className="text-gray-500">Manage all user accounts</p>
-              </div>
-              <div className="flex gap-2">
-                <Button 
-                  onClick={() => setDeliveryDialog({ open: true })}
-                  className="bg-green-600 hover:bg-green-700"
-                  data-testid="add-delivery-btn"
-                >
-                  <Truck className="h-4 w-4 mr-2" />
-                  Add Delivery Partner
-                </Button>
-                <Button 
-                  onClick={() => setStaffDialog({ open: true })}
-                  className="bg-[#0F62FE] hover:bg-[#0353E9]"
-                  data-testid="add-staff-btn"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Staff
-                </Button>
-              </div>
-            </div>
-
-            {loading ? (
-              <div className="flex justify-center py-12"><div className="spinner" /></div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Contact</th>
-                      <th>Role</th>
-                      <th>Status</th>
-                      <th>Joined</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.map((u) => (
-                      <tr key={u.id}>
-                        <td className="font-medium">{u.name}</td>
-                        <td>
-                          <p>{u.email || u.phone}</p>
-                        </td>
-                        <td>
-                          <Badge variant="outline" className="capitalize">{u.role.replace('_', ' ')}</Badge>
-                        </td>
-                        <td>
-                          <Badge className={u.is_active ? 'badge-approved' : 'badge-rejected'}>
-                            {u.is_active ? 'Active' : 'Inactive'}
-                          </Badge>
-                        </td>
-                        <td className="text-xs">{formatDateTime(u.created_at)}</td>
-                        <td>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => toggleUserStatus(u.id)}
-                          >
-                            {u.is_active ? 'Deactivate' : 'Activate'}
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+          <UsersPanel
+            users={users}
+            loading={loading}
+            onAddDelivery={() => setDeliveryDialog({ open: true })}
+            onAddStaff={() => setStaffDialog({ open: true })}
+            onToggleStatus={toggleUserStatus}
+          />
         )}
 
         {/* Audit Tab */}
         {activeTab === 'audit' && (
-          <div>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-              <div>
-                <h1 className="text-2xl font-semibold">Audit Logs</h1>
-                <p className="text-gray-500">System activity trail</p>
-              </div>
-              <div className="flex flex-wrap items-end gap-3">
-                <div>
-                  <Label className="text-xs text-gray-500">From</Label>
-                  <Input
-                    type="date"
-                    value={exportStartDate}
-                    onChange={(e) => setExportStartDate(e.target.value)}
-                    className="w-40"
-                    data-testid="audit-export-start-date"
-                  />
-                </div>
-                <div>
-                  <Label className="text-xs text-gray-500">To</Label>
-                  <Input
-                    type="date"
-                    value={exportEndDate}
-                    onChange={(e) => setExportEndDate(e.target.value)}
-                    className="w-40"
-                    data-testid="audit-export-end-date"
-                  />
-                </div>
-                <Button
-                  onClick={handleExportAuditLogs}
-                  disabled={exporting}
-                  className="bg-[#0F62FE] hover:bg-[#0353E9]"
-                  data-testid="audit-export-csv-btn"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  {exporting ? 'Exporting...' : 'Export CSV'}
-                </Button>
-              </div>
-            </div>
-
-            {loading ? (
-              <div className="flex justify-center py-12"><div className="spinner" /></div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Timestamp</th>
-                      <th>Action</th>
-                      <th>Entity</th>
-                      <th>User Role</th>
-                      <th>Details</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {auditLogs.map((log) => (
-                      <tr key={log.id}>
-                        <td className="text-xs mono">{formatDateTime(log.timestamp)}</td>
-                        <td className="font-medium">{log.action}</td>
-                        <td>
-                          <span className="text-xs text-gray-500">{log.entity_type}</span>
-                          <p className="mono text-xs">{log.entity_id.slice(0, 8)}</p>
-                        </td>
-                        <td>
-                          <Badge variant="outline" className="capitalize">{log.user_role.replace('_', ' ')}</Badge>
-                        </td>
-                        <td className="text-xs text-gray-500">
-                          {log.details ? JSON.stringify(log.details).slice(0, 50) : '-'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+          <AuditPanel
+            auditLogs={auditLogs}
+            loading={loading}
+            exportStartDate={exportStartDate}
+            exportEndDate={exportEndDate}
+            setExportStartDate={setExportStartDate}
+            setExportEndDate={setExportEndDate}
+            exporting={exporting}
+            onExport={handleExportAuditLogs}
+          />
         )}
       </main>
 
