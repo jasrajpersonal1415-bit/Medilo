@@ -1,6 +1,5 @@
 import uuid
 import io
-import csv
 from datetime import datetime, timezone, timedelta
 import jwt
 import bcrypt
@@ -10,16 +9,15 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_RIGHT, TA_CENTER, TA_LEFT
+from reportlab.lib.enums import TA_RIGHT
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from typing import List, Optional
+from typing import List
 
 from config import (
-    db, logger, security, APP_NAME,
-    JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRATION_HOURS,
+    db, logger, security, JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRATION_HOURS,
     MEDILO_GSTIN, GST_RATE,
 )
-from models import *
+from models import UserRole
 
 
 def generate_id():
@@ -269,7 +267,6 @@ def build_invoice_pdf(order: dict, pharmacy: dict) -> bytes:
     styles = getSampleStyleSheet()
     small = ParagraphStyle("small", parent=styles["Normal"], fontSize=8, leading=10, textColor=colors.HexColor("#444444"))
     cell = ParagraphStyle("cell", parent=styles["Normal"], fontSize=9, leading=11)
-    cell_sub = ParagraphStyle("cell_sub", parent=styles["Normal"], fontSize=7, leading=9, textColor=colors.HexColor("#777777"))
     h_title = ParagraphStyle("h_title", parent=styles["Normal"], fontSize=22, leading=24, textColor=colors.HexColor("#0F62FE"), fontName="Helvetica-Bold")
     label_r = ParagraphStyle("label_r", parent=styles["Normal"], fontSize=9, leading=12, alignment=TA_RIGHT)
     value_r = ParagraphStyle("value_r", parent=styles["Normal"], fontSize=9, leading=12, alignment=TA_RIGHT, fontName="Helvetica-Bold")

@@ -310,6 +310,7 @@ export default function OpsDashboard() {
           <button
             onClick={() => setActiveTab('orders')}
             className={`nav-item w-full text-left ${activeTab === 'orders' ? 'active' : ''}`}
+            data-testid="nav-orders"
           >
             <Package className="h-5 w-5" />
             <span>Orders</span>
@@ -317,6 +318,7 @@ export default function OpsDashboard() {
           <button
             onClick={() => setActiveTab('medicines')}
             className={`nav-item w-full text-left ${activeTab === 'medicines' ? 'active' : ''}`}
+            data-testid="nav-medicines"
           >
             <Pill className="h-5 w-5" />
             <span>Medicines</span>
@@ -324,6 +326,7 @@ export default function OpsDashboard() {
           <button
             onClick={() => setActiveTab('pharmacies')}
             className={`nav-item w-full text-left ${activeTab === 'pharmacies' ? 'active' : ''}`}
+            data-testid="nav-pharmacies"
           >
             <Building2 className="h-5 w-5" />
             <span>Pharmacies</span>
@@ -331,6 +334,7 @@ export default function OpsDashboard() {
           <button
             onClick={() => setActiveTab('users')}
             className={`nav-item w-full text-left ${activeTab === 'users' ? 'active' : ''}`}
+            data-testid="nav-users"
           >
             <Users className="h-5 w-5" />
             <span>Users</span>
@@ -346,6 +350,7 @@ export default function OpsDashboard() {
           <button
             onClick={() => setActiveTab('audit')}
             className={`nav-item w-full text-left ${activeTab === 'audit' ? 'active' : ''}`}
+            data-testid="nav-audit"
           >
             <Activity className="h-5 w-5" />
             <span>Audit Logs</span>

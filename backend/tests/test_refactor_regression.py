@@ -9,7 +9,6 @@ config/models/services/routers/*). Confirms:
 - Pharmacist/pharmacy/delivery order-list endpoints respond
 """
 import os
-import io
 import pytest
 import requests
 

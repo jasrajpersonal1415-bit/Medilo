@@ -1,7 +1,12 @@
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
-from config import db, put_object, get_object, APP_NAME
-from models import *
-from services import *
+from fastapi import APIRouter, HTTPException, Depends
+from config import db
+from models import (
+    UserRole, CustomerCreate, CustomerLogin, StaffCreate, StaffLogin, UserResponse, TokenResponse,
+)
+from services import (
+    generate_id, get_utc_now, hash_password, verify_password, create_token,
+    get_current_user, log_audit,
+)
 
 router = APIRouter(prefix="/api")
 

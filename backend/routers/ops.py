@@ -1,8 +1,17 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
-from fastapi.responses import StreamingResponse, Response
-from config import db, put_object, get_object, APP_NAME
-from models import *
-from services import *
+from fastapi.responses import StreamingResponse
+from config import db
+import io
+import csv
+from typing import List, Optional
+from datetime import datetime, timezone, timedelta
+from pydantic import BaseModel
+from models import (
+    UserRole, OrderStatus, UserResponse, OrderResponse, AuditLogResponse,
+)
+from services import (
+    generate_id, get_utc_now, get_current_user, log_audit, parse_csv_row,
+)
 
 router = APIRouter(prefix="/api")
 
@@ -35,7 +44,7 @@ async def validate_csv_import(file: UploadFile = File(...), user: dict = Depends
     all_errors = []
     for i, row in enumerate(reader, start=2):
         if i > 10002:
-            all_errors.append(f"File exceeds 10,000 row limit")
+            all_errors.append("File exceeds 10,000 row limit")
             break
         parsed, errs = parse_csv_row(row, i)
         all_errors.extend(errs)
@@ -56,7 +65,6 @@ async def validate_csv_import(file: UploadFile = File(...), user: dict = Depends
                 seen[key] = r["row_num"]
     
     # Check duplicates against DB
-    existing_matches = []
     new_entries = []
     update_entries = []
     for r in rows:
@@ -76,7 +84,7 @@ async def validate_csv_import(file: UploadFile = File(...), user: dict = Depends
     def sort_key(x):
         try:
             return x.get("expiry_date") or "9999-99-99"
-        except:
+        except Exception:
             return "9999-99-99"
     
     rows_sorted = sorted(rows, key=sort_key)

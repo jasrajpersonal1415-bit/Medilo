@@ -247,6 +247,7 @@ Build a CLOSED, THROW-AWAY PILOT APPLICATION for a healthcare startup called MED
 ## Changelog
 
 ### June, 2026
+- ✅ **Ops Dashboard Panel Extraction (P2)** — moved the 5 inline panels (Orders, Medicines, Pharmacies, Users, Audit Logs) out of `Dashboard.js` into prop-driven presentational components under `pages/ops/panels/*`. Dashboard.js reduced 1221 → 914 lines; all stateful dialogs retained. Added `data-testid`s to all sidebar nav items. Tested: testing_agent iteration_13 (100% frontend, no regressions).
 - ✅ **Backend + Frontend Modular Refactor (P2)** — purely structural, behavior-preserving.
   - Backend: split monolithic `server.py` (~2666 lines) → `config.py` (env/db/JWT/GST/storage), `models.py` (enums + Pydantic), `services.py` (auth/JWT helpers, audit, discounts, CSV parse, invoice PDF), and `routers/*.py` (auth, medicines, customer, pharmacies, orders, pharmacist, pharmacy, ops, delivery). `server.py` is now a thin app that composes routers. All `/api` URLs & response shapes unchanged.
   - Frontend: split `CustomerManagement.js` (~720 lines) → `pages/ops/customers/{shared, CustomersTab, SupportTab, NotificationsTab, AnalyticsTab}.js`.

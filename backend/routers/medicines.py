@@ -1,8 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
-from fastapi.responses import StreamingResponse, Response
+from fastapi.responses import Response
 from config import db, put_object, get_object, APP_NAME
-from models import *
-from services import *
+import uuid
+from typing import List
+from models import (
+    UserRole, MedicineBucket, ProductType, MedicineCreate, MedicineResponse,
+)
+from services import (
+    generate_id, get_utc_now, get_current_user, log_audit, ALLOWED_IMAGE_TYPES, MAX_IMAGE_SIZE,
+)
 
 router = APIRouter(prefix="/api")
 
@@ -139,5 +145,5 @@ async def serve_file(path: str):
     try:
         data, content_type = get_object(path)
         return Response(content=data, media_type=content_type)
-    except Exception as e:
+    except Exception:
         raise HTTPException(status_code=404, detail="File not found")
